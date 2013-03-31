@@ -1,0 +1,8 @@
+*~
+*.swp
+*.swm
+*.swn
+*.swo
+
+src/bin
+*.o
