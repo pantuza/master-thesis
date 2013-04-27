@@ -1,0 +1,12 @@
+# Tex
+
+*.dvi
+*.aux
+*.pdf
+*.log
+
+# Objects
+*.o
+
+# Binary
+bin
