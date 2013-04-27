@@ -8,6 +8,8 @@
 
 # Latex dir
 TEX_PATH := doc
+# document output name
+DOC_NAME := paradigms
 
 
 all:
@@ -15,3 +17,7 @@ all:
 
 clean:
 	rm -vf ${TEX_PATH}/{*.dvi,*.aux,*.log,*.pdf}
+
+latex:	${TEX_PATH}/*.tex
+	latex -output-directory ${TEX_PATH} ${TEX_PATH}/${DOC_NAME}.tex
+	dvipdf ${TEX_PATH}/${DOC_NAME}.dvi ${TEX_PATH}/${DOC_NAME}.pdf
