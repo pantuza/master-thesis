@@ -45,7 +45,7 @@ greedy:	$(OBJ)/greedy.o
 	$(CC) -o $(BIN)/$(GREEDY) $^ $(CFLAGS)
 
 $(OBJ)/%.o:	$(SRC)/%.c
-	$(CC) -c $^ $(CFLAGS)
+	$(CC) -c $^ -o $@ $(CFLAGS)
 
 clean:
 	rm -vf ${TEX_PATH}/{*.dvi,*.aux,*.log,*.pdf}
