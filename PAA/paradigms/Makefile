@@ -35,13 +35,13 @@ GREEDY := tp1g
 
 all: brute dynamic greedy
 
-brute:	$(OBJ)/brute.o
+brute:	$(OBJ)/brute.o $(OBJ)/file.o
 	$(CC) -o $(BIN)/$(BRUTE) $^ $(CFLAGS)
 
-dynamic:	$(OBJ)/dynamic.o
+dynamic:	$(OBJ)/dynamic.o $(OBJ)/file.o
 	$(CC) -o $(BIN)/$(DYNAMIC) $^ $(CFLAGS)
 
-greedy:	$(OBJ)/greedy.o
+greedy:	$(OBJ)/greedy.o $(OBJ)/file.o
 	$(CC) -o $(BIN)/$(GREEDY) $^ $(CFLAGS)
 
 $(OBJ)/%.o:	$(SRC)/%.c
