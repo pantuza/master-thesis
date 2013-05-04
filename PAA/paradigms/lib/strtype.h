@@ -4,7 +4,7 @@
 #include <string.h>
 
 
-#define WORD_SIZE 10000
+#define WORD_SIZE 100
 
 
 typedef struct
