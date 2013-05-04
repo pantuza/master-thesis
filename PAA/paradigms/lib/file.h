@@ -11,7 +11,7 @@
 #define SUCCESS 0
 
 
-FILE open_file(char filename[FILENAME_SIZE]);
+FILE* open_file(char filename[FILENAME_SIZE]);
 int get_seq_size(FILE *file);
 Word word_handler(FILE *file);
 void close_file(FILE *file);

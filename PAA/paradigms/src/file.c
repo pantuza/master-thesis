@@ -1,6 +1,6 @@
 #include "file.h"
 
-FILE open_file(char filename[FILENAME_SIZE])
+FILE* open_file(char filename[FILENAME_SIZE])
 {
     FILE *file = fopen(filename, FILE_PERMISSION);
 
@@ -10,16 +10,15 @@ FILE open_file(char filename[FILENAME_SIZE])
         exit(1);
     }
 
-    return *file;
+    return file;
 }
 
 
 int get_seq_size(FILE *file)
 {
-     char min_size[WORD_SIZE];
-     fgets(min_size, sizeof min_size, file);
-
-     return atoi(min_size);
+    char min_size[WORD_SIZE];
+    fgets(min_size, sizeof min_size, file);
+    return atoi(min_size);
 }
 
 
