@@ -23,7 +23,7 @@ BIN := bin
 
 
 # Compilation Flags
-CFLAGS := -I$(LIB)
+CFLAGS := -I$(LIB) -g
 # Compiler
 CC := gcc
 
