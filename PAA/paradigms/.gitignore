@@ -9,4 +9,5 @@
 *.o
 
 # Binary
-bin
+bin/*
+!bin/.gitkeep
