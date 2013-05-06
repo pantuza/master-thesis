@@ -55,3 +55,4 @@ clean:
 latex:	${TEX_PATH}/*.tex
 	latex -output-directory ${TEX_PATH} ${TEX_PATH}/${DOC_NAME}.tex
 	dvipdf ${TEX_PATH}/${DOC_NAME}.dvi ${TEX_PATH}/${DOC_NAME}.pdf
+	@evince $(TEX_PATH)/$(DOC_NAME).pdf
