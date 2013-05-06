@@ -28,6 +28,7 @@ Word word_handler(FILE *file)
     fgets(word.letters, WORD_SIZE, file);
     word.current = 0;
     word.next = 1;
+    word.length = strlen(word.letters);
     return word;
 }
 

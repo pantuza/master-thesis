@@ -4,12 +4,13 @@
 #include <string.h>
 
 
-#define WORD_SIZE 100
+#define WORD_SIZE 10000
 
 
 typedef struct
 {
     char letters[WORD_SIZE];
+    int length;
     int current;
     int next;
 } Word;
