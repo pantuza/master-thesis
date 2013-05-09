@@ -1,19 +1,19 @@
 #ifndef FILE_H
 #define FILE_H
 
-#include <stdio.h>
 #include <stdlib.h>
-
+#include <stdio.h>
 #include "strtype.h"
 
-#define FILENAME_SIZE 50
+#define FILENAME_SIZE 1024
 #define FILE_PERMISSION "r"
-#define SUCCESS 0
 
+typedef int method(int, char*, char*);
 
-FILE* open_file(char filename[FILENAME_SIZE]);
-int get_seq_size(FILE *file);
-Word word_handler(FILE *file);
+FILE* open_file(char* filename);
+//int get_segment_size(FILE *file);
+//void get_word(FILE *file, char* word);
+void sweep_input(FILE *file, method* execute);
 void close_file(FILE *file);
 
 #endif
