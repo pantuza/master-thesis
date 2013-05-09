@@ -4,14 +4,7 @@
 #include <string.h>
 
 
+#define SEGMENT_SIZE 10
 #define WORD_SIZE 10000
-
-
-typedef struct
-{
-    char letters[WORD_SIZE];
-    int current;
-    int next;
-} Word;
 
 #endif
