@@ -11,3 +11,4 @@
 # Binary
 bin/*
 !bin/.gitkeep
+!bin/valgrind.sh

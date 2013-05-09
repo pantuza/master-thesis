@@ -23,7 +23,7 @@ BIN := bin
 
 
 # Compilation Flags
-CFLAGS := -I$(LIB)
+CFLAGS := -I$(LIB) -g -std=c99
 # Compiler
 CC := gcc
 
@@ -32,16 +32,15 @@ BRUTE := tp1b
 DYNAMIC := tp1pd
 GREEDY := tp1g
 
+all: $(BIN)/$(BRUTE) $(BIN)/$(DYNAMIC) $(BIN)/$(GREEDY)
 
-all: brute dynamic greedy
-
-brute:	$(OBJ)/brute.o $(OBJ)/file.o
+$(BIN)/$(BRUTE): $(OBJ)/file.o $(OBJ)/brute.o
 	$(CC) -o $(BIN)/$(BRUTE) $^ $(CFLAGS)
 
-dynamic:	$(OBJ)/dynamic.o $(OBJ)/file.o
+$(BIN)/$(DYNAMIC): $(OBJ)/file.o $(OBJ)/dynamic.o
 	$(CC) -o $(BIN)/$(DYNAMIC) $^ $(CFLAGS)
 
-greedy:	$(OBJ)/greedy.o $(OBJ)/file.o
+$(BIN)/$(GREEDY): $(OBJ)/file.o $(OBJ)/greedy.o
 	$(CC) -o $(BIN)/$(GREEDY) $^ $(CFLAGS)
 
 $(OBJ)/%.o:	$(SRC)/%.c
@@ -50,8 +49,9 @@ $(OBJ)/%.o:	$(SRC)/%.c
 clean:
 	rm -vf ${TEX_PATH}/{*.dvi,*.aux,*.log,*.pdf}
 	rm -vf $(OBJ)/*.o
-	rm -vf $(BIN)/{$(BRUTE),$(DYNAMIC),$(GREEDY)}
+	rm -vf $(BIN)/tp*
 
 latex:	${TEX_PATH}/*.tex
 	latex -output-directory ${TEX_PATH} ${TEX_PATH}/${DOC_NAME}.tex
 	dvipdf ${TEX_PATH}/${DOC_NAME}.dvi ${TEX_PATH}/${DOC_NAME}.pdf
+	@evince $(TEX_PATH)/$(DOC_NAME).pdf
