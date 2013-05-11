@@ -4,6 +4,9 @@
 *.aux
 *.pdf
 *.log
+*.ps
+*.eps
+doc/gnuplot/*.tex
 
 # Objects
 *.o
