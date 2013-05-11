@@ -13,6 +13,14 @@ solução. A terceira apresenta um algorítmo Ótimo utilizando
 
 \section{Metodologia}
 
+\subsection{Estrutura de diretórios}
+jkadjdkljsjskl
+
+\subsection{Como executar os programas}
+blabla
+
+\subsection{Documentação}
+latex e codigo
 
 \section{Solução}
 
@@ -32,13 +40,116 @@ sistemático em uma \emph{árvore de recursão}. Para compreender a
 estratégia, suponha uma palavra $X = abc$ cuja a \emph{árvore de 
 recursão} pode ser vista na figura \ref{fig:recursiontree}.
 
-\begin{figure}
-\begin{center}
-\includegraphics[width=0.8\textwidth,natwidth=610,natheight=642]{doc/recursion-tree.png}
-\caption{Árvore de Recursão}
-\label{fig:recursiontree}
-\end{center}
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=0.8\textwidth,natwidth=610,natheight=642]{doc/recursion-tree.png}
+        \caption{Árvore de Recursão}
+        \label{fig:recursiontree}
+    \end{center}
 \end{figure}
+
+A implementação do método \emph{força bruta} é composto por três funções:
+
+\begin{lstlisting}
+int brute_force(int k, const char *word0, int sw0, const char *word1, int sw1);
+int subsequence(int k, const char* word, const char* other, char* subseq, int n, int seq, int lcs);
+int compare(int k, const char* word, const char* subseq);
+\end{lstlisting}
+
+A função {\it brute\_force} recebe o tamanho $k$, que representa o 
+tamanho mínimo para uma subsequência válida. Recebe também as 
+palavras {\it word0} e {\it word1} a serem analisadas assim 
+como seus respectivos tamanhos. Essa função é executada para cada $K$
+e cada par de palavras lidos do arquivo até que o $K$ lido seja $0$.
+
+{\it subsequence} é uma função recursiva de caminhamento pela 
+\emph{árvore de recursão} para encontrar a maior subsequência comum.
+São passados $K$, \emph{word0}, \emph{word1} a serem analisados pela
+função assim como \emph{subseq} que representa a subsequência 
+disponível até o momento, $n$ que é o índice (posição) da subsequência
+até o momento, \emph{seq} representando o tamanho da sequencia atual 
+para satisfazer a condição \emph{seq} $\ge K$ e \emph{lcs} que é 
+a maior subsequencia comum às duas palavras analisadas. 
+
+{\it subsequence} executa duas principais tarefas. Primeiramente 
+verifica o caso base ou se o fim da recursão ocorreu. Caso positivo
+verifica a ocorrência da atual subsequência da palavra \emph{word0} 
+em \emph{word1}:
+
+\begin{lstlisting}
+// if is subsequence of the other word
+if (compare(k, other, subseq))
+    // then, the size of subsequence is as a LCS candidate
+    return n;
+\end{lstlisting}
+
+A segunda tarefa consiste em executar a chamada recursiva para executar
+o caminhamento sistemático pela \emph{árvore de recursão} e encontrar 
+as combinações que compõem as subsequências a serem analizadas sempre 
+considerando a restrição imposta por $K$.
+
+\begin{lstlisting}
+// makes a recursive solution of the left branch
+lcs0 = subsequence(k, word + 1, other, subseq, n + 1, seq + 1, lcs);
+ .
+ .
+// makes a recursive solution of the right branch
+lcs1 = subsequence(k, word + 1, other, subseq, n, 0, lcs);
+\end{lstlisting}
+
+A função \emph{compare} é responsável por verificar a ocorrência de uma 
+subsequência de uma palavra em outra palavra. É retornado o tamanho da 
+subsequência encontrada ou 0 {\it false} caso contrário.  
+
+\subsubsection{Análise}
+
+A taxa de crescimento de tempo (complexidade de tempo) da função 
+\emph{compare} é $T(n) = O(n)$, onde $n$ representa o tamanho da
+subsequência a ser encontrada. A complexidade de espaço dessa 
+função é T(n) = O(1), logo, constante.
+
+Para compreender a complexidade de tempo e espaço da função 
+\emph{subsequence} assume-se:
+
+\begin{math}
+$n = $ \textnormal{ tamanho da palavra \emph{word0}} \\
+$m = $ \textnormal{ tamanho da palavra \emph{word1}} \\
+$T(1) = O(m)$ \textnormal{ considerando a complexidade da função  \emph{compare}} \\ \\
+$T(n) = 2T(n - 1) + O(1)$ \\
+$T(n) = 2(2(2\dots(T(1) + O(1))\dots + O(1)) + O(1)) + O(1)$ \\
+2^{n-1}(O(m) + O(1)) + O(1) \\
+2^n(O(m)) \\
+O((2^n)*m)
+\end{math}
+
+A equação $T(n) = O(n^n*m)$ gera um plano. Para representá-la em um 
+gráfico em duas dimensões, suponha $n = m$:
+
+\begin{figure}[H]
+    \begin{center}
+        \input{doc/gnuplot/brute-time.tex}
+        \caption{Complexidade de tempo - Algorítmo Força Bruta}
+        \label{fig:brutetime}
+    \end{center}
+\end{figure}
+
+
+Temos então que a complexidade de tempo desse algorítmo é custosa
+e impraticável para sequências muito grandes. A complexidade de 
+espaço é pode ser definida por: 
+
+
+\begin{math}
+T(n) = O(1) \textnormal{ considerando a complexidade em \emph{compare}} \\ \\
+T(n) = T(n - 1) + O(1) \\
+T(n) = (((T(1) + O(1))...) + O(1)) + O(1) \\
+T(n) = (((O(1) + O(1))...) + O(1)) + O(1) \\
+T(n) = n*(O(1)) \\
+T(n) = O(n)
+\end{math}
+
+O crescimento de espaço desse algorítmo é equivalente ao ramo da árvore 
+cuja subsequência é pesquisada. 
 
 
 \subsection{Guloso}
