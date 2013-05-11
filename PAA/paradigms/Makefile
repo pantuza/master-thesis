@@ -50,7 +50,11 @@ clean:
 	rm -vf ${TEX_PATH}/{*.dvi,*.aux,*.log,*.pdf}
 	rm -vf $(OBJ)/*.o
 	rm -vf $(BIN)/tp*
+	rm -vf $(TEX_PATH)/gnuplot/{*.eps,*.pdf,*.ps,*.tex}
 
-latex:	${TEX_PATH}/*.tex
+latex:	${TEX_PATH}/*.tex plot
 	pdflatex -output-directory=$(TEX_PATH) $(TEX_PATH)/$(DOC_NAME).tex
 	@evince $(TEX_PATH)/$(DOC_NAME).pdf
+
+plot: ${TEX_PATH}/gnuplot/*.plt
+	gnuplot $^
