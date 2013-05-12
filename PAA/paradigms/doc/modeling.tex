@@ -142,8 +142,8 @@ espaço é pode ser definida por:
 \begin{math}
 T(n) = O(1) \textnormal{ considerando a complexidade em \emph{compare}} \\ \\
 T(n) = T(n - 1) + O(1) \\
-T(n) = (((T(1) + O(1))...) + O(1)) + O(1) \\
-T(n) = (((O(1) + O(1))...) + O(1)) + O(1) \\
+T(n) = (((T(1) + O(1))\dots) + O(1)) + O(1) \\
+T(n) = (((O(1) + O(1))\dots) + O(1)) + O(1) \\
 T(n) = n*(O(1)) \\
 T(n) = O(n)
 \end{math}
@@ -156,3 +156,72 @@ cuja subsequência é pesquisada.
 
 
 \subsection{Programação Dinâmica}
+
+A modelagem do problema através da \emph{programação dinâmica} requer 
+satisfazer alguns requesitos. O problema deve possuir 
+\emph{subestrutura ótima} e \emph{sobreposição de sub-problemas}. 
+
+Para provar a \emph{substrutura ótima} do problema, ele deve consistir 
+em fazer escolhas. Essas escolhas deixam um ou mais subproblemas a serem 
+resolvidos. O LCS apresenta essa característica em que, a escolha a ser 
+feita consiste em encontrar uma subsequência em uma palavra. Ao encontrar,
+restam subproblemas de mesma natureza para o resto da palavra ainda não 
+pesquisado. 
+
+O problema proposto pelo presente trabalho insere um $K$ que limita o 
+tamanho mínimo para os seguimentos que compõem uma subsequência. Então
+para um subproblema considere as palavras $X=\{x_1,x_2,x_n\}$, 
+$Y=\{y_1,y_2,y_m\}$ e um $K=1$. Considere também que a LCS de $X$ e $Y$ 
+é representada por $Z=\{z_1,z_2,z_i\}$. Em função disso, considere $Z$ 
+uma \emph{solução ótima} para o problema, então podemos demonstrar que 
+feita uma escolha, restam subproblemas a serem resolvidos assim descritos:
+
+\begin{math}
+    \textnormal{ se } X_n = Y_m \textnormal{ e } X_n > K
+    \textnormal{ então } Z_i = X_n = Y_m
+    \textnormal{ e } Z_{i-1} \textnormal{ é LCS de } X_{n-1} 
+    \textnormal{ e } Y_{m-1} \\
+    \textnormal{ se } X_n \ne Y_m, \textnormal{ então } Z_i \ne X_n 
+    \textnormal{ então } Z \textnormal{ é LCS de } X_{n-1} 
+    \textnormal{ e } Y \textnormal{ se } X_{n-1} > K \\
+    \textnormal{ se } X_n \ne Y_m, \textnormal{ então } Z_i \ne Y_m 
+    \textnormal{ então } Z \textnormal{ é LCS de } X 
+    \textnormal{ e } Y_{m-1} \textnormal{ se } X_{n-1} > K \\
+\end{math}
+
+Se $Z$ é a \emph{solução ótima} então, por contradição, para provar 
+a \emph{substrutura ótima} tem-se:
+
+\begin{math}
+    SUBSEQ = \textnormal{uma subsequência comum} \\ \\
+    Z_i \ne X_n \to Z = SUBSEQ(X_{n-1}, Y) \wedge X_{n-1} > K \\
+    \exists W = \{w_1,w_2,w_j\} \; / \; W = SUBSEQ(X_{n-1}, Y) 
+    \wedge j > i \\ \therefore W = SUBSEQ(X_n, Y) \to Z \ne LCS(X, Y)
+\end{math}
+
+A \emph{sobreposição de subproblemas} define que o espaço de subproblemas
+deve ser pequeno. Uma representação recursiva do problema em que a recursão
+resolve os mesmos subproblemas repetidas vezes demonstra essa propriedade
+em que os os subproblemas são sobrepostos. Ou seja, a solução global 
+depende das soluções intermediárias. Observando o problema LCS é nítido
+que para encontrar a LCS de duas palavras é necessário resolver as demais
+subsequências das palavras para encontrar a LCS. Considerando a modelagem 
+apresentada anteriormente para a \emph{programação dinâmica} pode-se definir 
+o problema com a seguinte \emph{equação de recorrência}:
+
+\begin{math}
+    c[i,j] = \textnormal{comprimento da LCS de um subproblema em} 
+    X_i \textnormal{ e } Y_i \\
+    K = \textnormal{ tamanho mínimo de um seguimento } \\ \\
+    c[i,j] = \Bigg\{
+        \begin{array}{l l}
+            0 & \textnormal{ se } i = 0 \vee j = 0 \\
+            c[i-1,j-1] + 1 & \textnormal{ se } i \wedge j > 0 \wedge
+            X_i = Y_j \wedge X_i > K \\
+            max(c[i,j-1], c[i-1,j]) & \textnormal{ se } i \wedge 
+            j > 0 \wedge X_i \ne Y_j \wedge X_i > K 
+        \end{array}
+\end{math}
+
+
+
