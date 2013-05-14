@@ -17,7 +17,19 @@
  * ss = size of word with subsequence at the start
  * ptrSeq = pointer to the encountered sequence size
  *
- */
+ * Analysis:
+ * let n = size of word
+ * let m = size of subsequence
+ *
+ * Analysis of time growth rates (time complexity in worst case):
+ * T(1) = O(n) * O(m)
+ * T(n) = O(mn)
+ *      = O(n^2)
+ * Note: assuming m = n
+ *
+ * Analysis of space growth rates (space complexity):
+ * T(n) = O(n)
+ **/
 int serch_start(int k, const char* word, int sw,
         const char* subseq, int ss, int* ptrSeq)
 {
@@ -58,6 +70,18 @@ int serch_start(int k, const char* word, int sw,
  * ss = size of word with subsequence at the end
  * ptrSeq = pointer to the encountered sequence size
  *
+ * Analysis:
+ * let n = size of word
+ * let m = size of subsequence
+ *
+ * Analysis of time growth rates (time complexity in worst case):
+ * T(1) = O(n) * O(m)
+ * T(n) = O(mn)
+ *      = O(n^2)
+ * Note: assuming m = n
+ *
+ * Analysis of space growth rates (space complexity):
+ * T(n) = O(n)
  */
 int serch_end(int k, const char* word, int sw,
         const char* subseq, int ss, int* ptrSeq)
@@ -100,6 +124,18 @@ int serch_end(int k, const char* word, int sw,
  * word1 = pointer to the second word
  * sw1 = pointer to the size of the second word
  *
+ * Analysis:
+ * let n = size of word
+ * let m = size of other word
+ *
+ * Analysis of time growth rates (time complexity in worst case):
+ * T(n) = nO(n^2) + mO(n^2) + O(1)
+ *      = MAX(m,n)O(n)
+ *      = nO(n^2)
+ * Note: assuming m = n
+ *
+ * Analysis of space growth rates (space complexity):
+ * T(n) = O(n)
  */
 int greedy_choice(int k, char **word0, int *sw0, char **word1, int *sw1)
 {
@@ -184,6 +220,18 @@ int greedy_choice(int k, char **word0, int *sw0, char **word1, int *sw1)
  * word1 = second word
  * sw1 = size of the second word
  *
+ * Analysis:
+ * let n = size of word
+ * let m = size of other word
+ *
+ * Analysis of time growth rates (time complexity in worst case):
+ * T(n) = n * nO(n^2)
+ *      = (n^2)O(n^2)
+ *      = O(n^4)
+ * Note: assuming m = n
+ *
+ * Analysis of space growth rates (space complexity):
+ * T(n) = O(n)
  */
 int greedy(int k, const char *word0, int sw0, const char *word1, int sw1)
 {
@@ -210,5 +258,4 @@ int greedy(int k, const char *word0, int sw0, const char *word1, int sw1)
     // return the greed solution
     return lcs;
 }
-
 
