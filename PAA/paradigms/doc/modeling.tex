@@ -14,15 +14,56 @@ solução. A terceira apresenta um algorítmo Ótimo utilizando
 \section{Metodologia}
 
 \subsection{Estrutura de diretórios}
-jkadjdkljsjskl
+
+O projeto com os códigos dos programas implementados segue a seguinte
+estrutura de diretórios: 
+
+src: Arquivos fonte de extensão *.c;
+
+lib: Arquivos de cabeçalho (*.h) dos arquivos fonte;
+
+obj: Arquivos *.o gerados na compilação;
+
+bin: Arquivos binários (executáveis) gerados pelo {\it linkagem} 
+da compilação
+
+inputs: Arquivos de entrada para o programa
+
+outputs: Arquivos de saída dos testes e estatísticas
+
+doc: Arquivos fonte para o \LaTeX\ assim como o PDF com a documentação 
+do trabalho
 
 \subsection{Como executar os programas}
-blabla
+Na raiz do projeto está o {\it Makefile} com todas as regras de 
+compilação para que o programa {\it make} possa compilar os arquivos
+fonte, de documentação e de estatísticas. 
+
+Para executar os programas deve-se, primeiramente, compilar todo o 
+projeto através do comando \emph{make all} na raiz do projeto. 
+A compilação gera três executáveis dentro da pasta {\it bin}:
+
+. tp1b = Força Bruta;
+
+. tp1g = Guloso;
+
+. tp1pd = Programação Dinâmica;
+
+Todos os programas utilizam a entrada padrão do sistema para receber
+a entrada a ser processada. Um exemplo de execução seria: 
+
+. \emph{./bin/tp1pd $<$ inputs/00\_small\_input}
 
 \subsection{Documentação}
-latex e codigo
+Toda a documentação do trabalho foi feita utilizando \LaTeX\ . Os arquivos 
+fonte da documentação estão na pasta {\it doc}. O arquivo no formato 
+PDF resultante da compilação da documentação é também colocado no 
+diretório {\it doc}
 
 \section{Solução}
+
+A seguir serão apresentadas as soluções propostas para resolução do 
+problema dado pelo trabalho.
 
 \subsection{Força Bruta}
 
@@ -267,7 +308,9 @@ for (i = 1; *p0; i++, p0++)
 
 \subsubsection{Análise}
 
-A análise de complexidade de tempo é dada por: 
+O cálculo das matrizes impostas pelo algorítmo dinâmico possue o custo em 
+tempo de O(1) para serem preenchidas. A seguir pode ser vista a complexidade
+de tempo do método dinâmico:
 
 \begin{math}
 n = \textnormal{o tamanho da primeira palavra} \\
@@ -375,3 +418,66 @@ else
     return seqE;
 }
 \end{lstlisting}
+
+\subsubsection{Análise}
+
+Análise de complexidade de tempo e espaço da solução gulosa foi dividida
+nas análises de suas funções separadamente. As funções de busca de 
+subsequências pela e esquerda e pela direita possuem a mesma complexidade. 
+Para tal tem-se: 
+
+\begin{math}
+n = \textnormal{tamanho da palavra} \\
+m = \textnormal{tamanho da subsequência} \\ \\
+\textnormal{Complexidade de Tempo} \\
+T(1) = O(n) * O(m) \\
+T(n) = O(mn) \\
+T(n) = O(n^2) \\
+\textnormal{Complexidade de Espaço} \\
+T(n) = O(n)
+\end{math}
+
+A função que implementa a \emph{escolha gulosa} que faz as chamadas das 
+funções de busca de subsequência possui a seguinte complexidade: 
+
+\begin{math}
+\textnormal{Complexidade de Tempo} \\
+T(n) = nO(n^2) + mO(n^2) + O(1) \\
+T(n) = MAX(m,n)O(n) \\
+T(n) = nO(n^2) \\
+\textnormal{Complexidade de Espaço}\\
+T(n) = O(n)
+\end{math}
+
+A função {\it greedy}, responsável por recuperar o LCS das palavras,
+tem sua complexidade no Pior Caso, o somatório das complexidades 
+das demais funções que compõem o algorítmo:
+
+\begin{math}
+\textnormal{Complexidade de Tempo} \\
+T(n) = n * nO(n^2) \\
+T(n) = (n^2)O(n^2) \\
+T(n) = O(n^4) \\
+\textnormal{Complexidade de Espaço} \\
+T(n) = O(n)
+\end{math}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
