@@ -2,11 +2,14 @@
 \setlength{\parskip}{\baselineskip}
 \setlength{\parindent}{0pt}
 
-% Chapters Names whithout 'chapter' word
+% Chapters Names without 'chapter' word
 \renewcommand{\chaptername}{}
 
-\definecolor{brown}{cmyk}{0,0.81,1,0.60}
+% Chapters name without breaking line after number
+\titleformat{\chapter}[hang]
+{\normalfont\huge\bfseries}{\chaptertitlename\ \thechapter}{1em}{}
 
+\definecolor{brown}{cmyk}{0,0.81,1,0.60}
 % Set your language and its style
 \lstset{language=C,
         numbers=left, 
