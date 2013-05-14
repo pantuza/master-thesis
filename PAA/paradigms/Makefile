@@ -23,7 +23,7 @@ BIN := bin
 
 
 # Compilation Flags
-CFLAGS := -I$(LIB) -g -std=c99
+CFLAGS := -I$(LIB) -g -std=c99 -lm -Wall
 # Compiler
 CC := gcc
 
@@ -31,30 +31,49 @@ CC := gcc
 BRUTE := tp1b
 DYNAMIC := tp1pd
 GREEDY := tp1g
+TEST := test
+STAT := stat
+OUTPUT := outputs
+INPUTS := inputs
 
-all: $(BIN)/$(BRUTE) $(BIN)/$(DYNAMIC) $(BIN)/$(GREEDY)
+defaul: $(BIN)/$(BRUTE) $(BIN)/$(DYNAMIC) $(BIN)/$(GREEDY)
 
-$(BIN)/$(BRUTE): $(OBJ)/file.o $(OBJ)/brute.o
-	$(CC) -o $(BIN)/$(BRUTE) $^ $(CFLAGS)
+all: $(BIN)/$(BRUTE) $(BIN)/$(DYNAMIC) $(BIN)/$(GREEDY) $(BIN)/$(TEST) $(BIN)/$(STAT)
 
-$(BIN)/$(DYNAMIC): $(OBJ)/file.o $(OBJ)/dynamic.o
-	$(CC) -o $(BIN)/$(DYNAMIC) $^ $(CFLAGS)
+test: $(BIN)/$(TEST)
 
-$(BIN)/$(GREEDY): $(OBJ)/file.o $(OBJ)/greedy.o
-	$(CC) -o $(BIN)/$(GREEDY) $^ $(CFLAGS)
+stat: $(BIN)/$(STAT)
 
-$(OBJ)/%.o:	$(SRC)/%.c
+$(BIN)/$(BRUTE): $(OBJ)/$(BRUTE).o $(OBJ)/file.o $(OBJ)/brute.o
+	$(CC) -o $(BIN)/$(BRUTE) $+ $(CFLAGS)
+
+$(BIN)/$(DYNAMIC): $(OBJ)/$(DYNAMIC).o $(OBJ)/file.o $(OBJ)/dynamic.o
+	$(CC) -o $(BIN)/$(DYNAMIC) $+ $(CFLAGS)
+
+$(BIN)/$(GREEDY): $(OBJ)/$(GREEDY).o $(OBJ)/file.o $(OBJ)/greedy.o
+	$(CC) -o $(BIN)/$(GREEDY) $+ $(CFLAGS)
+
+$(BIN)/$(TEST): $(OBJ)/$(TEST).o $(OBJ)/file.o $(OBJ)/greedy.o $(OBJ)/dynamic.o $(OBJ)/brute.o
+	$(CC) -o $(BIN)/$(TEST) $^ $(CFLAGS)
+
+$(BIN)/$(STAT): $(OBJ)/$(STAT).o $(OBJ)/file.o $(OBJ)/chronos.o $(OBJ)/greedy.o $(OBJ)/dynamic.o $(OBJ)/brute.o
+	$(CC) -o $(BIN)/$(STAT) $^ $(CFLAGS)
+
+$(OBJ)/%.o: $(SRC)/%.c
 	$(CC) -c $^ -o $@ $(CFLAGS)
 
 clean:
 	rm -vf ${TEX_PATH}/{*.dvi,*.aux,*.log,*.pdf}
 	rm -vf $(OBJ)/*.o
 	rm -vf $(BIN)/tp*
-	rm -vf $(TEX_PATH)/gnuplot/{*.eps,*.pdf,*.ps,*.tex}
+	rm -vf $(BIN)/$(TEST)
+	rm -vf $(BIN)/$(STAT)
+	rm -vf $(OUTPUT)/*
+	rm -vf $(INPUTS)/*$(TEST)*
+	rm -vf $(INPUTS)/*$(STAT)*
 
-latex:	${TEX_PATH}/*.tex plot
-	pdflatex -output-directory=$(TEX_PATH) $(TEX_PATH)/$(DOC_NAME).tex
+latex:	${TEX_PATH}/*.tex
+	latex -output-directory ${TEX_PATH} ${TEX_PATH}/${DOC_NAME}.tex
+	dvipdf ${TEX_PATH}/${DOC_NAME}.dvi ${TEX_PATH}/${DOC_NAME}.pdf
 	@evince $(TEX_PATH)/$(DOC_NAME).pdf
 
-plot: ${TEX_PATH}/gnuplot/*.plt
-	gnuplot $^
