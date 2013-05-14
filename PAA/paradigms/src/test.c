@@ -293,14 +293,14 @@ int main(int argc, char** argv)
     setvbuf(stdout, NULL, _IONBF, 0);
     setvbuf(stderr, NULL, _IONBF, 0);
 
- //   char* filename1 = "01_test_input";
-//    char* filename2 = "02_test_input";
-    char* filename3 = "03_test_input";
+    char* filename1 = "01_test_input";
+    char* filename2 = "02_test_input";
+//    char* filename3 = "03_test_input";
 
 
-//    test_case1(filename1);
-//    test_case2(filename2);
-    test_case3(filename3);
+    test_case1(filename1);
+    test_case2(filename2);
+ //   test_case3(filename3);
 /*
     do_test(filename1, "brute_force", brute_force);
     do_test(filename2, "brute_force", brute_force);
@@ -312,10 +312,9 @@ int main(int argc, char** argv)
     do_test(filename2, "greedy", greedy);
 */
 
-//    do_compare(filename1);
-    do_compare_brute(filename3);
-    //do_compare_brute(filename3);
-    do_compare_greedy(filename3);
+    do_compare(filename1);
+    do_compare_brute(filename2);
+    do_compare_greedy(filename2);
     return 0;
 }
 
