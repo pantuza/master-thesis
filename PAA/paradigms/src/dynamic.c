@@ -1,27 +1,6 @@
 #include <math.h>
 #include "file.h"
-#include "brute.h"
 #include "dynamic.h"
-
-#define MAX(a,b) ((a) > (b)? (a) : (b))
-
-void print(char *w0, int sw0, char* w1, int sw1, int t[sw0+1][sw1+1])
-{
-    printf("[%s]\n", w1);
-    for (int i = 0; i <= sw0; i++)
-    {
-        if (i > 0) 
-            printf("%c %2d |", *w0++, i);
-        else
-            printf("  %2d | ", i);
-        for (int j = 0; j <= sw1; j++)
-        {
-            printf("%2d ", t[i][j]);
-        }
-        printf("\n");
-    }
-    printf("\n");
-}
 
 /*
  * dynamic = calculate LCS with dynamic programming
@@ -38,8 +17,8 @@ void print(char *w0, int sw0, char* w1, int sw1, int t[sw0+1][sw1+1])
  * let m = size of the second word
  *
  * Analysis of time growth rates (time complexity in worst case):
- * T(n) = (n+1)O(1) + (m+1)O(1) + ((n+1)(m+1))O(1) + ((n+1)(m+1))O(1) + O(1)
- *      = (n+1)O(1) + (m+1)O(1) + 2((n+1)(m+1))O(1) + O(1)
+ * T(n) = (n+1)O(1) + (m+1)O(1) + ((n+1)*(m+1))O(1) + ((n+1)*(m+1))O(1) + O(1)
+ *      = (n+1)O(1) + (m+1)O(1) + 2((n+1)*(m+1))O(1) + O(1)
  *      = O(n) + O(m) + O(2nm) + O(1)
  *      = O(2nm)
  *
@@ -52,7 +31,6 @@ void print(char *w0, int sw0, char* w1, int sw1, int t[sw0+1][sw1+1])
  */
 int dynamic(int k, const char *word0, int sw0, const char *word1, int sw1)
 {
-    //
     int i, j;
     int t[sw0+1][sw1+1];
     int c[sw0+1][sw1+1];
@@ -66,7 +44,7 @@ int dynamic(int k, const char *word0, int sw0, const char *word1, int sw1)
     const char *p0;
     const char *p1;
 
-    // mount the matrix "c" with counts of matches between words
+    // mount the matrix "s" with counts of matches between words
     p0 = word0;
     for (i = 1; *p0; i++, p0++) {
         p1 = word1;
@@ -78,7 +56,6 @@ int dynamic(int k, const char *word0, int sw0, const char *word1, int sw1)
         }
     }
 
-    print(word0, sw0, word1, sw1, c);
     // mount the matrix "t" with LCS considering matches in sequence >= k
     p0 = word0;
     for (i = 1; *p0; i++, p0++) {
@@ -89,17 +66,8 @@ int dynamic(int k, const char *word0, int sw0, const char *word1, int sw1)
                 t[i][j] = MAX(t[i][j], t[i-seq][j-seq]+seq);
         }
     }
-    print(word0, sw0, word1, sw1, t);
 
     return t[sw0][sw1];
 }
 
-/*
- * main
- */
-int main(int argc, char** argv)
-{
-    sweep_input(stdin, dynamic);
-    return 0;
-}
 
