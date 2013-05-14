@@ -72,8 +72,9 @@ clean:
 	rm -vf $(INPUTS)/*$(TEST)*
 	rm -vf $(INPUTS)/*$(STAT)*
 
-latex:	${TEX_PATH}/*.tex
-	latex -output-directory ${TEX_PATH} ${TEX_PATH}/${DOC_NAME}.tex
-	dvipdf ${TEX_PATH}/${DOC_NAME}.dvi ${TEX_PATH}/${DOC_NAME}.pdf
+latex:	${TEX_PATH}/*.tex plot
+	pdflatex -output-directory=$(TEX_PATH) $(TEX_PATH)/$(DOC_NAME).tex
 	@evince $(TEX_PATH)/$(DOC_NAME).pdf
-
+		
+plot: ${TEX_PATH}/gnuplot/*.plt
+	gnuplot $^
