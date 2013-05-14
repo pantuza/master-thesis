@@ -3,7 +3,6 @@
 
 #include <string.h>
 
-
 #define SEGMENT_SIZE 10
 #define SEGMENT_SIZE_BUFFER 3
 
