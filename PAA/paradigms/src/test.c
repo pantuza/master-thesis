@@ -98,6 +98,53 @@ void generate_random_test(FILE* output,
 
 }
 
+unsigned long long int brute_full_test(FILE* output,
+        int k, int sw0, char start0, char end0,
+               int sw1, char start1, char end1)
+{
+    int i, j;
+    int l0, l1;
+    char word0[sw0+1], word1[sw1+1];
+
+    for(i = 0; i < sw0; i++)
+        word0[i] = 'a';
+    word0[sw0] = 0;
+
+    unsigned long long int err = 0, tot = 0;
+    unsigned long long int max0 = pow(end0 - start0 + 1, sw0);
+    unsigned long long int max1 = pow(end1 - start1 + 1, sw1);
+    unsigned long long int preview = max0*max1;
+    int msg = 0;
+    printf("Tests = %lld \n", preview);
+
+    for (i = 1; i <= max0; i++)
+    {
+        for(j = 0; j < sw1; j++)
+            word1[j] = 'a';
+        word1[sw1] = 0;
+        for (j = 1; j <= max1; j++) {
+            tot++;
+            if (++msg >= 100000) {
+                msg = 0;
+                printf("Executados %lld de %lld testes (com %lld erros).\n", tot, preview, err);
+            }
+            l0 = dynamic(k, word0, sw0, word1, sw1);
+            l1 = brute_force(k, word0, sw0, word1, sw1);
+            if (l0 != l1) {
+                fprintf(output, "%d,%d,%d,%d,%d,%s,%s\n", l0, l1,
+                        sw0, sw1, k, word0, word1);
+                err++;
+            }
+            rotate(word1, sw1, start1, end1);
+        }
+        rotate(word0, sw0, start0, end0);
+    }
+    fprintf(output,"Total = %lld\n", tot);
+    fprintf(output,"Error = %lld\n", err);
+    printf("Finalizados %lld de %lld testes (com %lld erros).\n", tot, preview, err);
+    return err;
+}
+
 void test_case1(char *file)
 {
     char filename[1024];
@@ -106,14 +153,12 @@ void test_case1(char *file)
     FILE *f = fopen(filename, "w");
     int max = 1000;
     printf("Random test file %s\n", file);
-    printf("Generating %d tests...\n", 7*max);
+    printf("Generating %d tests...\n", 4*max);
     for (int i = 0; i <= 100; i++) {
-     //   generate_random_test(f, 3, i, i);
-        generate_random_test(f, 3, 25, 25);
-        generate_random_test(f, 3, 25, 25);
-        generate_random_test(f, 3, 20, 20);
-      generate_random_test(f, 3, 15, 15);
-    generate_random_test(f, 3, 10, 10);
+        generate_random_test(f, 4, 20, 20);
+        generate_random_test(f, 3, 15, 15);
+        generate_random_test(f, 2, 12, 12);
+        generate_random_test(f, 1, 8, 8);
     }
 
     fprintf(f, "0");
@@ -140,7 +185,7 @@ void test_case3(char *file)
 
     FILE *f = fopen(filename, "w");
     printf("Full test file %s\n", file);
-    generate_full_test(f, 2, 5, 'a', 'c', 5, 'a', 'd');
+    generate_full_test(f, 3, 8, 'a', 'd', 7, 'a', 'c');
     //generate_full_test(f, 3, 6, 'a', 'c', 5, 'a', 'd');
     fprintf(f, "0");
     fclose(f);
@@ -164,6 +209,9 @@ void sweep_input_compare(FILE *file, FILE *diff0, FILE *diff1)
     fail = 0;
     err[0] = 0;
     err[1] = 0;
+    lcs[0] = 0;
+    lcs[1] = 0;
+    lcs[2] = 0;
 
     // while exist input case to execute (test case)
     while(k != 0)
@@ -287,20 +335,41 @@ void do_compare(char *file)
     fclose(d1);
 }
 
+unsigned long long int test_case4(int k, int w0, int w1)
+{
+    char filename[1024];
+    sprintf(filename, "outputs/k%d-%d-%d-mem-brute.txt", k, w0, w1);
+    FILE *f = fopen(filename, "w");
+    unsigned long long int err;
+    err = brute_full_test(f, k, w0, 'a', 'd', w1, 'a', 'd');
+    fclose(f);
+    printf("Full test file %s\n", filename);
+    return err;
+}
 
+void test_case4_1(int n)
+{
+    unsigned long long int err = 0;
+    for (int k = 1; k <= n; k++)
+        for (int w0 = 1; w0 <= n; w0++)
+            for (int w1 = 1; w1 <= n; w1++)
+                err += test_case4(k, w0, w1);
+    printf("Total errors = %lld\n", err);
+}
 int main(int argc, char** argv)
 {
     setvbuf(stdout, NULL, _IONBF, 0);
     setvbuf(stderr, NULL, _IONBF, 0);
 
-    char* filename1 = "01_test_input";
-    char* filename2 = "02_test_input";
-//    char* filename3 = "03_test_input";
+    //    char* filename1 = "01_test_input";
+    //char* filename2 = "02_test_input";
+    //char* filename3 = "04_test_input";
 
 
-    test_case1(filename1);
-    test_case2(filename2);
- //   test_case3(filename3);
+//    test_case1(filename1);
+    //test_case2(filename2);
+    //test_case3(filename3);
+    test_case4_1(6);
 /*
     do_test(filename1, "brute_force", brute_force);
     do_test(filename2, "brute_force", brute_force);
@@ -312,9 +381,10 @@ int main(int argc, char** argv)
     do_test(filename2, "greedy", greedy);
 */
 
-    do_compare(filename1);
-    do_compare_brute(filename2);
-    do_compare_greedy(filename2);
+//    do_compare(filename1);
+    //do_compare_brute(filename2);
+    //do_compare_brute(filename3);
+
     return 0;
 }
 

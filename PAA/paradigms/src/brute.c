@@ -1,4 +1,5 @@
 #include <math.h>
+#include <string.h>
 #include "file.h"
 #include "brute.h"
 #include "strtype.h"
@@ -7,135 +8,75 @@
 #define IN_SEQUENCE 1
 
 /*
- * compare = verify if is subsequence of the word.
- *           return true (size of subsequence) or false (0)
+ * in_common = number of common character in position and valid sequence
+ * Return: integer with count of the common subsequence
  * Parameters:
  * k = minimum sequence size (of the word) to compose the subsequence
- * word = word of the subsequence
- * other = word to compare
- * subseq = subsequence to verify
- * n = size of subsequence
+ * word = pointer to first character of word
+ *        which will be generated all subsequences combinations
+ * subseq = subsequence of the word
+ * n = size of the word subsequence
+ * other = word to compare with
+ * osubseq = subsequence of other word
+ * so = size of other word
+ * IMPORTANT PRECONDITION: n == so
  *
- * Analysis of time growth rates (time complexity):
+ * Analysis of time growth rates (time complexity in worst case):
  * T(n) = O(n)
  *
  * Analysis of space growth rates (space complexity):
  * T(n) = O(1)
  *
  */
-int compare(int k, const char *word, const char* other, int* subseq, int n)
+int in_common(int k, const char *word, int *subseq, int n,
+        const char *other, int *osubseq, int so)
 {
-    int i, j = 0, seq = 0;
-    char c0, c1;
-
-    while(*other)
-        // subsequence character matching the word?
-        if (word[subseq[j]] == *other) {
-            // verify if sequences match
-            seq = 1;
-            i = j + seq;
-            // while search in subsequence
-            while (i < n)
-            {
-                if (seq >= 2*k)
-                {
-                    j += k;
-                    other += k;
-                    seq -= k;
-                }
-                c0 = word[subseq[i]];
-                c1 = other[seq];
-                // if other word is over without complete actual sequence...
-                if (!c1)
-                {
-                    // the comparison is ended!
-                    return 0;
-                }
-                // if word of subsequence ended...???
-                // panic!!!! this just can't happening or subsequence is crazy.
-                // if keep (john) walking in sequence...
-                if (c0 == c1)
-                    // and the subsequence remains in sequence?
-                    if ((subseq[i] - subseq[i-1]) == 1)
-                    {
-                        // just remember this in seq
-                        seq++;
-                        i = j + seq;
-                    }
-                    else
-                    {
-                        // sequence less than k?
-                        if (seq < k)
-                        {
-                            i = j;  // backtrack j
-                            seq = 1;
-                        }
-                        break;
-                    }
-                // but, the sequence is broken
-                else
-                    if (seq >= k) {
-                        // and the subsequence remains in sequence?
-                        if ((subseq[i] - subseq[i-1]) == 1)
-                        {
-                            int remainder = 1;
-                            int l = i + remainder;
-                            while ((l < n) &&
-                                    (remainder < k) &&
-                                    ((subseq[l] - subseq[l-1]) == 1))
-                            {
-                                remainder++;
-                                l = i + remainder;
-                            }
-                            if (remainder < k)
-                            {
-                                i = j;  // backtrack j
-                                seq = 1;
-                            }
-                            break;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        i = j;  // backtrack j
-                        seq = 1;
-                        break;
-                    }
-            }
-            j = i;
-            other += seq;
-            // subsequence finished?
-            if (j >= n)
-            {
-                // is sequence large enough to complete the subsequence?
-                // irrelevant!!!! it always must to be true in here.
-                //if (seq >= k)
-                //{
-                return n;
-                //}
-            }
-        }
-        else
+    int i;
+    int s = 0;
+    int c = 0;
+    // sweep the subsequence
+    for (i = 0; i < n; i++)
+    {
+        // if characters in position (i) are equals
+        if (word[subseq[i]] == other[osubseq[i]])
         {
-            other++;
+            // increase a sequence control
+            s++;
+            // if sequence is broken
+            if (subseq[i+1] - subseq[i] != osubseq[i+1] - osubseq[i])
+            {
+                // if has a valid sequence
+                if (s >= k)
+                    // count the sequence size
+                    c += s;
+                // start a new sequence
+                s = 0;
+            }
         }
-    // if it reaches here, the subsequence doesn't match the word
-    return 0;
+        // if characters in position (i) are diferents
+        else
+            // ensure a new sequence
+            s = 0;
+    }
+    // if ends with a valid sequence
+    if (s >= k)
+        // count it too
+        c += s;
+    return c;
 }
 
 /*
- * subsequence = brute force recursion tree to discover LCS
+ * subsubsequence = brute force recursion tree to discover LCS
  * Return: LCS
  * Parameters:
  * k = minimum sequence size (of the word) to compose the subsequence
  * word = pointer to first character of word
  *        which will be generated all subsequences combinations
  * other = word to compare with the subsequence
+ * osubseq = subsequence of other word
+ * so = size of other word
  * subseq = subsequence available so far
+ * deep = recursion tree deep (word control)
  * n = last index (position) of subsequence at the moment
  * seq = current sequence size (condition: seq >= k)
  * lcs = longest common subsequence so far
@@ -147,16 +88,17 @@ int compare(int k, const char *word, const char* other, int* subseq, int n)
  * let m = size of other word
  *
  * Analysis of time growth rates (time complexity in worst case):
- * T(1) = O(m)                         (from compare function)
+ * T(1) = O(m)                         (from is_common  function)
  * T(n) = 2T(n - 1) + O(1)
- *      = 2(2(2...(T(1) + O(1))... + O(1)) + O(1)) + O(1)
+ *      = 2(2(2...(T(m) + O(1))... + O(1)) + O(1)) + O(1)
  *      = 2^(n - 1)(O(m) + O(1)) + O(1)
  *      < 2^n(O(m))
  *      = O((2^n)*m)
+ *      = O(n(2^n))     (assuming m = n)
  * Note: Equivalent to compare all leaf nodes (all subsequences) with word.
  *
  * Analysis of space growth rates (space complexity):
- * T(1) = O(1)                         (from compare function)
+ * T(1) = O(1)                         (from is_common function)
  * T(n) = T(n - 1) + O(1)
  *      = (((T(1) + O(1))...) + O(1)) + O(1)
  *      = (((O(1) + O(1))...) + O(1)) + O(1)
@@ -165,8 +107,81 @@ int compare(int k, const char *word, const char* other, int* subseq, int n)
  * Note: Equivalent to one branch (one subsequence) of recursion tree.
  *
  */
-int subsequence(int k, const char* word, const char* other, int so, int* subseq,
-        int deep, int n, int seq, int *lcs)
+int subsubsequence(int k, const char* word,
+        const char* other, int *osubseq, int so,
+        int* subseq, int deep, int n, int seq, int *lcs)
+{
+    // see comments below in subsequence function!
+    if (!word[deep])
+    {
+        if ((n > *lcs) && (n == so) && (!seq || seq >=k))
+        {
+            subseq[n] = 0;
+            return in_common(k, word, subseq, n, other, osubseq, so);;
+        }
+        return 0;
+    }
+    int lcs0, lcs1;
+    subseq[n] = deep;
+    lcs0 = subsubsequence(k, word, other, osubseq, so,
+            subseq, deep + 1, n + 1, seq + 1, lcs);
+    if (seq && (seq < k))
+        lcs1 = 0;
+    else
+    {
+        subseq[n] = 0;
+        lcs1 = subsubsequence(k, word, other, osubseq, so,
+                subseq, deep + 1, n, 0, lcs);
+    }
+    if (lcs0 > lcs1)
+        return lcs0;
+    return lcs1;
+}
+
+/*
+ * subsequence = brute force recursion tree to discover LCS
+ * Return: LCS
+ * Parameters:
+ * k = minimum sequence size (of the word) to compose the subsequence
+ * word = pointer to first character of word
+ *        which will be generated all subsequences combinations
+ * other = word to compare with the subsequence
+ * so = size of other word
+ * subseq = subsequence available so far
+ * deep = recursion tree deep (word control)
+ * n = last index (position) of subsequence at the moment
+ * seq = current sequence size (condition: seq >= k)
+ * lcs = longest common subsequence so far
+ *       since the longest subsequences  will be compared first,
+ *       this optional optimization can avoiding dispensable comparisons
+ *
+ * Analysis:
+ * let n = size of word
+ * let m = size of other word
+ *
+ * Analysis of time growth rates (time complexity in worst case):
+ * T(1) = O(m(2^n))                         (from subsubsequence function)
+ * T(n) = 2T(n - 1) + O(1)
+ *      = 2(2(2...(T(1) + O(1))... + O(1)) + O(1)) + O(1)
+ *      = 2^(n - 1)(O(m(2^n)) + O(1)) + O(1)
+ *      < 2^n(O(m(2^n)))
+ *      = O(m(2^(2n)))
+ *      = O(n(2^(2n)))  (assuming m = n)
+ * Note: Equivalent to compare all leaf nodes (all subsequences) with word.
+ *
+ * Analysis of space growth rates (space complexity):
+ * T(1) = O(n)                         (from subsubsequence function)
+ * T(n) = T(n - 1) + O(1)
+ *      = (((T(1) + O(1))...) + O(1)) + O(1)
+ *      = (((O(1) + O(1))...) + O(1)) + O(1)
+ *      = n*(O(n))
+ *      = O(n^2)
+ * Note: Equivalent to one branch (one subsequence) of recursion tree.
+ *
+ */
+int subsequence(int k, const char* word,
+        const char* other, int so,
+        int* subseq, int deep, int n, int seq, int *lcs)
 {
     // is recursion "bottoms out"?
     // (base case, smallest problem, stopping condition or
@@ -174,13 +189,21 @@ int subsequence(int k, const char* word, const char* other, int so, int* subseq,
     // in this case, the question is: the word was completed?
     if (!word[deep])
     {
-        // if subsequence size is greater than current LCS (see comments above)
+        // if:
+        // subsequence size is greater than current LCS (see comments above)
+        // and subsequence is less or equal other word (lcs candidate)
         // and subsequence is empty or greater or equal k (valid subsequence)
         if ((n > *lcs) && (n <= so) && (!seq || seq >=k)) {
+            // ensure that the subsequence has a termination mark
+            subseq[n] = 0;
+            // other subsequence to compare
+            int subsubseq[WORD_SIZE + 1];
             // if is subsequence of the other word
-            if (compare(k, word, other, subseq, n))
+            if (subsubsequence(k, other,
+                    word, subseq, n,
+                    subsubseq, 0, 0, 0, lcs) == n)
             {
-                //
+                // set lcs in advance
                 if (*lcs < n)
                     *lcs = n;
                 // then, the size of subsequence is as a LCS candidate
@@ -189,7 +212,7 @@ int subsequence(int k, const char* word, const char* other, int so, int* subseq,
         // otherwise, return current LCS or
         // return 0 (that's always a candidate to LCS)
         }
-        return *lcs;
+        return 0;
     }
     // increase the recursion tree (to both sides)
     int lcs0, lcs1;
@@ -243,5 +266,3 @@ int brute_force(int k, const char *word0, int sw0, const char *word1, int sw1)
     int lcs = 0;
     return subsequence(k, word1, word0, sw0, subseq, 0, 0, 0, &lcs);
 }
-
-
