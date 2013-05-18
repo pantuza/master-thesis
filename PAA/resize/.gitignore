@@ -1,0 +1,22 @@
+# vim tmp files
+*~
+*.swp
+*.swm
+*.swn
+*.swo
+
+# bin directory
+bin
+
+# objects files
+obj
+
+# output files
+out
+
+# documentation files
+*.pdf 
+*.eps
+*.ps
+*.aux
+*.log
