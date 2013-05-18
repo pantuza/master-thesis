@@ -1,4 +1,5 @@
 #include "file.h"
+#include "ppm.h"
 
 void usage()
 {

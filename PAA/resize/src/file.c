@@ -12,6 +12,9 @@
 #include "file.h"
 
 
+/**
+ * Try to open a file. if occur an error, exits with a failure message
+ */
 FILE* openfile(char *filename)
 {
     FILE *file = fopen(filename, FILE_MODE);
@@ -19,17 +22,20 @@ FILE* openfile(char *filename)
     if (file == NULL)
     {
         fprintf(stderr, "Error during file open: %s\n", filename);
-        exit(1);
+        exit(EXIT_FAILURE);
     }
     return file;
 }
 
+/**
+ * Try to close a file. if occur an error, exits with a failure message
+ */ 
 void closefile(FILE *file)
 {
     fclose(file);
     if(errno)
     {
         fprintf(stderr, "Error during file close\n");
-        exit(2);
+        exit(EXIT_FAILURE);
     }
 }
