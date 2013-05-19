@@ -49,6 +49,7 @@ tp2:	$(SRC)/$(program).c
 clean:
 	@echo -e "\nCleaning project binary files...\n"
 	@rm -vf $(BIN)/* $(OBJ)/*
+	@rm -vf $(DOC)/{*.aux,*.eps,*.ps,*.pdf,*.log}
 	@echo -e "--\n"
 
 latex:	${DOC}/*.tex
