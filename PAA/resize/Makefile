@@ -14,6 +14,9 @@ OBJ := obj
 # Documentation directory
 DOC := doc
 
+# Documentation output file name
+DOC_NAME := resize
+
 # Tests directory
 TEST := test
 
@@ -47,3 +50,7 @@ clean:
 	@echo -e "\nCleaning project binary files...\n"
 	@rm -vf $(BIN)/* $(OBJ)/*
 	@echo -e "--\n"
+
+latex:	${DOC}/*.tex
+		pdflatex -output-directory=$(DOC) $(DOC)/$(DOC_NAME).tex
+		@evince $(DOC)/$(DOC_NAME).pdf
