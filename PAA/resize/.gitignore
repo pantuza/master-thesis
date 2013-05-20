@@ -15,8 +15,8 @@ obj
 out
 
 # documentation files
-*.pdf 
 *.eps
 *.ps
 *.aux
 *.log
+*.pdf
