@@ -9,19 +9,20 @@
  *
  */
 
+#include <errno.h>
 #include "file.h"
-
 
 /**
  * Try to open a file. if occur an error, exits with a failure message
  */
-FILE* openfile(char *filename)
+FILE* openfile(char *filename, char *mode)
 {
-    FILE *file = fopen(filename, FILE_MODE);
+    FILE *file = fopen(filename, mode);
 
     if (file == NULL)
     {
-        fprintf(stderr, "Error during file open: %s\n", filename);
+        fprintf(stderr, "Error during file open in %s mode: %s\n",
+                mode, filename);
         exit(EXIT_FAILURE);
     }
     return file;
