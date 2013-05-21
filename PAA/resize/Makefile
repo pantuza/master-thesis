@@ -14,9 +14,6 @@ OBJ := obj
 # Documentation directory
 DOC := doc
 
-# Documentation output file name
-DOC_NAME := resize
-
 # Tests directory
 TEST := test
 
@@ -27,31 +24,32 @@ program := tp2
 CC := cc
 
 # Libraries
-CFLAGS := -I$(LIB)
+CFLAGS := -I$(LIB) -g -std=c99 -lm -Wall
 
 default: help
 
 help:	
-	@echo -e "\nMAKE HELP\n"
-	@echo -e "make build \t- build the entire project"
-	@echo -e "make latex \t- build the documentation using latex"
-	@echo -e "make clean \t- clean binary files"
-	@echo -e "make help \t- print this help message"
-	@echo -e "--\n"
+	@echo "\nMAKE HELP\n"
+	@echo "make build \t- build the entire project"
+	@echo "make latex \t- build the documentation using latex"
+	@echo "make clean \t- clean binary files"
+	@echo "make help \t- print this help message"
+	@echo "--\n"
 
-build:	tp2
-	$(CC)  $(OBJ)/$^.o -o $(BIN)/$(program) $(CFLAGS)
-	@echo -e "\nBinary file placed at $(BIN)/$(program)"
+build:	$(BIN)/$(program)
 
-tp2:	$(SRC)/$(program).c
-	$(CC) -c $^ -o $(OBJ)/$(program).o $(CFLAGS)
+$(BIN)/$(program): $(SRC)/$(program).c $(OBJ)/file.o $(OBJ)/ppm.o
+	$(CC) -o $@ $+ $(CFLAGS)
+	@echo "\nBinary file placed at $(BIN)/$(program)"
+
+$(OBJ)/%.o: $(SRC)/%.c
+	$(CC) -c $^ -o $@ $(CFLAGS)
 
 clean:
-	@echo -e "\nCleaning project binary files...\n"
+	@echo "\nCleaning project binary files...\n"
 	@rm -vf $(BIN)/* $(OBJ)/*
-	@rm -vf $(DOC)/{*.aux,*.eps,*.ps,*.pdf,*.log}
-	@echo -e "--\n"
+	@echo "--\n"
 
-latex:	${DOC}/*.tex
-		pdflatex -output-directory=$(DOC) $(DOC)/$(DOC_NAME).tex
-		@evince $(DOC)/$(DOC_NAME).pdf
+latex:	${DOC}/*.tex plot
+		pdflatex -output-directory=$(TEX_PATH) $(TEX_PATH)/$(DOC_NAME).tex
+		@evince $(TEX_PATH)/$(DOC_NAME).pdf
