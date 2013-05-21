@@ -8,7 +8,10 @@
 #define COMMENTS_TOKEN '#'
 
 /* Maximum line size of a PPM file */
-#define BUFFER_SIZE 71
+#define FILE_BUFFER_SIZE 8192
+
+/* Maximum line size of a PPM number string */
+#define NUMBER_BUFFER_SIZE 16
 
 
 /* Struct representing one pixel with its RGB values */
@@ -25,18 +28,16 @@ typedef struct
 {
     char magic_string[MAGIC_STRING_SIZE];
     int width;
-    int heigh;
+    int height;
     int intensity;
     Pixel **pixels;
 } PPMImage;
 
 
-/* Functions */
-void check_magic_string(FILE *, PPMImage *);
-void ignore_garbage(FILE *, char *);
-int get_number(FILE *);
-void allocate_pixels(FILE *, PPMImage *);
-PPMImage import(FILE *);
-int export(PPMImage *);
+/* Public Functions */
+PPMImage import(FILE *, FILE *);
+void export(FILE *, PPMImage *);
+void allocate_pixels(PPMImage *);
+void free_pixels(PPMImage *);
 
 #endif

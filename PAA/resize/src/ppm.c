@@ -15,57 +15,138 @@
  */
 
 #include <string.h>
+#include <ctype.h>
 
-#include "ppm.h"
 #include "file.h"
+#include "ppm.h"
 
+/**
+ * handle the read PPM file error
+ * reports an error and exit
+ */
+void read_error()
+{
+    fprintf(stderr, "Invalid PPM format\n");
+    fflush(stdout);
+    exit(EXIT_FAILURE);
+}
 
+/*
+ * Allocate memory, sets buffer and position control
+*/
+void init_buffer(char **buffer, int *pos)
+{
+    *buffer = (char *)(malloc(FILE_BUFFER_SIZE));
+    *buffer[0] = EOF;
+    *pos = FILE_BUFFER_SIZE + 1;
+}
+
+/*
+ * Deallocated memory and nullifies the buffer
+*/
+void free_buffer(char **buffer)
+{
+    free(*buffer);
+    *buffer = NULL;
+}
+
+/*
+ * Read a character from file buffer
+ * fread() version
+*/
+inline static char bgetc(FILE *file, char *buffer, int *pos)
+{
+    if (*pos >= FILE_BUFFER_SIZE)
+    {
+        int count = fread(buffer, sizeof(char), FILE_BUFFER_SIZE, file);
+        if (count < FILE_BUFFER_SIZE)
+            buffer[count] = EOF;
+        *pos = 1;
+        return buffer[0];
+    }
+    return buffer[(*pos)++];
+}
+
+/*
+ * Read a character from file buffer
+ * fgetc() version, that ignores the buffer
+ * (seems that still uses file buffer from stdio).
+ */
+/*
+inline static char bgetc(FILE *file, char *buffer, int *pos)
+{
+    return fgetc(file);
+}
+*/
+
+/**
+ * Ignore the unnecessary stuff brought from the file
+ */
+int get_number(FILE *file, char *buffer, int *pos)
+{
+    char c;
+    c = bgetc(file, buffer, pos);
+    if(c == EOF) read_error();
+    // sapce = (' '|'\n'|'\r'|'\f'|'\t'|'\v')
+    // (('#'*'\n')|space)*['0'..'9']*
+
+    // parse (('#'*'\n')|space)*
+    while(1)
+    {
+        // ignore (#*\n)
+        if (c == COMMENTS_TOKEN)
+        {
+            while (c != '\n')
+            {
+                c = bgetc(file, buffer, pos);
+                if(c == EOF) read_error();
+            };
+        }
+        // ignore (space)
+        if (isspace(c))
+        {
+            c = bgetc(file, buffer, pos);
+            if(c == EOF) read_error();
+        }
+        else
+            if (c < '0' || c > '9')
+                // not a number!
+                read_error();
+            else
+                break;
+    }
+    // parse ['0'..'9']*
+    int i = 0;
+    char number[NUMBER_BUFFER_SIZE];
+    while (c >= '0' && c <= '9')
+    {
+        number[i++] = c;
+        // is a too big number?
+        if (i >= NUMBER_BUFFER_SIZE)
+            read_error();
+        else
+        {
+            c = bgetc(file, buffer, pos);
+            if(c == EOF) break;
+        }
+    }
+    number[i] = 0;
+    return atoi(number);
+}
 /**
  * Verifies the PPM header. If the header is invalid
  * reports an error
  */
-void check_magic_string(FILE *file, PPMImage *image)
+void get_magic_string(FILE *file, PPMImage *image)
 {
     fgets(image->magic_string, MAGIC_STRING_SIZE, file);
 
     /* Plain text files must have the 'P3' magic string as a header */
     if(image->magic_string[0] != 'P' || image->magic_string[1] != '3')
     {
-        fprintf(stderr, "Invalid PPM file");
+        fprintf(stderr, "Invalid PPM magic string\n");
         exit(EXIT_FAILURE);
     }
-}
-
-/**
- * Ignore the unnecessary stuff brought from the file
- */
-void ignore_garbage(FILE *file, char *buffer) 
-{
-    while(*buffer != COMMENTS_TOKEN)
-    {
-        if(!*buffer) return;
-        buffer++;
-    }
-    while(*buffer)
-    {
-        if(*buffer == '\n') return;
-        buffer++;
-    }
-
-    int c = fgetc(file);
-    while (c && c != '\n' && c != EOF);
-        c = fgetc(file);
-}
-
-/**
- * Get a number from file
- */
-int get_number(FILE *file)
-{
-    char buffer[BUFFER_SIZE];
-    fgets(buffer, BUFFER_SIZE, file);
-    ignore_garbage(file, buffer);
-    return atoi(buffer);
 }
 
 /**
@@ -74,39 +155,67 @@ int get_number(FILE *file)
  * the PPMImage struct. After memory allocation, it updates the pointers
  * references and then fill the chunks with values read from file
  */
-void allocate_pixels(FILE *file, PPMImage *image)
+void allocate_pixels(PPMImage *image)
 {
-    int first_dimension = image.width * sizeof(int *);
-    int second_dimension = (image.width * image.height) * sizeof(Pixel);
+    int first_dimension = image->width * sizeof(int *);
+    int second_dimension = (image->width * image->height) * sizeof(Pixel);
 
-    image->pixels = (int **) malloc(first_dimension + second_dimension);
+    // Allocate consecutive memory
+    image->pixels = (Pixel **)(malloc(first_dimension + second_dimension));
    
+    if (image->pixels == NULL)
+    {
+        fprintf(stderr, "Image allocation failure.\n");
+        exit(EXIT_FAILURE);
+    }
+
     /* First data line (modifying pointers) */
-    image.pixels[0] = image.pixels + image.width;
+    image->pixels[0] = (Pixel *)(image->pixels + image->width);
 
     /* Subsequent data lines (modifying pointers) */
-    for(int i=1; i < image.width; i++)
-        image.pixels[i] = image.pixels[i-1] + image.height * sizeof(Pixel);
+    for(int i = 1; i < image->width; i++)
+        image->pixels[i] = (Pixel *)(image->pixels[i-1] + image->height);
 
-    /* fillind the data from file */
-    for(int i = 0; i < image.width; i++)
-        for(int j = 0; j < image.height; j++)
-            image.pixels[i][j] = get_number(file);
 }
+
+/**
+ * Deallocates the pixels matrix.
+ */
+void free_pixels(PPMImage *image)
+{
+    // Deallocate memory
+    free(image->pixels);
+    image->pixels = NULL;
+}
+
 /**
  * Imports PPM image files and construct 
  * PPMImage struct.
  */
-PPMImage import(FILE *file)
+PPMImage import(FILE *file, FILE *file2)
 {
+    char *buffer;
+    int pos;
     PPMImage image;
-    char buffer[BUFFER_SIZE];
 
-    check_magic_string(file, &image);
-    image.width = get_number(file);
-    image.height = get_number(file);
-    image.intensity = get_number(file);
-    allocate_pixels(file, &image);
+    init_buffer(&buffer, &pos);
+
+    get_magic_string(file, &image);
+    image.width = get_number(file, buffer, &pos);
+    image.height = get_number(file, buffer, &pos);
+    image.intensity = get_number(file, buffer, &pos);
+    allocate_pixels(&image);
+
+    /* fillind the data from file */
+    for(int i = 0; i < image.width; i++)
+        for(int j = 0; j < image.height; j++)
+        {
+            image.pixels[i][j].R = get_number(file, buffer, &pos);;
+            image.pixels[i][j].G = get_number(file, buffer, &pos);;
+            image.pixels[i][j].B = get_number(file, buffer, &pos);;
+        }
+
+    free_buffer(&buffer);
 
     return image;
 }
@@ -114,7 +223,26 @@ PPMImage import(FILE *file)
 /**
  * Exports a PPMImage to a file with PPM format
  */
-int export(Image *image)
+void export(FILE *file, PPMImage *image)
 {
-
+    fprintf(file, "%s\n", image->magic_string);
+    fprintf(file, "# image dimensions\n");
+    fprintf(file, "%d %d\n", image->width, image->height);
+    fprintf(file, "# image intensity\n");
+    fprintf(file, "%d\n", image->intensity);
+    fprintf(file, "# image data\n");
+    /* writing the data to file */
+    Pixel **pixels = image->pixels;
+    for(int i = 0; i < image->width; i++)
+    {
+        fprintf(file, "# line %d\n", i);
+        for(int j = 0; j < image->height; j++)
+        {
+            fprintf(file, "%d %d %d\n",
+                    pixels[i][j].R,
+                    pixels[i][j].G,
+                    pixels[i][j].B);
+        }
+    }
 }
+
