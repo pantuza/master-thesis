@@ -1,3 +1,11 @@
+/**
+ * tp2 program
+ *
+ * @author: Gustavo Pantuza
+ * @since: 17.05.2013
+ *
+ */#include <time.h>
+
 #include "file.h"
 #include "ppm.h"
 
@@ -21,6 +29,23 @@ void usage()
 
 int main()
 {
-    usage();
+    clock_t start;
+    clock_t end;
+    FILE *fileIn = openfile("in/deathvalley.ppm", READ_MODE);
+    FILE *fileOut = openfile("out/deathvalley.ppm", WRITE_MODE);
+
+    start = clock();
+    PPMImage img = import(fileIn, fileOut);
+    end = clock();
+    printf("Import in %f seconds\n", ((float)end - (float)start) / (float)CLOCKS_PER_SEC);
+
+    start = clock();
+    export(fileOut, &img);
+    end = clock();
+    printf("Export in %f seconds\n", ((float)end - (float)start) / (float)CLOCKS_PER_SEC);
+
+    free_pixels(&img);
+    closefile(fileIn);
+    closefile(fileOut);
     exit(EXIT_SUCCESS);
 }
