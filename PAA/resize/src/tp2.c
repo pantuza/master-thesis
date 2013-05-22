@@ -4,11 +4,18 @@
  * @author: Gustavo Pantuza
  * @since: 17.05.2013
  *
- */#include <time.h>
+ */
+
+
+#include <time.h>
+#include <unistd.h>
 
 #include "file.h"
 #include "ppm.h"
 
+/**
+ * Help message to the program execution. Prints the usage text information
+ */
 void usage()
 {
     fprintf(stderr, 
@@ -27,15 +34,52 @@ void usage()
     exit(EXIT_FAILURE);
 }
 
-int main()
+void opt_parser(int opt)
 {
+    switch(opt)
+    {
+        case 'g': 
+        case 'd': printf("-d\n"); break;
+        case 'w': printf("-w: %s\n", optarg); break;
+        case 'h': printf("-h: %s\n", optarg); break;
+        case 'm': printf("-m: %s\n", optarg); break;
+        case ':': printf("missing argument from option -%c\n", optopt); break;
+        case '?': printf("invalid option -%c\n", optopt); usage(); break;
+    }
+}
+
+void arg_parser(int argc, char *argv[])
+{
+    int opt;
+    char *options = ":gdw:h:m:";
+    extern char *optarg;
+    extern int optopt;
+    
+    do
+    {
+        opt = getopt(argc, argv, options);
+        opt_parser(opt);
+
+    } while(opt != -1);
+
+    if (optind < argc)
+        printf ("ind: %d -> %s \n",optind, argv[optind]);
+    else 
+        printf("Missing input file");
+}
+
+
+int main(int argc, char *argv[])
+{
+    arg_parser(argc, argv);
+    exit(0);
     clock_t start;
     clock_t end;
     FILE *fileIn = openfile("in/deathvalley.ppm", READ_MODE);
     FILE *fileOut = openfile("out/deathvalley.ppm", WRITE_MODE);
 
     start = clock();
-    PPMImage img = import(fileIn, fileOut);
+    PPMImage img = import(fileIn);
     end = clock();
     printf("Import in %f seconds\n", ((float)end - (float)start) / (float)CLOCKS_PER_SEC);
 
