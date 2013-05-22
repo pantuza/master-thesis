@@ -14,11 +14,13 @@
  *
  */
 
+
 #include <string.h>
 #include <ctype.h>
 
 #include "file.h"
 #include "ppm.h"
+
 
 /**
  * handle the read PPM file error
@@ -53,7 +55,7 @@ void free_buffer(char **buffer)
 /*
  * Read a character from file buffer
  * fread() version
-*/
+ */
 inline static char bgetc(FILE *file, char *buffer, int *pos)
 {
     if (*pos >= FILE_BUFFER_SIZE)
@@ -67,17 +69,54 @@ inline static char bgetc(FILE *file, char *buffer, int *pos)
     return buffer[(*pos)++];
 }
 
-/*
- * Read a character from file buffer
- * fgetc() version, that ignores the buffer
- * (seems that still uses file buffer from stdio).
+/**
+ * Ignore comments inside the file
  */
-/*
-inline static char bgetc(FILE *file, char *buffer, int *pos)
+void ignore_comments(char *c, FILE *file, char *buffer, int *pos)
 {
-    return fgetc(file);
+    while (*c != '\n')
+    {
+        *c = bgetc(file, buffer, pos);
+        if(*c == EOF) 
+            read_error();
+    }
 }
-*/
+
+/**
+ * Verifies if an unexpected EOF was found
+ */
+void check_EOF(char *c, FILE *file, char *buffer, int *pos)
+{
+    *c = bgetc(file, buffer, pos);
+    if(*c == EOF) 
+        read_error();
+}
+
+/**
+ * Matches a number inside the file. If the number is valid, 
+ * it will be returned
+ */
+int match_number(char *c, FILE *file, char *buffer, int *pos)
+{
+    // parse ['0'..'9']*
+    int i = 0;
+    char number[NUMBER_BUFFER_SIZE];
+    while (*c >= '0' && *c <= '9')
+    {
+        number[i++] = *c;
+        // is a too big number?
+        if (i >= NUMBER_BUFFER_SIZE)
+            read_error();
+        else
+        {
+            *c = bgetc(file, buffer, pos);
+            if(*c == EOF) break;
+        }
+    }
+    number[i] = 0;
+    
+    return atoi(number);
+}
 
 /**
  * Ignore the unnecessary stuff brought from the file
@@ -95,19 +134,12 @@ int get_number(FILE *file, char *buffer, int *pos)
     {
         // ignore (#*\n)
         if (c == COMMENTS_TOKEN)
-        {
-            while (c != '\n')
-            {
-                c = bgetc(file, buffer, pos);
-                if(c == EOF) read_error();
-            };
-        }
+            ignore_comments(&c, file, buffer, pos); 
+
         // ignore (space)
         if (isspace(c))
-        {
-            c = bgetc(file, buffer, pos);
-            if(c == EOF) read_error();
-        }
+            check_EOF(&c, file, buffer, pos);
+
         else
             if (c < '0' || c > '9')
                 // not a number!
@@ -115,24 +147,10 @@ int get_number(FILE *file, char *buffer, int *pos)
             else
                 break;
     }
-    // parse ['0'..'9']*
-    int i = 0;
-    char number[NUMBER_BUFFER_SIZE];
-    while (c >= '0' && c <= '9')
-    {
-        number[i++] = c;
-        // is a too big number?
-        if (i >= NUMBER_BUFFER_SIZE)
-            read_error();
-        else
-        {
-            c = bgetc(file, buffer, pos);
-            if(c == EOF) break;
-        }
-    }
-    number[i] = 0;
-    return atoi(number);
+    
+    return match_number(&c, file, buffer, pos);
 }
+
 /**
  * Verifies the PPM header. If the header is invalid
  * reports an error
@@ -189,10 +207,24 @@ void free_pixels(PPMImage *image)
 }
 
 /**
+ * fill the pixels data from file 
+ */
+void fill_pixels_data(FILE *file, char *buffer, int *pos, PPMImage *image)
+{
+    for(int i = 0; i < image->width; i++)
+        for(int j = 0; j < image->height; j++)
+        {
+            image->pixels[i][j].R = get_number(file, buffer, pos);
+            image->pixels[i][j].G = get_number(file, buffer, pos);
+            image->pixels[i][j].B = get_number(file, buffer, pos);
+        }
+}
+
+/**
  * Imports PPM image files and construct 
  * PPMImage struct.
  */
-PPMImage import(FILE *file, FILE *file2)
+PPMImage import(FILE *file)
 {
     char *buffer;
     int pos;
@@ -205,15 +237,7 @@ PPMImage import(FILE *file, FILE *file2)
     image.height = get_number(file, buffer, &pos);
     image.intensity = get_number(file, buffer, &pos);
     allocate_pixels(&image);
-
-    /* fillind the data from file */
-    for(int i = 0; i < image.width; i++)
-        for(int j = 0; j < image.height; j++)
-        {
-            image.pixels[i][j].R = get_number(file, buffer, &pos);;
-            image.pixels[i][j].G = get_number(file, buffer, &pos);;
-            image.pixels[i][j].B = get_number(file, buffer, &pos);;
-        }
+    fill_pixels_data(file, buffer, &pos, &image);
 
     free_buffer(&buffer);
 
@@ -245,4 +269,3 @@ void export(FILE *file, PPMImage *image)
         }
     }
 }
-

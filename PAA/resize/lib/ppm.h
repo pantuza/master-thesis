@@ -35,9 +35,23 @@ typedef struct
 
 
 /* Public Functions */
-PPMImage import(FILE *, FILE *);
-void export(FILE *, PPMImage *);
+
+void read_error();
+
+void init_buffer(char **, int *);
+void free_buffer(char **);
+
+void ignore_comments(char *, FILE *, char *, int *);
+void check_EOF(char *, FILE *, char *, int *);
+int match_number(char *, FILE *, char *, int *);
+int get_number(FILE *, char *, int *);
+void get_magic_string(FILE *, PPMImage *);
+
 void allocate_pixels(PPMImage *);
 void free_pixels(PPMImage *);
+void fill_pixels_data(FILE *, char *, int *, PPMImage *);
+
+PPMImage import(FILE *);
+void export(FILE *, PPMImage *);
 
 #endif
