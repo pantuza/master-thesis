@@ -1,1 +1,21 @@
 \chapter{Soluções Propostas}
+
+\section{Solução adotada}
+
+O problema de redimensionamento em função do conteúdo da imagem 
+pode ser solucionado de diversas maneiras. O presente trabalho 
+baseia-se em um algorítmo chamado \emph{Seam Carving}. Esse 
+algorítmo modela a imagem como uma matriz de pixels, onde cada
+pixel é uma cor em formato RGB. A matriz representando uma imagem
+é dada na forma $I = (wxh)$, onde $w$ é a largura e $h$ é a altura
+da imagem. 
+
+O algorítmo percorre caminhos conectados dessa matriz. 
+Um caminho conectado é uma sequência de pixels na imagem em uma 
+coluna ou uma linha. O algorítmo busca pelos caminhos com menor
+energia. Essa energia é dada pela importância dos pixels que 
+compõem o caminho. Um pixel é importante se ele é muito diferente
+de seus vizinhos. A energia de um caminho é o somatório das energias
+(importâncias) dos pixels ao longo do caminho. Os caminhos com menor
+energia são os escolhidos para serem removidos. Isso possibilita 
+redimensionar uma imagem preservando seu conteúdo relevante.
