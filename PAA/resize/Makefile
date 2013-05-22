@@ -24,7 +24,7 @@ program := tp2
 CC := cc
 
 # Libraries
-CFLAGS := -I$(LIB) -g -std=c99 -lm -Wall
+CFLAGS := -I$(LIB) -g -std=gnu99 -lm -Wall
 
 default: help
 
@@ -40,15 +40,15 @@ build:	$(BIN)/$(program)
 
 $(BIN)/$(program): $(SRC)/$(program).c $(OBJ)/file.o $(OBJ)/ppm.o
 	$(CC) -o $@ $+ $(CFLAGS)
-	@echo "\nBinary file placed at $(BIN)/$(program)"
+	@echo -e "\nBinary file placed at $(BIN)/$(program)"
 
 $(OBJ)/%.o: $(SRC)/%.c
 	$(CC) -c $^ -o $@ $(CFLAGS)
 
 clean:
-	@echo "\nCleaning project binary files...\n"
+	@echo -e "\nCleaning project binary files...\n"
 	@rm -vf $(BIN)/* $(OBJ)/*
-	@echo "--\n"
+	@echo -e "--\n"
 
 latex:	${DOC}/*.tex plot
 		pdflatex -output-directory=$(TEX_PATH) $(TEX_PATH)/$(DOC_NAME).tex
