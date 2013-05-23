@@ -6,14 +6,17 @@
 *.swo
 
 # bin directory
-bin
+bin/*
 
 # objects files
-obj
+obj/*
 
 # output files
-out
+out/*
 
+# do not ignore .gitkeep files
+!.gitkeep
+#
 # documentation files
 *.eps
 *.ps
