@@ -1,6 +1,8 @@
 #ifndef PPM_H
 #define PPM_H
 
+#include "file.h"
+
 /* Size of magic string used in header of PPM image files */
 #define MAGIC_STRING_SIZE 3
 
@@ -20,6 +22,7 @@ typedef struct
     int R;
     int G;
     int B;
+    int energy;
 } Pixel;
 
 
