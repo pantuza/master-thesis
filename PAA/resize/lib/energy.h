@@ -9,6 +9,22 @@
 #define B_SENS 0.11
 
 
+/* Weight matrix used on Sobel Calculation */
+typedef struct
+{
+    int width;
+    int height;
+    float **matrix;
+} WeightMatrix;
+
+/* The Sobel Type with two weight matrices */ 
+typedef struct
+{
+    WeightMatrix Gx;
+    WeightMatrix Gy;
+} Sobel;
+
+
 /* Public Functions */
 void energise(PPMImage *, char *);
 #endif
