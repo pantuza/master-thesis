@@ -9,9 +9,22 @@
 
 #include <time.h>
 #include <unistd.h>
+#include <string.h>
 
+#include "tp2.h"
 #include "file.h"
 #include "ppm.h"
+#include "graph.h"
+#include "dynamic.h"
+#include "energy.h"
+
+
+/* Time Function */
+float timediff(clock_t end, clock_t start)
+{
+    return ((float) end - (float) start) / (float) CLOCKS_PER_SEC;
+}
+
 
 /**
  * Help message to the program execution. Prints the usage text information
@@ -34,62 +47,116 @@ void usage()
     exit(EXIT_FAILURE);
 }
 
-void opt_parser(int opt)
+
+/**
+ * Command line options parser
+ */
+void opt_parser(int opt, Options *resize)
 {
     switch(opt)
     {
-        case 'g': 
-        case 'd': printf("-d\n"); break;
-        case 'w': printf("-w: %s\n", optarg); break;
-        case 'h': printf("-h: %s\n", optarg); break;
-        case 'm': printf("-m: %s\n", optarg); break;
-        case ':': printf("missing argument from option -%c\n", optopt); break;
-        case '?': printf("invalid option -%c\n", optopt); usage(); break;
+        case 'g':
+        case 'd':
+            if(opt == 'g')
+                resize->method = GRAPH;
+            else
+                resize->method = DYNAMIC;
+            break;
+        case 'w': 
+            resize->width = atoi(optarg);
+            break;
+        case 'h': 
+            resize->height = atoi(optarg);
+            break;
+        case 'm': 
+            resize->matrix = optarg;
+            break;
+        case ':':
+            fprintf(stderr, "missing argument from option -%c\n", optopt);
+            usage();
+            break;
+        case '?':
+            fprintf(stderr, "invalid option -%c\n", optopt);
+            usage();
+            break;
     }
 }
 
-void arg_parser(int argc, char *argv[])
+
+/**
+ * Uses GNU getopt to parse command line 
+ * arguments and call opt_parser
+ */
+void arg_parser(int argc, char *argv[], Options *resize)
 {
     int opt;
     char *options = ":gdw:h:m:";
-    extern char *optarg;
-    extern int optopt;
-    
+
     do
     {
         opt = getopt(argc, argv, options);
-        opt_parser(opt);
+        opt_parser(opt, resize);
 
     } while(opt != -1);
 
     if (optind < argc)
-        printf ("ind: %d -> %s \n",optind, argv[optind]);
+        resize->ppmfile = argv[optind];
     else 
-        printf("Missing input file");
+    {
+        fprintf(stderr, "Missing input file\n\n");
+        usage();
+    }
+}
+
+
+/* Resize the image using graph or dynamic method */
+void resize_image(PPMImage *image, Options *resize)
+{
+    if(resize->method == GRAPH)
+        graph_resize(image, resize->width, resize->height);
+    else 
+        dynamic_resize(image, resize->width, resize->height);
 }
 
 
 int main(int argc, char *argv[])
 {
-    arg_parser(argc, argv);
-    exit(0);
+    // Program execution options
+    Options resize;
+    arg_parser(argc, argv, &resize);
+    
+    /* Timers */
     clock_t start;
     clock_t end;
-    FILE *fileIn = openfile("in/deathvalley.ppm", READ_MODE);
-    FILE *fileOut = openfile("out/deathvalley.ppm", WRITE_MODE);
+    
+    /* Files open */
+    char in[4]; strcpy(in, "in/");
+    char out[5]; strcpy(out, "out/");
+    FILE *fileIn = openfile(strcat(in, resize.ppmfile), READ_MODE);
+    FILE *fileOut = openfile(strcat(out, resize.ppmfile), WRITE_MODE);
 
+    /* Imports input file */
     start = clock();
     PPMImage img = import(fileIn);
     end = clock();
-    printf("Import in %f seconds\n", ((float)end - (float)start) / (float)CLOCKS_PER_SEC);
+    fprintf(stdout, "Import in %f seconds\n", timediff(end, start));
 
+    /* Calculate the energy of image pixels */
+    energise(&img, resize.matrix);
+
+    /* Resize the image */
+    resize_image(&img, &resize);
+    
+    /* exports to output file */
     start = clock();
     export(fileOut, &img);
     end = clock();
-    printf("Export in %f seconds\n", ((float)end - (float)start) / (float)CLOCKS_PER_SEC);
+    fprintf(stdout, "Export in %f seconds\n", timediff(end, start));
 
+    /* deallocate variables */
     free_pixels(&img);
     closefile(fileIn);
     closefile(fileOut);
-    exit(EXIT_SUCCESS);
+    
+    return EXIT_SUCCESS;
 }
