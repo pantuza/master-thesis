@@ -38,7 +38,7 @@ help:
 
 build:	$(BIN)/$(program)
 
-$(BIN)/$(program): $(SRC)/$(program).c $(OBJ)/file.o $(OBJ)/ppm.o
+$(BIN)/$(program): $(SRC)/$(program).c $(OBJ)/file.o $(OBJ)/ppm.o $(OBJ)/dynamic.o $(OBJ)/graph.o $(OBJ)/energy.o
 	$(CC) -o $@ $+ $(CFLAGS)
 	@echo -e "\nBinary file placed at $(BIN)/$(program)"
 
