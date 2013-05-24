@@ -1,4 +1,5 @@
 #include <math.h>
+#include <string.h>
 
 #include "energy.h"
 #include "ppm.h"
@@ -10,7 +11,8 @@
  */
 void read_dimension(FILE *file, WeightMatrix *matrix)
 {
-    char buffer[32];
+    fscanf(file, "\n");
+    char buffer[64];
     fgets(buffer, sizeof(buffer), file);
     sscanf(buffer, "%d %d", &matrix->width, &matrix->height);
 }
@@ -19,12 +21,14 @@ void read_dimension(FILE *file, WeightMatrix *matrix)
 /**
  * Allocate the storage to the matrix
  */
-void matrix_allocation(WeightMatrix *weights)
+void matrix_allocation(WeightMatrix *weight)
 {
-   int first_dimension = weights->width * sizeof(int *);
-   int second_dimension = (weights->width * weights->height) * sizeof(float);
+   int first_dimension = weight->width * sizeof(int *);
+   int second_dimension = weight->height * sizeof(float);
 
-   weights->matrix = (float **) malloc(first_dimension + second_dimension);
+   weight->matrix = malloc(first_dimension);
+   for(int i = 0; i < weight->width; i++)
+       weight->matrix[i] = malloc(second_dimension);
 }
 
 
@@ -33,19 +37,18 @@ void matrix_allocation(WeightMatrix *weights)
  */
 void fill_weights_data(FILE *file, WeightMatrix *weight)
 {
+   fprintf(stdout, "w: %d h: %d\n", weight->width, weight->height);
     float number;
-
+    int scan;
     for(int i = 0; i < weight->width; i++)
-        for(int j = 0; j < weight->height; j++)
+    {
+        for(int j = 0; j < weight->height && scan != EOF; j++)
         {
-            fscanf(file, "%f", &number);
-            if(number == EOF)
-            {
-                fprintf(stderr, "Malformed file");
-                exit(EXIT_FAILURE);
-            }
+            scan = fscanf(file, "%f", &number);
             weight->matrix[i][j] = number;
+            fprintf(stdout, "n: %.1f i: %d j:%d\n", weight->matrix[i][j], i , j);
         }
+    }
 }
 
 
@@ -55,6 +58,7 @@ void fill_weights_data(FILE *file, WeightMatrix *weight)
  */
 Sobel load_matrices(char *matrix)
 {
+    fprintf(stdout, "matrix: %s\n", matrix);
     FILE *weights_file = openfile(matrix, READ_MODE);
     Sobel weights;
 
@@ -130,6 +134,7 @@ void sobel(Pixel **pixels, int i, int j, Sobel *sobel)
  */
 void energise(PPMImage *image, char *matrix)
 {
+    fprintf(stdout, "here: %s\n", matrix);
 
     Sobel weights = load_matrices(matrix);
 
