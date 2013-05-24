@@ -48,11 +48,24 @@ void usage()
 }
 
 
+/* Fill default options to the program */ 
+void fill_default(Options *resize)
+{
+    // default value
+    resize->method = DYNAMIC;
+    resize->width = 0;
+    resize->height = 0;
+    resize->matrix = "in/sobel_weights";
+}
+
+
 /**
  * Command line options parser
  */
 void opt_parser(int opt, Options *resize)
 {
+    fill_default(resize);
+
     switch(opt)
     {
         case 'g':
