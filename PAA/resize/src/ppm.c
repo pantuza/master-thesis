@@ -233,10 +233,12 @@ PPMImage import(FILE *file)
     init_buffer(&buffer, &pos);
 
     get_magic_string(file, &image);
+    fprintf(stdout, "aqui\n");
     image.width = get_number(file, buffer, &pos);
     image.height = get_number(file, buffer, &pos);
     image.intensity = get_number(file, buffer, &pos);
     allocate_pixels(&image);
+
     fill_pixels_data(file, buffer, &pos, &image);
 
     free_buffer(&buffer);

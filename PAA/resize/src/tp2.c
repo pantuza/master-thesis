@@ -134,6 +134,9 @@ void resize_image(PPMImage *image, Options *resize)
 
 int main(int argc, char *argv[])
 {
+    setvbuf(stdout, NULL, _IOLBF, 0);
+    setvbuf(stdout, NULL, _IONBF, 0);
+
     // Program execution options
     Options resize;
     arg_parser(argc, argv, &resize);
@@ -143,10 +146,11 @@ int main(int argc, char *argv[])
     clock_t end;
     
     /* Files open */
-    char in[4]; strcpy(in, "in/");
-    char out[5]; strcpy(out, "out/");
-    FILE *fileIn = openfile(strcat(in, resize.ppmfile), READ_MODE);
-    FILE *fileOut = openfile(strcat(out, resize.ppmfile), WRITE_MODE);
+    char in[1024]; sprintf(in, "in/%s", resize.ppmfile);
+    char out[1024]; sprintf(out, "out/%s", resize.ppmfile);
+
+    FILE *fileIn = openfile(in, READ_MODE);
+    FILE *fileOut = openfile(out, WRITE_MODE);
 
     /* Imports input file */
     start = clock();

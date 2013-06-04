@@ -19,7 +19,7 @@ FILE* openfile(char *filename, char *mode)
 {
     FILE *file = fopen(filename, mode);
 
-    if (file == NULL)
+    if (file == NULL || errno)
     {
         fprintf(stderr, "Error during file open in %s mode: %s\n",
                 mode, filename);
