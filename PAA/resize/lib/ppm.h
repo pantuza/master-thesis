@@ -22,7 +22,7 @@ typedef struct
     int R;
     int G;
     int B;
-    int energy;
+    double energy;
 } Pixel;
 
 

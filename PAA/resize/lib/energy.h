@@ -14,7 +14,7 @@ typedef struct
 {
     int width;
     int height;
-    float **matrix;
+    double **matrix;
 } WeightMatrix;
 
 /* The Sobel Type with two weight matrices */ 
