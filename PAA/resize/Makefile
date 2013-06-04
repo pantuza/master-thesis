@@ -29,12 +29,12 @@ CFLAGS := -I$(LIB) -g -std=gnu99 -lm -Wall
 default: help
 
 help:	
-	@echo "\nMAKE HELP\n"
-	@echo "make build \t- build the entire project"
-	@echo "make latex \t- build the documentation using latex"
-	@echo "make clean \t- clean binary files"
-	@echo "make help \t- print this help message"
-	@echo "--\n"
+	@echo -e "\nMAKE HELP\n"
+	@echo -e "make build \t- build the entire project"
+	@echo -e "make latex \t- build the documentation using latex"
+	@echo -e "make clean \t- clean binary files"
+	@echo -e "make help \t- print this help message"
+	@echo -e "--\n"
 
 build:	$(BIN)/$(program)
 
