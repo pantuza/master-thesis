@@ -64,16 +64,14 @@ void fill_default(Options *resize)
  */
 void opt_parser(int opt, Options *resize)
 {
-    fill_default(resize);
 
     switch(opt)
     {
         case 'g':
+            resize->method = GRAPH;
+            break;
         case 'd':
-            if(opt == 'g')
-                resize->method = GRAPH;
-            else
-                resize->method = DYNAMIC;
+            resize->method = DYNAMIC;
             break;
         case 'w': 
             resize->width = atoi(optarg);
@@ -105,6 +103,7 @@ void arg_parser(int argc, char *argv[], Options *resize)
     int opt;
     char *options = ":gdw:h:m:";
 
+    fill_default(resize);
     do
     {
         opt = getopt(argc, argv, options);
@@ -125,6 +124,7 @@ void arg_parser(int argc, char *argv[], Options *resize)
 /* Resize the image using graph or dynamic method */
 void resize_image(PPMImage *image, Options *resize)
 {
+    printf("opt: %d\n", resize->method);
     if(resize->method == GRAPH)
         graph_resize(image, resize->width, resize->height);
     else 

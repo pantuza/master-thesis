@@ -26,11 +26,11 @@ typedef struct
 typedef struct
 {
     int list_size;
-    Vertex **vertexes;
+    Vertex *vertexes;
 } Graph;
 
 
 /* Public Functions */
 void graph_resize(PPMImage *, int, int);
-Graph* init_graph(PPMImage);
+void init_graph(Graph *, PPMImage *);
 #endif
