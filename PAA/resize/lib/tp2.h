@@ -25,6 +25,10 @@ typedef struct
     char *matrix;
     // Input file with the image to be resized
     char *ppmfile;
+    // Output file with the energised image
+    char *energisedfile;
+    // Output file with the resized image
+    char *output;
 } Options;
 
 #endif

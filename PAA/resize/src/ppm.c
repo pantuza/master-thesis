@@ -14,22 +14,19 @@
  *
  */
 
-
 #include <string.h>
 #include <ctype.h>
 
 #include "file.h"
 #include "ppm.h"
 
-
 /**
  * handle the read PPM file error
  * reports an error and exit
  */
-void read_error()
+inline static void read_error()
 {
     fprintf(stderr, "Invalid PPM format\n");
-    fflush(stdout);
     exit(EXIT_FAILURE);
 }
 
@@ -72,7 +69,7 @@ inline static char bgetc(FILE *file, char *buffer, int *pos)
 /**
  * Ignore comments inside the file
  */
-void ignore_comments(char *c, FILE *file, char *buffer, int *pos)
+inline static void ignore_comments(char *c, FILE *file, char *buffer, int *pos)
 {
     while (*c != '\n')
     {
@@ -85,7 +82,7 @@ void ignore_comments(char *c, FILE *file, char *buffer, int *pos)
 /**
  * Verifies if an unexpected EOF was found
  */
-void check_EOF(char *c, FILE *file, char *buffer, int *pos)
+inline static void check_EOF(char *c, FILE *file, char *buffer, int *pos)
 {
     *c = bgetc(file, buffer, pos);
     if(*c == EOF) 
@@ -96,7 +93,7 @@ void check_EOF(char *c, FILE *file, char *buffer, int *pos)
  * Matches a number inside the file. If the number is valid, 
  * it will be returned
  */
-int match_number(char *c, FILE *file, char *buffer, int *pos)
+inline static int match_number(char *c, FILE *file, char *buffer, int *pos)
 {
     // parse ['0'..'9']*
     int i = 0;
@@ -114,7 +111,6 @@ int match_number(char *c, FILE *file, char *buffer, int *pos)
         }
     }
     number[i] = 0;
-    
     return atoi(number);
 }
 
@@ -175,7 +171,7 @@ void get_magic_string(FILE *file, PPMImage *image)
  */
 void allocate_pixels(PPMImage *image)
 {
-    int first_dimension = image->width * sizeof(int *);
+    int first_dimension = image->height * sizeof(int *);
     int second_dimension = (image->width * image->height) * sizeof(Pixel);
 
     // Allocate consecutive memory
@@ -188,11 +184,11 @@ void allocate_pixels(PPMImage *image)
     }
 
     /* First data line (modifying pointers) */
-    image->pixels[0] = (Pixel *)(image->pixels + image->width);
+    image->pixels[0] = (Pixel *)(image->pixels + image->height);
 
     /* Subsequent data lines (modifying pointers) */
-    for(int i = 1; i < image->width; i++)
-        image->pixels[i] = (Pixel *)(image->pixels[i-1] + image->height);
+    for(int y = 1; y < image->height; y++)
+        image->pixels[y] = (Pixel *)(image->pixels[y-1] + image->width);
 
 }
 
@@ -211,12 +207,12 @@ void free_pixels(PPMImage *image)
  */
 void fill_pixels_data(FILE *file, char *buffer, int *pos, PPMImage *image)
 {
-    for(int i = 0; i < image->width; i++)
-        for(int j = 0; j < image->height; j++)
+    for(int y = 0; y < image->height; y++)
+        for(int x = 0; x < image->width; x++)
         {
-            image->pixels[i][j].R = get_number(file, buffer, pos);
-            image->pixels[i][j].G = get_number(file, buffer, pos);
-            image->pixels[i][j].B = get_number(file, buffer, pos);
+            image->pixels[y][x].R = get_number(file, buffer, pos);
+            image->pixels[y][x].G = get_number(file, buffer, pos);
+            image->pixels[y][x].B = get_number(file, buffer, pos);
         }
 }
 
@@ -233,7 +229,6 @@ PPMImage import(FILE *file)
     init_buffer(&buffer, &pos);
 
     get_magic_string(file, &image);
-    fprintf(stdout, "aqui\n");
     image.width = get_number(file, buffer, &pos);
     image.height = get_number(file, buffer, &pos);
     image.intensity = get_number(file, buffer, &pos);
@@ -259,15 +254,46 @@ void export(FILE *file, PPMImage *image)
     fprintf(file, "# image data\n");
     /* writing the data to file */
     Pixel **pixels = image->pixels;
-    for(int i = 0; i < image->width; i++)
+    for(int y = 0; y < image->height; y++)
     {
-        fprintf(file, "# line %d\n", i);
-        for(int j = 0; j < image->height; j++)
+        fprintf(file, "# line %d\n", y);
+        for(int x = 0; x < image->width; x++)
         {
-            fprintf(file, "%d %d %d\n",
-                    pixels[i][j].R,
-                    pixels[i][j].G,
-                    pixels[i][j].B);
+            fprintf(file, "%d %d %d \n",
+                    pixels[y][x].R,
+                    pixels[y][x].G,
+                    pixels[y][x].B);
+        }
+    }
+    fprintf(file, "\n");
+}
+
+/**
+ * Exports a PGMImage to a file with PGM format
+ * PGM is a grayscale image format
+ * This is useful to check the energy function
+ */
+void export_energy(FILE *file, PPMImage *image)
+{
+    int gray;
+    fprintf(file, "P2\n");
+    fprintf(file, "# image dimensions\n");
+    fprintf(file, "%d %d\n", image->width, image->height);
+    fprintf(file, "# image intensity\n");
+    fprintf(file, "%d\n", image->intensity);
+    fprintf(file, "# image data\n");
+    /* writing the data to file */
+    Pixel **pixels = image->pixels;
+    int max = image->intensity;
+    for(int y = 0; y < image->height; y++)
+    {
+        fprintf(file, "# line %d\n", y);
+        for(int x = 0; x < image->width; x++)
+        {
+            gray = (int)(pixels[y][x].energy);
+            if (gray > max)
+                gray = max;
+            fprintf(file, "%d\n", gray);
         }
     }
 }

@@ -10,6 +10,8 @@
 #include <time.h>
 #include <unistd.h>
 #include <string.h>
+#include <unistd.h>
+#include <getopt.h>
 
 #include "tp2.h"
 #include "file.h"
@@ -43,6 +45,8 @@ void usage()
             "\t-h height\tResize image in height pixels\n"
             "\t-m file\t\tResize image using the file with "
             "the weight matrices\n"
+            "\t-o file\t\tRedirect stdout to file (to test)\n"
+            "\t-e file\t\tSave energised image (to test)\n"
             "--\n");
     exit(EXIT_FAILURE);
 }
@@ -56,6 +60,9 @@ void fill_default(Options *resize)
     resize->width = 0;
     resize->height = 0;
     resize->matrix = "in/sobel_weights";
+    resize->energisedfile = NULL;
+    resize->ppmfile = NULL;
+    resize->output = NULL;
 }
 
 
@@ -64,7 +71,6 @@ void fill_default(Options *resize)
  */
 void opt_parser(int opt, Options *resize)
 {
-
     switch(opt)
     {
         case 'g':
@@ -81,6 +87,12 @@ void opt_parser(int opt, Options *resize)
             break;
         case 'm': 
             resize->matrix = optarg;
+            break;
+        case 'e':
+            resize->energisedfile = optarg;
+            break;
+        case 'o':
+            resize->output = optarg;
             break;
         case ':':
             fprintf(stderr, "missing argument from option -%c\n", optopt);
@@ -101,9 +113,10 @@ void opt_parser(int opt, Options *resize)
 void arg_parser(int argc, char *argv[], Options *resize)
 {
     int opt;
-    char *options = ":gdw:h:m:";
+    char *options = ":gdw:h:m:e:o:";
 
     fill_default(resize);
+
     do
     {
         opt = getopt(argc, argv, options);
@@ -124,7 +137,6 @@ void arg_parser(int argc, char *argv[], Options *resize)
 /* Resize the image using graph or dynamic method */
 void resize_image(PPMImage *image, Options *resize)
 {
-    printf("opt: %d\n", resize->method);
     if(resize->method == GRAPH)
         graph_resize(image, resize->width, resize->height);
     else 
@@ -134,8 +146,8 @@ void resize_image(PPMImage *image, Options *resize)
 
 int main(int argc, char *argv[])
 {
-    setvbuf(stdout, NULL, _IOLBF, 0);
-    setvbuf(stdout, NULL, _IONBF, 0);
+    //setvbuf(stdout, NULL, _IOFBF, FILE_BUFFER_SIZE);
+    setvbuf(stderr, NULL, _IONBF, 0);
 
     // Program execution options
     Options resize;
@@ -146,34 +158,55 @@ int main(int argc, char *argv[])
     clock_t end;
     
     /* Files open */
-    char in[1024]; sprintf(in, "in/%s", resize.ppmfile);
-    char out[1024]; sprintf(out, "out/%s", resize.ppmfile);
-
-    FILE *fileIn = openfile(in, READ_MODE);
-    FILE *fileOut = openfile(out, WRITE_MODE);
 
     /* Imports input file */
     start = clock();
+    FILE *fileIn = openfile(resize.ppmfile, READ_MODE);
     PPMImage img = import(fileIn);
+    closefile(fileIn);
     end = clock();
-    fprintf(stdout, "Import in %f seconds\n", timediff(end, start));
+    fprintf(stderr, "Import in %f seconds\n", timediff(end, start));
 
     /* Calculate the energy of image pixels */
+    start = clock();
+    // Meanwhile, at stardate 5906.4, in transporter room...
+    // KIRK: All right, Mister Scott, energise.
     energise(&img, resize.matrix);
+    end = clock();
+    fprintf(stderr, "Energy calculation in %f seconds\n", timediff(end, start));
 
     /* Resize the image */
+    start = clock();
     resize_image(&img, &resize);
+    end = clock();
+    fprintf(stderr, "Resize image in %f seconds\n", timediff(end, start));
     
     /* exports to output file */
     start = clock();
-    export(fileOut, &img);
+    if (resize.output != NULL)
+    {
+        FILE *fileOut = openfile(resize.output, WRITE_MODE);
+        export(fileOut, &img);
+        closefile(fileOut);
+    }
+    else
+        export(stdout, &img);
     end = clock();
-    fprintf(stdout, "Export in %f seconds\n", timediff(end, start));
+    fprintf(stderr, "Export in %f seconds\n", timediff(end, start));
+
+    if (resize.energisedfile != NULL)
+    {
+        start = clock();
+        FILE *fileGray = openfile(resize.energisedfile, WRITE_MODE);
+        export_energy(fileGray, &img);
+        closefile(fileGray);
+        end = clock();
+        fprintf(stderr, "Export grayscale (energised image) in %f seconds\n",
+                timediff(end, start));
+    }
 
     /* deallocate variables */
     free_pixels(&img);
-    closefile(fileIn);
-    closefile(fileOut);
     
     return EXIT_SUCCESS;
 }
