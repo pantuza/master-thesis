@@ -24,7 +24,7 @@ Edge* get_edge(PPMImage *image, int i, int j, int v, int diff)
 {
     Edge *edge = malloc(sizeof(Edge));
     edge->vertex = get_adj_vertex(v, image->width, image->height, diff);
-    edge->energy = image->pixels[i][j].energy;
+    edge->energy = image->pixels[j][i].energy;
 
     return edge;
 }
@@ -36,7 +36,7 @@ Edge* get_edge(PPMImage *image, int i, int j, int v, int diff)
 Vertex get_right_vertex(PPMImage *image, int i, int j, int v)
 {
     Vertex vertex;
-    vertex.energy = image->pixels[i][j].energy;
+    vertex.energy = image->pixels[j][i].energy;
 
     if(i+1 <= image->height)
     {
@@ -57,7 +57,7 @@ Vertex get_middle_vertex(PPMImage *image, int i, int j, int v)
 {
 
     Vertex vertex;
-    vertex.energy = image->pixels[i][j].energy;
+    vertex.energy = image->pixels[j][i].energy;
     
     if(i+1 <= image->height)
     {
@@ -78,7 +78,7 @@ Vertex get_middle_vertex(PPMImage *image, int i, int j, int v)
 Vertex get_left_vertex(PPMImage *image, int i, int j, int v)
 {
     Vertex vertex;
-    vertex.energy = image->pixels[i][j].energy;
+    vertex.energy = image->pixels[j][i].energy;
 
     if(i+1 <= image->height)
     {
@@ -102,22 +102,18 @@ void init_graph(Graph *graph, PPMImage *image)
     graph->vertexes = (Vertex *) malloc(graph->list_size * sizeof(Vertex));
 
     int v = 0;
-    while(v < graph->list_size)
-    {
-        /* Build the leftmost vertices */
-        for(int i=0; i < image->height-1; i++)
-            graph->vertexes[v++] = get_left_vertex(image, i, 0, v);
-       
-        /* Build the middle vertices */
-        for(int j=1; j < image->height; j++)
-            for(int i=0; i < image->width - 2; i++)
-                graph->vertexes[v++] = get_middle_vertex(image, i, j, v);
+    /* Build the leftmost vertices */
+    for(int i=0; i < image->height; i++)
+        graph->vertexes[v++] = get_left_vertex(image, i, 0, v);
+      
+    /* Build the middle vertices */
+    for(int i=1; i < image->height; i++)
+        for(int j=0; j < image->width - 2; j++)
+            graph->vertexes[v++] = get_middle_vertex(image, i, j, v);
 
-        /* Build the rightmost vertices */
-        for(int i=0; i < image->height-1; i++)
-            graph->vertexes[v++] = get_right_vertex(image, i, 
-                                                   image->width-1, v);
-    }
+    /* Build the rightmost vertices */
+    for(int i=0; i < image->height; i++)
+        graph->vertexes[v++] = get_right_vertex(image, i, image->width-1, v);
 }
 
 
@@ -156,15 +152,17 @@ int dijkstra(Graph *graph, int source,
         smallest = remove_smallest(graph->list_size, distance);
         exists--;
 
+        printf("exists: %d, smallest: %d\t", exists, smallest);
         Edge *adjacent = graph->vertexes[smallest].edge;
 
         if(adjacent->next == NULL) return smallest;
-
         while(adjacent->next != NULL)
         {
+            printf("dist[%d]: %lf\n", adjacent->vertex, distance[adjacent->vertex]);
             if(distance[adjacent->vertex] == INT_MAX)
                 exists++;
-            else if(distance[adjacent->vertex] != VISITED)
+            
+            if(distance[adjacent->vertex] != VISITED)
             {
 
                 int alt = distance[smallest] + adjacent->energy;
@@ -175,7 +173,7 @@ int dijkstra(Graph *graph, int source,
                     previous[adjacent->vertex] = smallest;
                 }
             }
-
+            printf("next:%d\n", ((Edge *)adjacent->next)->vertex);
             adjacent = adjacent->next;
         }
     }
@@ -202,6 +200,7 @@ void graph_resize(PPMImage *image, int width, int height)
     {
         for(int i = 0; i < graph.list_size; i += image->height)
         {
+            printf("i: %d\n", i);
             int dest = dijkstra(&graph, i, previous, distance);
 
             if(dest == -1)
