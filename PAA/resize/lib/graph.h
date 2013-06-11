@@ -5,20 +5,12 @@
 #include "file.h"
 
 
-/* Struct of the Adjancency list  */
-typedef struct
-{
-    int vertex;
-    double energy;
-    void *next;
-} Edge;
-
 
 /* Struct of a Vertex */
-typedef struct 
+typedef struct Vertex
 {
-    double energy;
-    Edge *edge;
+        Pixel *pixel;
+        int adj[4];
 } Vertex;
 
 

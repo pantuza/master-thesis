@@ -2,122 +2,92 @@
 
 #include "graph.h"
 
-#define VISITED INT_MAX - 1
-
+#define MAX_DISTANCE INT_MAX
+#define VISITED (MAX_DISTANCE - 1)
+#define NONE -1
 
 /**
- * Finds which position inside the vertexes list on vertice will be placed 
+ * Convert image(x, y) to position to vet[i]
  */
-int get_adj_vertex(int v, int width, int height, int diff)
-{
-    int edge_pos = v + width + diff;
-    int max_pos = width * height;
-
-    return edge_pos < max_pos ? edge_pos : max_pos;
-}
+#define POS_XY(img,x,y)  ((img->height * (x)) + (y))
 
 
 /**
- * Builds an Edge considering the current positions (i, j) inside the image 
- */
-Edge* get_edge(PPMImage *image, int i, int j, int v, int diff)
-{
-    Edge *edge = malloc(sizeof(Edge));
-    edge->vertex = get_adj_vertex(v, image->width, image->height, diff);
-    edge->energy = image->pixels[j][i].energy;
-
-    return edge;
-}
-
-
-/**
- * Constructs a rightmost vertex. Do not build vertexes beyond the image
- */
-Vertex get_right_vertex(PPMImage *image, int i, int j, int v)
-{
-    Vertex vertex;
-    vertex.energy = image->pixels[j][i].energy;
-
-    if(i+1 <= image->height)
-    {
-        vertex.edge = get_edge(image, i+1, j-1, v, -1);
-        vertex.edge->next = get_edge(image, i+1, j, v, 0);
-        ((Edge *)(vertex.edge->next))->next = NULL;
-    
-    } else vertex.edge = NULL;
-
-    return vertex;
-}
-
-
-/**
- * Construcs a middle vertex with all its edges
- */
-Vertex get_middle_vertex(PPMImage *image, int i, int j, int v)
-{
-
-    Vertex vertex;
-    vertex.energy = image->pixels[j][i].energy;
-    
-    if(i+1 <= image->height)
-    {
-        vertex.edge = get_edge(image, i+1, j-1, v, -1);
-        vertex.edge->next = get_edge(image, i+1, j, v, 0);
-        ((Edge *)vertex.edge->next)->next = get_edge(image, i+1, j+1, v, 1);
-        ((Edge *)((Edge *)vertex.edge->next)->next)->next = NULL;
-    
-    } else vertex.edge = NULL;
-
-    return vertex;
-}
-
-
-/**
- * Constructs a leftmost vertex. Do not build vertexes beyond the image
- */
-Vertex get_left_vertex(PPMImage *image, int i, int j, int v)
-{
-    Vertex vertex;
-    vertex.energy = image->pixels[j][i].energy;
-
-    if(i+1 <= image->height)
-    {
-        vertex.edge = get_edge(image, i+1, j, v, 0);
-        vertex.edge->next = get_edge(image, i+1, j+1, v, 1);
-        ((Edge *)vertex.edge->next)->next = NULL;
-    
-    } else vertex.edge = NULL;
-
-    return vertex;
-}
-
-
-/**
- * Creates a graph based on the image pixels and fill the values for 
+ * Creates a graph based on the image pixels and fill the values for
  * its vertexes and edges
  */
 void init_graph(Graph *graph, PPMImage *image)
 {
     graph->list_size = image->width * image->height;
-    graph->vertexes = (Vertex *) malloc(graph->list_size * sizeof(Vertex));
+    graph->vertexes = (Vertex *) calloc(graph->list_size, sizeof(Vertex));
 
-    int v = 0;
+    int v, x, y;
     /* Build the leftmost vertices */
-    for(int i=0; i < image->height; i++)
-        graph->vertexes[v++] = get_left_vertex(image, i, 0, v);
-      
-    /* Build the middle vertices */
-    for(int i=1; i < image->height; i++)
-        for(int j=0; j < image->width - 2; j++)
-            graph->vertexes[v++] = get_middle_vertex(image, i, j, v);
+    x = 0;
+    for(y = 0; y < image->height - 1; y++)
+    {
+        v = POS_XY(image,x,y);
+        //printf("|-POS(%d,%d): %d\n",x,y,v);
+        //printf("----adj: %d %d\n", POS_XY(image,x,y+1), POS_XY(image,x+1,y+1));
+        graph->vertexes[v].pixel = &(image->pixels[y][0]);
+        graph->vertexes[v].adj[0] = POS_XY(image,x,y+1);
+        graph->vertexes[v].adj[1] = POS_XY(image,x+1,y+1);
+        graph->vertexes[v].adj[2] = NONE;
+        graph->vertexes[v].adj[3] = NONE;
+    }
 
-    /* Build the rightmost vertices */
-    for(int i=0; i < image->height; i++)
-        graph->vertexes[v++] = get_right_vertex(image, i, image->width-1, v);
+    /* Build the middle vertices */
+    for(y = 0; y < image->height - 1; y++)
+        for(int x = 1; x < image->width - 1; x++)
+        {
+            v = POS_XY(image,x,y);
+            //printf("--POS(%d,%d): %d\n",x,y,v);
+            //printf("----adj: %d %d %d\n",POS_XY(image,x-1,y+1), POS_XY(image,x,y+1), POS_XY(image,x+1,y+1));
+            graph->vertexes[v].pixel = &(image->pixels[y][x]);
+            graph->vertexes[v].adj[0] = POS_XY(image,x-1,y+1);
+            graph->vertexes[v].adj[1] = POS_XY(image,x,y+1);
+            graph->vertexes[v].adj[2] = POS_XY(image,x+1,y+1);
+            graph->vertexes[v].adj[3] = NONE;
+        }
+
+    /* Build the leftmost vertices */
+    x = image->width - 1;
+    for(y = 0; y < image->height - 1; y++)
+    {
+        v = POS_XY(image,x,y);
+        //printf("-|POS(%d,%d): %d\n",x,y,v);
+        //printf("----adj: %d %d\n",POS_XY(image,x-1,y+1), POS_XY(image,x,y+1));
+        graph->vertexes[v].pixel = &(image->pixels[y][x]);
+        graph->vertexes[v].adj[0] = POS_XY(image,x-1,y+1);
+        graph->vertexes[v].adj[1] = POS_XY(image,x,y+1);
+        graph->vertexes[v].adj[2] = NONE;
+        graph->vertexes[v].adj[3] = NONE;
+    }
+
+    /* Build the bottom vertices */
+    y = image->height - 1;
+    for(x = 0; x < image->width; x++)
+    {
+        v = POS_XY(image,x,y);
+        //printf("__POS(%d,%d): %d\n",x,y,v);
+        //printf("----adj: NONE\n");
+        graph->vertexes[v].pixel = &(image->pixels[y][x]);
+        graph->vertexes[v].adj[0] = NONE;
+        graph->vertexes[v].adj[1] = NONE;
+        graph->vertexes[v].adj[2] = NONE;
+        graph->vertexes[v].adj[3] = NONE;
+    }
 }
 
+/**
+ * Free the graph memory
+ */
+void free_graph(Graph *graph)
+{
+    free(graph->vertexes);
+}
 
-int remove_smallest(int size, double distance[])
+int get_smallest(int size, double distance[])
 {
     double min = distance[0];
     int ind = 0;
@@ -128,94 +98,128 @@ int remove_smallest(int size, double distance[])
             min = distance[i];
             ind = i;
         }
-    distance[ind] = VISITED;
     return ind;
 }
-
-
 
 
 /**
  * Shortest Path solution implemented using the Dijkstra algorithm
  */
-int dijkstra(Graph *graph, int source, 
-              int previous[], double distance[])
+int dijkstra(Graph *graph, int source,
+              double distance[], int previous[])
 {
-    distance[source] = 0;
-    int exists = 1;
-    int smallest;
+    int vertex, adjacent, v;
+    double alt;
 
-    for(int i = 0; i < graph->list_size; previous[i++] = source);
+    for(int i = 0; i < graph->list_size; distance[i++] = MAX_DISTANCE);
+
+    distance[source] = graph->vertexes[source].pixel->energy;
+    previous[source] = NONE;
+    int exists = 1;
+
+//    printf("source: %d, distance: %f\n", source, distance[source]);
 
     while(exists)
     {
-        smallest = remove_smallest(graph->list_size, distance);
+        vertex = get_smallest(graph->list_size, distance);
+        //visited[vertex] = 1;
         exists--;
 
-        printf("exists: %d, smallest: %d\t", exists, smallest);
-        Edge *adjacent = graph->vertexes[smallest].edge;
+//        printf("exists: %d, vertex: %d, distance: %f, energy:%f \n",
+ //               exists, vertex,distance[vertex],graph->vertexes[vertex].pixel->energy);
+        v = 0;
+        adjacent = graph->vertexes[vertex].adj[v++];
+//        printf(" -- adj[%d]:%d, distance: %f\n", v, adjacent, distance[adjacent]);
 
-        if(adjacent->next == NULL) return smallest;
-        while(adjacent->next != NULL)
+        if(adjacent == NONE) return vertex;
+
+        while(adjacent != NONE)
         {
-            printf("dist[%d]: %lf\n", adjacent->vertex, distance[adjacent->vertex]);
-            if(distance[adjacent->vertex] == INT_MAX)
+            if(distance[adjacent] != VISITED) {
                 exists++;
-            
-            if(distance[adjacent->vertex] != VISITED)
-            {
-
-                int alt = distance[smallest] + adjacent->energy;
-
-                if(alt < distance[adjacent->vertex])
-                {
-                    distance[adjacent->vertex] = alt;
-                    previous[adjacent->vertex] = smallest;
-                }
+//                printf(" ++ dist[%d]: %f, prev=%d\n", adjacent, distance[adjacent], previous[adjacent]);
             }
-            printf("next:%d\n", ((Edge *)adjacent->next)->vertex);
-            adjacent = adjacent->next;
+            else
+//                printf(" -- dist[%d]: %f, prev=%d\n", adjacent, distance[adjacent], previous[adjacent]);
+
+            alt = distance[vertex] + graph->vertexes[adjacent].pixel->energy;
+//            printf(" -- alt: %f\n", alt);
+            if(alt < distance[adjacent])
+            {
+                distance[adjacent] = alt;
+                previous[adjacent] = vertex;
+            }
+            adjacent = graph->vertexes[vertex].adj[v++];
+//            printf(" -- adj[%d]:%d\n", v, adjacent);
         }
+        distance[vertex] = VISITED;
     }
-    return -1;
+    return NONE;
 }
 
 
 /**
- * Resize method that calls Dijkstra algorithm for each Vertex inside 
+ * Resize method that calls Dijkstra algorithm for each Vertex inside
  * the Vertexes set of the Graph
  */
 void graph_resize(PPMImage *image, int width, int height)
 {
-    
+
+/*
+    for(int y = 0; y < image->height; y++) {
+        for(int x = 0; x < image->width; x++)
+            printf("%f ", image->pixels[y][x].energy);
+        printf("\n");
+    }
+*/
+
     Graph graph;
     init_graph(&graph, image);
-    
-    int previous[graph.list_size];
-    double distance[graph.list_size];
 
-    for(int i = 0; i < graph.list_size; distance[i++] = INT_MAX);
+    int i, x, y;
+    double *distance = malloc(graph.list_size * sizeof(double));
+    int *previous = malloc(graph.list_size * sizeof(int));
+    int *path = malloc(image->height * sizeof(int));
+    double minimum = MAX_DISTANCE;
 
-    do
+    for(x = 0; x < image->width; x++)
     {
-        for(int i = 0; i < graph.list_size; i += image->height)
-        {
-            printf("i: %d\n", i);
-            int dest = dijkstra(&graph, i, previous, distance);
+        i = POS_XY(image,x,0);
+        printf("i: %d\n", i);
+        int dest = dijkstra(&graph, i, distance, previous);
 
-            if(dest == -1)
-            {
-                fprintf(stderr, "There is no path\n");
-                exit(EXIT_FAILURE);
-            }
-            
+        if(dest == NONE)
+        {
+            fprintf(stderr, "There is no path\n");
+            exit(EXIT_FAILURE);
+        }
+
+        printf("dest: %d, distance: %f\n", dest, distance[dest]);
+        if (distance[dest] < minimum)
+        {
+            minimum = distance[dest];
+            fprintf(stderr, "Minimum distance = %f\n", minimum);
+            y = 0;
             while(dest != i)
             {
                 printf("%d,", dest);
+                path[y++] = dest;
                 dest = previous[dest];
             }
+            path[y++] = dest;
+            printf("%d\n", dest);
         }
+    }
 
-    } while(width && height);
+    for(y = 0; y < image->height; y++)
+    {
+        graph.vertexes[path[y]].pixel->R = 255;
+        graph.vertexes[path[y]].pixel->G = 0;
+        graph.vertexes[path[y]].pixel->B = 0;
+    }
 
+    free_graph(&graph);
+    free(distance);
+    free(previous);
+    free(path);
 }
