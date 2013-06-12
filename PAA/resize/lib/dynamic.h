@@ -4,6 +4,20 @@
 #include "ppm.h"
 #include "file.h"
 
+typedef struct Seam
+{
+    double total;
+    Pixel pixel;
+} Seam;
+
+
+typedef struct SeamsStore
+{
+    int size;
+    Seam **store;
+} SeamsStore;
+
+
 /* Public Functions */
 void dynamic_resize(PPMImage *, int, int); 
 #endif
