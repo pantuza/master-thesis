@@ -21,7 +21,7 @@ void read_dimension(FILE *file, WeightMatrix *matrix)
 void matrix_allocation(WeightMatrix *weight)
 {
    int first_dimension = weight->height * sizeof(int *);
-   int second_dimension = weight->width * sizeof(double);
+   int second_dimension = weight->width * sizeof(Energy);
 
    weight->matrix = malloc(first_dimension);
    for(int y = 0; y < weight->height; y++)
@@ -44,11 +44,11 @@ void matrix_deallocation(WeightMatrix *weight)
  */
 void fill_weights_data(FILE *file, WeightMatrix *weight)
 {
-    double checkTotalWeight = 0;
+    Energy checkTotalWeight = 0;
     for(int y = 0; y < weight->height; y++)
         for(int x = 0; x < weight->width; x++)
         {
-            fscanf(file, "%lf", &(weight->matrix[y][x]));
+            fscanf(file, ENERGY_FORMAT, &(weight->matrix[y][x]));
             checkTotalWeight += weight->matrix[y][x];
         }
     if (checkTotalWeight)
@@ -91,7 +91,7 @@ void free_matrices(Sobel *weights)
 /**
  * Calculates the absolute value of the gradiente vector
  */
-//double energy(double gx, double gy)
+//Energy energy(Energy gx, Energy gy)
 //{
 #define energy(gx, gy) (sqrt((pow(gx, 2) + pow(gy, 2))))
 //}
@@ -101,7 +101,7 @@ void free_matrices(Sobel *weights)
  * returns the luminosity intensity of a given pixel
  * based on human eyes sensibility of lights
  */
-//double luminosity(Pixel *pixel)
+//Energy luminosity(Pixel *pixel)
 //{
 #define luminosity(p) (R_SENS * (p).R + G_SENS * (p).G + B_SENS * (p).B)
 //}
@@ -110,13 +110,13 @@ void free_matrices(Sobel *weights)
 /**
  * Calculates the gradient of a pixel
  */
-double gradient(PPMImage *image, int i, int j, WeightMatrix *G)
+Energy gradient(PPMImage *image, int i, int j, WeightMatrix *G)
 {
     int k = i - (G->height / 2);
     int l = j - (G->width / 2);
 
     int x, y;
-    double g = 0;
+    Energy g = 0;
 
     /* G(xy) gradient */
     for(int m = 0; m < G->height; m++)
@@ -142,7 +142,7 @@ double gradient(PPMImage *image, int i, int j, WeightMatrix *G)
 void sobel_calc(PPMImage *image, int y, int x, Sobel *sobel)
 {
     /* Coordinates of the gradient vector */
-    double gx, gy, energy;
+    Energy gx, gy, energy;
     gx = gradient(image, y, x, &(sobel->Gx));
     gy = gradient(image, y, x, &(sobel->Gy));
     energy = energy(gx, gy);

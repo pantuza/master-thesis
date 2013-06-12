@@ -15,6 +15,8 @@
 /* Maximum line size of a PPM number string */
 #define NUMBER_BUFFER_SIZE 16
 
+typedef double Energy;
+#define ENERGY_FORMAT "%lf"
 
 /* Struct representing one pixel with its RGB values */
 typedef struct
@@ -22,7 +24,7 @@ typedef struct
     int R;
     int G;
     int B;
-    double energy;
+    Energy energy;
 } Pixel;
 
 
@@ -33,7 +35,7 @@ typedef struct
     int width;
     int height;
     int intensity;
-    double energy;
+    Energy energy;
     Pixel **pixels;
 } PPMImage;
 
