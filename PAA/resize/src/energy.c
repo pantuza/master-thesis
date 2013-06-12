@@ -1,10 +1,10 @@
 #include <math.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "energy.h"
 #include "ppm.h"
 #include "file.h"
-
 
 /**
  * Reads from file the dimensions of a weight matrix
@@ -142,10 +142,13 @@ double gradient(PPMImage *image, int i, int j, WeightMatrix *G)
 void sobel_calc(PPMImage *image, int y, int x, Sobel *sobel)
 {
     /* Coordinates of the gradient vector */
-    double gx, gy;
+    double gx, gy, energy;
     gx = gradient(image, y, x, &(sobel->Gx));
     gy = gradient(image, y, x, &(sobel->Gy));
-    image->pixels[y][x].energy = energy(gx, gy);
+    energy = energy(gx, gy);
+    image->pixels[y][x].energy = energy;
+    if (image->energy < energy)
+        image->energy = energy;
 }
 
 
@@ -154,9 +157,11 @@ void sobel_calc(PPMImage *image, int y, int x, Sobel *sobel)
  */
 void energise(PPMImage *image, char *matrix)
 {
+    image->energy = 0;
     Sobel sobel = load_matrices(matrix);
     for(int y = 0; y < image->height; y++)
         for(int x = 0; x < image->width; x++)
             sobel_calc(image, y, x, &sobel);
     free_matrices(&sobel);
+    fprintf(stderr, "image energy: %f\n", image->energy);
 }

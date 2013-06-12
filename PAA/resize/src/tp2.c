@@ -45,8 +45,9 @@ void usage()
             "\t-h height\tResize image in height pixels\n"
             "\t-m file\t\tResize image using the file with "
             "the weight matrices\n"
-            "\t-o file\t\tRedirect stdout to file (to test)\n"
-            "\t-e file\t\tSave energised image (to test)\n"
+            "\t-o file\t\tRedirect stdout to file (test)\n"
+            "\t-o file\t\tSave image preview to file (test)\n"
+            "\t-e file\t\tSave energised image (test)\n"
             "--\n");
     exit(EXIT_FAILURE);
 }
@@ -63,6 +64,7 @@ void fill_default(Options *resize)
     resize->energisedfile = NULL;
     resize->ppmfile = NULL;
     resize->output = NULL;
+    resize->outputPreview = NULL;
 }
 
 
@@ -94,6 +96,9 @@ void opt_parser(int opt, Options *resize)
         case 'o':
             resize->output = optarg;
             break;
+        case 'p':
+            resize->outputPreview = optarg;
+            break;
         case ':':
             fprintf(stderr, "missing argument from option -%c\n", optopt);
             usage();
@@ -113,7 +118,7 @@ void opt_parser(int opt, Options *resize)
 void arg_parser(int argc, char *argv[], Options *resize)
 {
     int opt;
-    char *options = ":gdw:h:m:e:o:";
+    char *options = ":gdw:h:m:e:o:p:";
 
     fill_default(resize);
 
@@ -147,11 +152,12 @@ void resize_image(PPMImage *image, Options *resize)
 int main(int argc, char *argv[])
 {
     //setvbuf(stdout, NULL, _IOFBF, FILE_BUFFER_SIZE);
+    setvbuf(stdout, NULL, _IONBF, 0);
     setvbuf(stderr, NULL, _IONBF, 0);
 
     // Program execution options
-    Options resize;
-    arg_parser(argc, argv, &resize);
+    Options opt;
+    arg_parser(argc, argv, &opt);
     
     /* Timers */
     clock_t start;
@@ -161,7 +167,7 @@ int main(int argc, char *argv[])
 
     /* Imports input file */
     start = clock();
-    FILE *fileIn = openfile(resize.ppmfile, READ_MODE);
+    FILE *fileIn = openfile(opt.ppmfile, READ_MODE);
     PPMImage img = import(fileIn);
     closefile(fileIn);
     end = clock();
@@ -171,33 +177,15 @@ int main(int argc, char *argv[])
     start = clock();
     // Meanwhile, at stardate 5906.4, in transporter room...
     // KIRK: All right, Mister Scott, energise.
-    energise(&img, resize.matrix);
+    energise(&img, opt.matrix);
     end = clock();
     fprintf(stderr, "Energy calculation in %f seconds\n", timediff(end, start));
 
-    /* Resize the image */
-    start = clock();
-    resize_image(&img, &resize);
-    end = clock();
-    fprintf(stderr, "Resize image in %f seconds\n", timediff(end, start));
-    
-    /* exports to output file */
-    start = clock();
-    if (resize.output != NULL)
-    {
-        FILE *fileOut = openfile(resize.output, WRITE_MODE);
-        export(fileOut, &img);
-        closefile(fileOut);
-    }
-    else
-        export(stdout, &img);
-    end = clock();
-    fprintf(stderr, "Export in %f seconds\n", timediff(end, start));
-
-    if (resize.energisedfile != NULL)
+    /* exports grayscale to output file */
+    if (opt.energisedfile != NULL)
     {
         start = clock();
-        FILE *fileGray = openfile(resize.energisedfile, WRITE_MODE);
+        FILE *fileGray = openfile(opt.energisedfile, WRITE_MODE);
         export_energy(fileGray, &img);
         closefile(fileGray);
         end = clock();
@@ -205,8 +193,45 @@ int main(int argc, char *argv[])
                 timediff(end, start));
     }
 
+    /* Resize (calculation) the image */
+    start = clock();
+    resize_image(&img, &opt);
+    end = clock();
+    fprintf(stderr, "Resize (calculation) image in %f seconds\n", timediff(end, start));
+
+    /* Resize (copy) image  */
+    start = clock();
+    PPMImage newImg = resize(&img, opt.width, opt.height);
+    end = clock();
+    fprintf(stderr, "Resize (copy) image in %f seconds\n", timediff(end, start));
+    
+    /* exports resized image to output file */
+    start = clock();
+    if (opt.output != NULL)
+    {
+        FILE *fileOut = openfile(opt.output, WRITE_MODE);
+        export(fileOut, &newImg);
+        closefile(fileOut);
+    }
+    else
+        export(stdout, &newImg);
+    end = clock();
+    fprintf(stderr, "Export resized in %f seconds\n", timediff(end, start));
+
+    /* exports preview to output file */
+    if (opt.outputPreview != NULL)
+    {
+        start = clock();
+        FILE *fileOut = openfile(opt.outputPreview, WRITE_MODE);
+        export(fileOut, &img);
+        closefile(fileOut);
+        end = clock();
+        fprintf(stderr, "Export preview in %f seconds\n", timediff(end, start));
+    }
+
     /* deallocate variables */
     free_pixels(&img);
+    free_pixels(&newImg);
     
     return EXIT_SUCCESS;
 }

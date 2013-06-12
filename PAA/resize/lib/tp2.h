@@ -29,6 +29,8 @@ typedef struct
     char *energisedfile;
     // Output file with the resized image
     char *output;
+    // Output file with the seam carving resized image
+    char *outputPreview;
 } Options;
 
 #endif

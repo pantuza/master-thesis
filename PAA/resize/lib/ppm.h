@@ -33,6 +33,7 @@ typedef struct
     int width;
     int height;
     int intensity;
+    double energy;
     Pixel **pixels;
 } PPMImage;
 
@@ -49,5 +50,7 @@ void fill_pixels_data(FILE *, char *, int *, PPMImage *);
 PPMImage import(FILE *);
 void export(FILE *, PPMImage *);
 void export_energy(FILE *, PPMImage *);
+
+PPMImage resize(PPMImage *, int, int);
 
 #endif

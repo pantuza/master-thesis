@@ -117,7 +117,7 @@ int dijkstra(Graph *graph, int source,
     previous[source] = NONE;
     int exists = 1;
 
-//    printf("source: %d, distance: %f\n", source, distance[source]);
+    //printf("source: %d, distance: %f\n", source, distance[source]);
 
     while(exists)
     {
@@ -125,11 +125,11 @@ int dijkstra(Graph *graph, int source,
         //visited[vertex] = 1;
         exists--;
 
-//        printf("exists: %d, vertex: %d, distance: %f, energy:%f \n",
- //               exists, vertex,distance[vertex],graph->vertexes[vertex].pixel->energy);
+        //printf("exists: %d, vertex: %d, distance: %f, energy:%f \n",
+        //        exists, vertex,distance[vertex],graph->vertexes[vertex].pixel->energy);
         v = 0;
         adjacent = graph->vertexes[vertex].adj[v++];
-//        printf(" -- adj[%d]:%d, distance: %f\n", v, adjacent, distance[adjacent]);
+        //printf(" -- adj[%d]:%d, distance: %f\n", v, adjacent, distance[adjacent]);
 
         if(adjacent == NONE) return vertex;
 
@@ -137,20 +137,20 @@ int dijkstra(Graph *graph, int source,
         {
             if(distance[adjacent] != VISITED) {
                 exists++;
-//                printf(" ++ dist[%d]: %f, prev=%d\n", adjacent, distance[adjacent], previous[adjacent]);
+                //printf(" ++ dist[%d]: %f, prev=%d\n", adjacent, distance[adjacent], previous[adjacent]);
             }
-            else
-//                printf(" -- dist[%d]: %f, prev=%d\n", adjacent, distance[adjacent], previous[adjacent]);
+            //else
+                //printf(" -- dist[%d]: %f, prev=%d\n", adjacent, distance[adjacent], previous[adjacent]);
 
             alt = distance[vertex] + graph->vertexes[adjacent].pixel->energy;
-//            printf(" -- alt: %f\n", alt);
+            //printf(" -- alt: %f\n", alt);
             if(alt < distance[adjacent])
             {
                 distance[adjacent] = alt;
                 previous[adjacent] = vertex;
             }
             adjacent = graph->vertexes[vertex].adj[v++];
-//            printf(" -- adj[%d]:%d\n", v, adjacent);
+            //printf(" -- adj[%d]:%d\n", v, adjacent);
         }
         distance[vertex] = VISITED;
     }
@@ -177,46 +177,54 @@ void graph_resize(PPMImage *image, int width, int height)
     init_graph(&graph, image);
 
     int i, x, y;
-    double *distance = malloc(graph.list_size * sizeof(double));
-    int *previous = malloc(graph.list_size * sizeof(int));
-    int *path = malloc(image->height * sizeof(int));
-    double minimum = MAX_DISTANCE;
+    double *distance = calloc(graph.list_size, sizeof(double));
+    int *previous = calloc(graph.list_size, sizeof(int));
+    int *path = calloc(image->height, sizeof(int));
+    double minimum;
+    double max_energy = image->energy * image->height;
 
-    for(x = 0; x < image->width; x++)
-    {
-        i = POS_XY(image,x,0);
-        printf("i: %d\n", i);
-        int dest = dijkstra(&graph, i, distance, previous);
+    if (width > image->width)
+        width = image->width;
 
-        if(dest == NONE)
+    do {
+        minimum = MAX_DISTANCE;
+        for(x = 0; x < image->width; x++)
         {
-            fprintf(stderr, "There is no path\n");
-            exit(EXIT_FAILURE);
-        }
+            i = POS_XY(image,x,0);
+            //printf("w: %d, i: %d\n", width, i);
+            int dest = dijkstra(&graph, i, distance, previous);
 
-        printf("dest: %d, distance: %f\n", dest, distance[dest]);
-        if (distance[dest] < minimum)
-        {
-            minimum = distance[dest];
-            fprintf(stderr, "Minimum distance = %f\n", minimum);
-            y = 0;
-            while(dest != i)
+            if(dest == NONE)
             {
-                printf("%d,", dest);
-                path[y++] = dest;
-                dest = previous[dest];
+                fprintf(stderr, "There is no path\n");
+                exit(EXIT_FAILURE);
             }
-            path[y++] = dest;
-            printf("%d\n", dest);
-        }
-    }
 
-    for(y = 0; y < image->height; y++)
-    {
-        graph.vertexes[path[y]].pixel->R = 255;
-        graph.vertexes[path[y]].pixel->G = 0;
-        graph.vertexes[path[y]].pixel->B = 0;
-    }
+            //printf("dest: %d, distance: %f\n", dest, distance[dest]);
+            if (distance[dest] < minimum)
+            {
+                minimum = distance[dest];
+                //fprintf(stderr, "Minimum distance = %f\n", minimum);
+                y = 0;
+                while(dest != i)
+                {
+                    //printf("%d,", dest);
+                    path[y++] = dest;
+                    dest = previous[dest];
+                }
+                path[y++] = dest;
+                //printf("%d\n", dest);
+            }
+        }
+
+        for(y = 0; y < image->height; y++)
+        {
+            graph.vertexes[path[y]].pixel->R = 255;
+            graph.vertexes[path[y]].pixel->G = 0;
+            graph.vertexes[path[y]].pixel->B = 0;
+            graph.vertexes[path[y]].pixel->energy = max_energy;
+        }
+    } while(--width);
 
     free_graph(&graph);
     free(distance);
