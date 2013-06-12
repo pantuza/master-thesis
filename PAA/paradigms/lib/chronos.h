@@ -2,7 +2,7 @@
  * chronos.h
  *
  *  Created on: 12/05/2013
- *      Author: dev
+ *      Author: Gustavo Pantuza
  */
 
 #ifndef CHRONOS_H_

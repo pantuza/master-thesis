@@ -4,7 +4,7 @@
  * priority.h
  *
  *  Created on: 12/06/2013
- *      Author: dev
+ *      Author: Gustavo Pantuza
  */
 
 #include "ppm.h"
