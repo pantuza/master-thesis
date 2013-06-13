@@ -30,8 +30,8 @@ void init_graph(Graph *graph, PPMImage *image)
     for(y = 0; y < image->height - 1; y++)
     {
         v = POS_XY(image,x,y);
-        //printf("|-POS(%d,%d): %d\n",x,y,v);
-        //printf("----adj: %d %d\n", POS_XY(image,x,y+1), POS_XY(image,x+1,y+1));
+        //fprintf(stderr,"|-POS(%d,%d): %d\n",x,y,v);
+        //fprintf(stderr,"----adj: %d %d\n", POS_XY(image,x,y+1), POS_XY(image,x+1,y+1));
         graph->vertexes[v].pixel = &(image->pixels[y][0]);
         graph->vertexes[v].adj[0] = POS_XY(image,x,y+1);
         graph->vertexes[v].adj[1] = POS_XY(image,x+1,y+1);
@@ -44,8 +44,8 @@ void init_graph(Graph *graph, PPMImage *image)
         for(x = 1; x < image->width - 1; x++)
         {
             v = POS_XY(image,x,y);
-            //printf("--POS(%d,%d): %d\n",x,y,v);
-            //printf("----adj: %d %d %d\n",POS_XY(image,x-1,y+1), POS_XY(image,x,y+1), POS_XY(image,x+1,y+1));
+            //fprintf(stderr,"--POS(%d,%d): %d\n",x,y,v);
+            //fprintf(stderr,"----adj: %d %d %d\n",POS_XY(image,x-1,y+1), POS_XY(image,x,y+1), POS_XY(image,x+1,y+1));
             graph->vertexes[v].pixel = &(image->pixels[y][x]);
             graph->vertexes[v].adj[0] = POS_XY(image,x-1,y+1);
             graph->vertexes[v].adj[1] = POS_XY(image,x,y+1);
@@ -58,8 +58,8 @@ void init_graph(Graph *graph, PPMImage *image)
     for(y = 0; y < image->height - 1; y++)
     {
         v = POS_XY(image,x,y);
-        //printf("-|POS(%d,%d): %d\n",x,y,v);
-        //printf("----adj: %d %d\n",POS_XY(image,x-1,y+1), POS_XY(image,x,y+1));
+        //fprintf(stderr,"-|POS(%d,%d): %d\n",x,y,v);
+        //fprintf(stderr,"----adj: %d %d\n",POS_XY(image,x-1,y+1), POS_XY(image,x,y+1));
         graph->vertexes[v].pixel = &(image->pixels[y][x]);
         graph->vertexes[v].adj[0] = POS_XY(image,x-1,y+1);
         graph->vertexes[v].adj[1] = POS_XY(image,x,y+1);
@@ -72,8 +72,8 @@ void init_graph(Graph *graph, PPMImage *image)
     for(x = 0; x < image->width; x++)
     {
         v = POS_XY(image,x,y);
-        //printf("__POS(%d,%d): %d\n",x,y,v);
-        //printf("----adj: NONE\n");
+        //fprintf(stderr,"__POS(%d,%d): %d\n",x,y,v);
+        //fprintf(stderr,"----adj: NONE\n");
         graph->vertexes[v].pixel = &(image->pixels[y][x]);
         graph->vertexes[v].adj[0] = NONE;
         graph->vertexes[v].adj[1] = NONE;
@@ -100,7 +100,7 @@ int dijkstra(Graph *graph, int source,
     Energy alt;
     Energy visited     = graph->limit;
     Energy no_visited  = visited - 2;
-    DEBUG1(printf("visited: %f, no_visite: %f\n", visited, no_visited));
+    DEBUG1(fprintf(stderr,"visited: %f, no_visite: %f\n", visited, no_visited));
 
     for(v = 0; v < graph->list_size; distance[v++] = no_visited);
     previous[source] = NONE;
@@ -112,19 +112,19 @@ int dijkstra(Graph *graph, int source,
     priq_init(priq, graph->list_size);
     priq_push(priq, source, graph->vertexes[source].pixel->energy);
 
-    DEBUG1(printf("source: %d, distance: %f\n", source, distance[source]));
+    DEBUG1(fprintf(stderr,"source: %d, distance: %f\n", source, distance[source]));
 
     int dest = NONE;
     while(priq_size(priq))
     {
         vertex = priq_pop(priq);
 
-        DEBUG1(printf("exists: %d, vertex: %d, distance: %f, energy:%f \n",
+        DEBUG1(fprintf(stderr,"exists: %d, vertex: %d, distance: %f, energy:%f \n",
                 priq_size(priq), vertex,distance[vertex],
                 graph->vertexes[vertex].pixel->energy));
         v = 0;
         adjacent = graph->vertexes[vertex].adj[v++];
-        DEBUG1(printf(" -- adj[%d]:%d, distance: %f\n", v, adjacent, distance[adjacent]));
+        DEBUG1(fprintf(stderr," -- adj[%d]:%d, distance: %f\n", v, adjacent, distance[adjacent]));
 
         if(adjacent == NONE)
         {
@@ -145,7 +145,7 @@ int dijkstra(Graph *graph, int source,
             if(distance[adjacent] <= visited)
             {
                 alt = distance[vertex] + graph->vertexes[adjacent].pixel->energy;
-                DEBUG1(printf(" -- alt: %f < %f\n", alt, distance[adjacent]));
+                DEBUG1(fprintf(stderr," -- alt: %f < %f\n", alt, distance[adjacent]));
                 if(alt < distance[adjacent])
                 {
                     distance[adjacent] = alt;
@@ -154,7 +154,7 @@ int dijkstra(Graph *graph, int source,
                 }
             }
             adjacent = graph->vertexes[vertex].adj[v++];
-            DEBUG1(printf(" -- adj[%d]:%d\n", v, adjacent));
+            DEBUG1(fprintf(stderr," -- adj[%d]:%d\n", v, adjacent));
         } while(adjacent != NONE);
         distance[vertex] = visited;
     }
@@ -173,8 +173,8 @@ void graph_resize(PPMImage *image, int width, int height)
     DEBUG2(
             for(int y = 0; y < image->height; y++) {
                 for(int x = 0; x < image->width; x++)
-                    printf("%f ", image->pixels[y][x].energy);
-                printf("\n");
+                    fprintf(stderr,"%f ", image->pixels[y][x].energy);
+                fprintf(stderr,"\n");
             }
     );
 
@@ -195,11 +195,11 @@ void graph_resize(PPMImage *image, int width, int height)
 
     while(width--)
     {
-        shortest_distance = graph.limit;
+        shortest_distance = graph.limit + 1;
         for(x = 0; x < image->width; x++)
         {
             i = POS_XY(image,x,0);
-            DEBUG(printf("w: %d, x: %d/%dx%d, i: %d\n",
+            DEBUG(fprintf(stderr,"w: %d, x: %d/%dx%d, i: %d\n",
                     width, x, image->width, image->height, i));
 
 #ifdef OPT_GRAPH_IGNORE_CARVING
@@ -226,7 +226,7 @@ void graph_resize(PPMImage *image, int width, int height)
                     exit(EXIT_FAILURE);
                 }
 
-            DEBUG(printf("dest: %d, distance: %f\n", dest, distance[dest]));
+            DEBUG(fprintf(stderr,"dest: %d, distance: %f\n", dest, distance[dest]));
             if (distance[dest] < shortest_distance)
             {
                 shortest_distance = distance[dest];
@@ -235,7 +235,7 @@ void graph_resize(PPMImage *image, int width, int height)
                 y = 0;
                 while(dest != i)
                 {
-                    DEBUG(printf("%d,", dest));
+                    DEBUG(fprintf(stderr,"%d,", dest));
                     path[y++] = dest;
                     dest = previous[dest];
                 }
@@ -246,7 +246,7 @@ void graph_resize(PPMImage *image, int width, int height)
                                 "Path length!: %d\n (must to be %d)\n",
                                 y, image->height)
                 );
-                DEBUG(printf("%d\n", dest));
+                DEBUG(fprintf(stderr,"%d\n", dest));
             }
         }
 

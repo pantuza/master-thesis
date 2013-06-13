@@ -142,7 +142,7 @@ void arg_parser(int argc, char *argv[], Options *resize)
 /* Resize the image using graph or dynamic method */
 void resize_image(PPMImage *image, Options *resize)
 {
-    printf("method: %d\n", resize->method);
+    fprintf(stderr,"method: %d\n", resize->method);
     if(resize->method == GRAPH)
         graph_resize(image, resize->width, resize->height);
     else 
