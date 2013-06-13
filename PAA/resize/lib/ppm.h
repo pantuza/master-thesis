@@ -15,6 +15,9 @@
 /* Maximum line size of a PPM number string */
 #define NUMBER_BUFFER_SIZE 16
 
+/* Energy type (float or double?)
+ * http://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html
+ */
 typedef double Energy;
 #define ENERGY_FORMAT "%lf"
 

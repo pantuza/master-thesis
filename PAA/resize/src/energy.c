@@ -5,6 +5,7 @@
 #include "energy.h"
 #include "ppm.h"
 #include "file.h"
+#include "debug.h"
 
 /**
  * Reads from file the dimensions of a weight matrix
@@ -51,8 +52,8 @@ void fill_weights_data(FILE *file, WeightMatrix *weight)
             fscanf(file, ENERGY_FORMAT, &(weight->matrix[y][x]));
             checkTotalWeight += weight->matrix[y][x];
         }
-    if (checkTotalWeight)
-        fprintf(stderr, "ASSERT: total weight of sobrel matrix is not zero!");
+    ASSERT_FALSE(checkTotalWeight,
+        fprintf(stderr, "ASSERT: total weight of Sobel matrix is not zero!"));
 }
 
 /**
@@ -163,5 +164,4 @@ void energise(PPMImage *image, char *matrix)
         for(int x = 0; x < image->width; x++)
             sobel_calc(image, y, x, &sobel);
     free_matrices(&sobel);
-    fprintf(stderr, "image energy: %f\n", image->energy);
 }

@@ -8,10 +8,9 @@
 
 
 #include <time.h>
-#include <unistd.h>
 #include <string.h>
-#include <unistd.h>
 #include <getopt.h>
+#include <unistd.h>
 
 #include "tp2.h"
 #include "file.h"
@@ -19,6 +18,7 @@
 #include "graph.h"
 #include "dynamic.h"
 #include "energy.h"
+#include "debug.h"
 
 
 /* Time Function */
@@ -142,7 +142,7 @@ void arg_parser(int argc, char *argv[], Options *resize)
 /* Resize the image using graph or dynamic method */
 void resize_image(PPMImage *image, Options *resize)
 {
-    fprintf(stderr,"method: %d\n", resize->method);
+    DEBUG(fprintf(stderr,"method: %d\n", resize->method));
     if(resize->method == GRAPH)
         graph_resize(image, resize->width, resize->height);
     else 
@@ -153,7 +153,6 @@ void resize_image(PPMImage *image, Options *resize)
 int main(int argc, char *argv[])
 {
     //setvbuf(stdout, NULL, _IOFBF, FILE_BUFFER_SIZE);
-    setvbuf(stdout, NULL, _IONBF, 0);
     setvbuf(stderr, NULL, _IONBF, 0);
 
     // Program execution options
@@ -172,7 +171,7 @@ int main(int argc, char *argv[])
     PPMImage img = import(fileIn);
     closefile(fileIn);
     end = clock();
-    fprintf(stderr, "Import in %f seconds\n", timediff(end, start));
+    INFO(fprintf(stderr, "Import in %f seconds\n", timediff(end, start)));
 
     /* Calculate the energy of image pixels */
     start = clock();
@@ -180,7 +179,8 @@ int main(int argc, char *argv[])
     // KIRK: All right, Mister Scott, energise.
     energise(&img, opt.matrix);
     end = clock();
-    fprintf(stderr, "Energy calculation in %f seconds\n", timediff(end, start));
+    INFO(fprintf(stderr, "Energy calculation in %f seconds\n",
+            timediff(end, start)));
 
     /* exports grayscale to output file */
     if (opt.energisedfile != NULL)
@@ -190,21 +190,23 @@ int main(int argc, char *argv[])
         export_energy(fileGray, &img);
         closefile(fileGray);
         end = clock();
-        fprintf(stderr, "Export grayscale (energised image) in %f seconds\n",
-                timediff(end, start));
+        INFO(fprintf(stderr, "Export energised image in %f seconds\n",
+                timediff(end, start)));
     }
 
     /* Resize (calculation) the image */
     start = clock();
     resize_image(&img, &opt);
     end = clock();
-    fprintf(stderr, "Resize (calculation) image in %f seconds\n", timediff(end, start));
+    INFO(fprintf(stderr, "Resize (calculation) image in %f seconds\n",
+            timediff(end, start)));
 
     /* Resize (copy) image  */
     start = clock();
     PPMImage newImg = resize(&img, opt.width, opt.height);
     end = clock();
-    fprintf(stderr, "Resize (copy) image in %f seconds\n", timediff(end, start));
+    INFO(fprintf(stderr, "Resize (copy) image in %f seconds\n",
+            timediff(end, start)));
     
     /* exports resized image to output file */
     start = clock();
@@ -217,7 +219,8 @@ int main(int argc, char *argv[])
     else
         export(stdout, &newImg);
     end = clock();
-    fprintf(stderr, "Export resized in %f seconds\n", timediff(end, start));
+    INFO(fprintf(stderr, "Export resized in %f seconds\n",
+            timediff(end, start)));
 
     /* exports preview to output file */
     if (opt.outputPreview != NULL)
@@ -227,7 +230,8 @@ int main(int argc, char *argv[])
         export(fileOut, &img);
         closefile(fileOut);
         end = clock();
-        fprintf(stderr, "Export preview in %f seconds\n", timediff(end, start));
+        INFO(fprintf(stderr, "Export preview in %f seconds\n",
+                timediff(end, start)));
     }
 
     /* deallocate variables */
