@@ -36,9 +36,10 @@ help:
 	@echo -e "make help \t- print this help message"
 	@echo -e "--\n"
 
-build:	$(BIN)/$(program)
+all:	$(BIN)/$(program)
 
-$(BIN)/$(program): $(SRC)/$(program).c $(OBJ)/file.o $(OBJ)/ppm.o $(OBJ)/dynamic.o $(OBJ)/graph.o $(OBJ)/energy.o
+$(BIN)/$(program): $(SRC)/$(program).c $(OBJ)/priority.o $(OBJ)/file.o \
+	$(OBJ)/ppm.o $(OBJ)/dynamic.o $(OBJ)/graph.o $(OBJ)/energy.o
 	$(CC) -o $@ $+ $(CFLAGS)
 	@echo -e "\nBinary file placed at $(BIN)/$(program)"
 
