@@ -8,13 +8,12 @@
 #define G_SENS 0.59
 #define B_SENS 0.11
 
-
 /* Weight matrix used on Sobel Calculation */
 typedef struct
 {
     int width;
     int height;
-    double **matrix;
+    Energy **matrix;
 } WeightMatrix;
 
 /* The Sobel Type with two weight matrices */ 

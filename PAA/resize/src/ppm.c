@@ -297,3 +297,33 @@ void export_energy(FILE *file, PPMImage *image)
         }
     }
 }
+
+PPMImage resize(PPMImage *source, int width, int height)
+{
+    PPMImage image;
+    strncpy(image.magic_string, source->magic_string, MAGIC_STRING_SIZE);
+    image.intensity = source->intensity;
+    image.height = source->height - height;
+    image.width = source->width - width;
+    image.energy  = 0;
+    allocate_pixels(&image);
+    int w;
+    for(int y = 0; y < source->height; y++)
+    {
+        w = 0;
+        for(int x = 0; x < source->width; x++)
+            if (source->pixels[y][x].energy <= source->energy)
+            {
+                // this must don't happening
+                // assert(w < image.width)
+                if(w >= image.width)
+                    break;
+                //
+                image.pixels[y][w] = source->pixels[y][x];
+                if (image.energy < image.pixels[y][w].energy)
+                    image.energy = image.pixels[y][w].energy;
+                w++;
+            }
+    }
+    return image;
+}

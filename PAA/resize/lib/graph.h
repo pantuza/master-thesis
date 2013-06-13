@@ -4,8 +4,6 @@
 #include "ppm.h"
 #include "file.h"
 
-
-
 /* Struct of a Vertex */
 typedef struct Vertex
 {
@@ -18,6 +16,8 @@ typedef struct Vertex
 typedef struct
 {
     int list_size;
+    Energy limit;
+    Energy energy;
     Vertex *vertexes;
 } Graph;
 

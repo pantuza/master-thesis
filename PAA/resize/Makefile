@@ -24,7 +24,7 @@ program := tp2
 CC := cc
 
 # Libraries
-CFLAGS := -I$(LIB) -g -std=gnu99 -lm -Wall
+CFLAGS := -I$(LIB) -g -std=gnu99 -lm -Wall -O3
 
 default: help
 
