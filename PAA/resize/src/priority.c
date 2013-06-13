@@ -21,7 +21,7 @@ void priq_init(pri_queue q, int size)
 
 }
 
-void priq_push(pri_queue q, data_t data, key_t pri)
+void priq_push(pri_queue q, data_t data, priq_key_t pri)
 {
     q_elem_t *b;
     int n, m;
