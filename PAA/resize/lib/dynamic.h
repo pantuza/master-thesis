@@ -6,8 +6,8 @@
 
 typedef struct Seam
 {
-    double total;
-    Pixel pixel;
+    Energy total;
+    int dx;
 } Seam;
 
 
