@@ -39,7 +39,7 @@ help:
 all:	$(BIN)/$(program)
 
 $(BIN)/$(program): $(SRC)/$(program).c $(OBJ)/priority.o $(OBJ)/file.o \
-	$(OBJ)/ppm.o $(OBJ)/dynamic.o $(OBJ)/graph.o $(OBJ)/energy.o
+	$(OBJ)/ppm.o $(OBJ)/dynamic.o $(OBJ)/graph.o $(OBJ)/energy.o $(OBJ)/color.o
 	$(CC) -o $@ $+ $(CFLAGS)
 	@echo -e "\nBinary file placed at $(BIN)/$(program)"
 
