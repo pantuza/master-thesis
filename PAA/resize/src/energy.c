@@ -21,12 +21,12 @@ void read_dimension(FILE *file, WeightMatrix *matrix)
  */
 void matrix_allocation(WeightMatrix *weight)
 {
-   int first_dimension = weight->height * sizeof(int *);
-   int second_dimension = weight->width * sizeof(Energy);
+   int first_dimension = weight->width * sizeof(int *);
+   int second_dimension = weight->height * sizeof(Energy);
 
    weight->matrix = malloc(first_dimension);
-   for(int y = 0; y < weight->height; y++)
-       weight->matrix[y] = malloc(second_dimension);
+   for(int x = 0; x < weight->width; x++)
+       weight->matrix[x] = malloc(second_dimension);
 }
 
 /**
@@ -34,8 +34,8 @@ void matrix_allocation(WeightMatrix *weight)
  */
 void matrix_deallocation(WeightMatrix *weight)
 {
-   for(int y = 0; y < weight->height; y++)
-       free(weight->matrix[y]);
+   for(int x = 0; x < weight->width; x++)
+       free(weight->matrix[x]);
    free(weight->matrix);
 }
 
@@ -49,8 +49,8 @@ void fill_weights_data(FILE *file, WeightMatrix *weight)
     for(int y = 0; y < weight->height; y++)
         for(int x = 0; x < weight->width; x++)
         {
-            fscanf(file, ENERGY_FORMAT, &(weight->matrix[y][x]));
-            checkTotalWeight += weight->matrix[y][x];
+            fscanf(file, ENERGY_FORMAT, &(weight->matrix[x][y]));
+            checkTotalWeight += weight->matrix[x][y];
         }
     ASSERT_FALSE(checkTotalWeight,
         fprintf(stderr, "ASSERT: total weight of Sobel matrix is not zero!"));
@@ -120,18 +120,18 @@ Energy gradient(PPMImage *image, int i, int j, WeightMatrix *G)
     Energy g = 0;
 
     /* G(xy) gradient */
-    for(int m = 0; m < G->height; m++)
-        for(int n = 0; n < G->width; n++)
+    for(int my = 0; my < G->height; my++)
+        for(int mx = 0; mx < G->width; mx++)
         {
-            y = abs(k+m);
-            x = abs(l+n);
+            y = abs(k+my);
+            x = abs(l+mx);
 
             if (y >= image->height)
                 y = 2*image->height - y - 1;
             if (x >= image->width)
                 x = 2*image->width - x - 1;
 
-            g += G->matrix[m][n] * luminosity(image->pixels[x][y]);
+            g += G->matrix[mx][my] * luminosity(image->pixels[x][y]);
         }
     return g;
 }

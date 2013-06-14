@@ -319,7 +319,7 @@ PPMImage resize(PPMImage *source, int width, int height)
                 if(w >= image.width)
                     break;
                 //
-                image.pixels[w][y] = source->pixels[y][x];
+                image.pixels[w][y] = source->pixels[x][y];
                 if (image.energy < image.pixels[w][y].energy)
                     image.energy = image.pixels[w][y].energy;
                 w++;
