@@ -48,7 +48,7 @@ void init_graph(Graph *graph, PPMImage *image)
     for(y = 0; y < image->height - 1; y++)
     {
         v = XY2POS(image,x,y);
-        graph->vertexes[v].pixel = &(image->pixels[y][0]);
+        graph->vertexes[v].pixel = &(image->pixels[0][y]);
         graph->vertexes[v].adj[LEFT]   = SKIP;
         graph->vertexes[v].adj[MIDDLE] = XY2POS(image,x,y+1);
         graph->vertexes[v].adj[RIGHT]  = XY2POS(image,x+1,y+1);
@@ -60,7 +60,7 @@ void init_graph(Graph *graph, PPMImage *image)
         for(x = 1; x < image->width - 1; x++)
         {
             v = XY2POS(image,x,y);
-            graph->vertexes[v].pixel = &(image->pixels[y][x]);
+            graph->vertexes[v].pixel = &(image->pixels[x][y]);
             graph->vertexes[v].adj[LEFT]   = XY2POS(image,x-1,y+1);
             graph->vertexes[v].adj[MIDDLE] = XY2POS(image,x,y+1);
             graph->vertexes[v].adj[RIGHT]  = XY2POS(image,x+1,y+1);
@@ -72,7 +72,7 @@ void init_graph(Graph *graph, PPMImage *image)
     for(y = 0; y < image->height - 1; y++)
     {
         v = XY2POS(image,x,y);
-        graph->vertexes[v].pixel = &(image->pixels[y][x]);
+        graph->vertexes[v].pixel = &(image->pixels[x][y]);
         graph->vertexes[v].adj[LEFT]   = XY2POS(image,x-1,y+1);
         graph->vertexes[v].adj[MIDDLE] = XY2POS(image,x,y+1);
         graph->vertexes[v].adj[RIGHT]  = NONE;
@@ -84,7 +84,7 @@ void init_graph(Graph *graph, PPMImage *image)
     for(x = 0; x < image->width; x++)
     {
         v = XY2POS(image,x,y);
-        graph->vertexes[v].pixel = &(image->pixels[y][x]);
+        graph->vertexes[v].pixel = &(image->pixels[x][y]);
         graph->vertexes[v].adj[LEFT]   = NONE;
         graph->vertexes[v].adj[MIDDLE] = NONE;
         graph->vertexes[v].adj[RIGHT]  = NONE;

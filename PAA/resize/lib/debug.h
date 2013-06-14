@@ -22,13 +22,13 @@
  * Don't executes Dijkstra algorithm from a start point removed in the past.
  * Surprisingly, this increases the runtime... Why?
  */
-#define OPT_GRAPH_IGNORE_CARVED_POINT
+//#define OPT_GRAPH_IGNORE_CARVED_POINT
 
 /*
  * Terminates Dijkstra algorithm if it's reach a distance bigger than
  * the shortest path. Great results!
  */
-#define OPT_GRAPH_SHORTEST_PATH_BREAK
+//#define OPT_GRAPH_SHORTEST_PATH_BREAK
 
 /*
  * Remove vertices of shortest path from graph to perfect

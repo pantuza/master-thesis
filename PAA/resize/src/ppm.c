@@ -171,7 +171,7 @@ void get_magic_string(FILE *file, PPMImage *image)
  */
 void allocate_pixels(PPMImage *image)
 {
-    int first_dimension = image->height * sizeof(int *);
+    int first_dimension = image->width * sizeof(int *);
     int second_dimension = (image->width * image->height) * sizeof(Pixel);
 
     // Allocate consecutive memory
@@ -184,11 +184,11 @@ void allocate_pixels(PPMImage *image)
     }
 
     /* First data line (modifying pointers) */
-    image->pixels[0] = (Pixel *)(image->pixels + image->height);
+    image->pixels[0] = (Pixel *)(image->pixels + image->width);
 
     /* Subsequent data lines (modifying pointers) */
-    for(int y = 1; y < image->height; y++)
-        image->pixels[y] = (Pixel *)(image->pixels[y-1] + image->width);
+    for(int x = 1; x < image->width; x++)
+        image->pixels[x] = (Pixel *)(image->pixels[x-1] + image->height);
 
 }
 
@@ -210,9 +210,9 @@ void fill_pixels_data(FILE *file, char *buffer, int *pos, PPMImage *image)
     for(int y = 0; y < image->height; y++)
         for(int x = 0; x < image->width; x++)
         {
-            image->pixels[y][x].R = get_number(file, buffer, pos);
-            image->pixels[y][x].G = get_number(file, buffer, pos);
-            image->pixels[y][x].B = get_number(file, buffer, pos);
+            image->pixels[x][y].R = get_number(file, buffer, pos);
+            image->pixels[x][y].G = get_number(file, buffer, pos);
+            image->pixels[x][y].B = get_number(file, buffer, pos);
         }
 }
 
@@ -260,9 +260,9 @@ void export(FILE *file, PPMImage *image)
         for(int x = 0; x < image->width; x++)
         {
             fprintf(file, "%d %d %d \n",
-                    pixels[y][x].R,
-                    pixels[y][x].G,
-                    pixels[y][x].B);
+                    pixels[x][y].R,
+                    pixels[x][y].G,
+                    pixels[x][y].B);
         }
     }
     fprintf(file, "\n");
@@ -290,7 +290,7 @@ void export_energy(FILE *file, PPMImage *image)
         fprintf(file, "# line %d\n", y);
         for(int x = 0; x < image->width; x++)
         {
-            gray = (int)(pixels[y][x].energy);
+            gray = (int)(pixels[x][y].energy);
             if (gray > max)
                 gray = max;
             fprintf(file, "%d\n", gray);
@@ -312,16 +312,16 @@ PPMImage resize(PPMImage *source, int width, int height)
     {
         w = 0;
         for(int x = 0; x < source->width; x++)
-            if (source->pixels[y][x].energy <= source->energy)
+            if (source->pixels[x][y].energy <= source->energy)
             {
                 // this must don't happening
                 // assert(w < image.width)
                 if(w >= image.width)
                     break;
                 //
-                image.pixels[y][w] = source->pixels[y][x];
-                if (image.energy < image.pixels[y][w].energy)
-                    image.energy = image.pixels[y][w].energy;
+                image.pixels[w][y] = source->pixels[y][x];
+                if (image.energy < image.pixels[w][y].energy)
+                    image.energy = image.pixels[w][y].energy;
                 w++;
             }
     }

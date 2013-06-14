@@ -131,7 +131,7 @@ Energy gradient(PPMImage *image, int i, int j, WeightMatrix *G)
             if (x >= image->width)
                 x = 2*image->width - x - 1;
 
-            g += G->matrix[m][n] * luminosity(image->pixels[y][x]);
+            g += G->matrix[m][n] * luminosity(image->pixels[x][y]);
         }
     return g;
 }
@@ -147,7 +147,7 @@ void sobel_calc(PPMImage *image, int y, int x, Sobel *sobel)
     gx = gradient(image, y, x, &(sobel->Gx));
     gy = gradient(image, y, x, &(sobel->Gy));
     energy = energy(gx, gy);
-    image->pixels[y][x].energy = energy;
+    image->pixels[x][y].energy = energy;
     if (image->energy < energy)
         image->energy = energy;
 }
