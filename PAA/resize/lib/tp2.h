@@ -1,3 +1,10 @@
+/*
+ * tp2.h
+ *
+ * @author: Gustavo Pantuza Coelho Pinto
+ * @since: 17.05.2013
+ *
+ */
 #ifndef OPTIONS_H
 #define OPTIONS_H
 
@@ -31,6 +38,8 @@ typedef struct
     char *output;
     // Output file with the seam carving resized image
     char *outputPreview;
+    // Execute test
+    int test;
 } Options;
 
 #endif

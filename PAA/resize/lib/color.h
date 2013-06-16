@@ -1,10 +1,10 @@
 /*
  * color.h
  *
- *  Created on: 13/06/2013
- *      Author: Gustavo Pantuza
+ * @author: Gustavo Pantuza Coelho Pinto
+ * @since: 17.05.2013
+ *
  */
-
 #ifndef COLOR_H_
 #define COLOR_H_
 
@@ -15,8 +15,8 @@ typedef struct {
 
 
 void Hue2RGB(Color *);
-void init_color(Color *, const int);
-void next_color(Color *);
+void color_init(Color *, const int);
+void color_next(Color *);
 
 
-#endif /* COLOR_H_ */
+#endif

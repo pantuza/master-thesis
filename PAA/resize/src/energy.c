@@ -1,3 +1,10 @@
+/*
+ * energy.c
+ *
+ * @author: Gustavo Pantuza Coelho Pinto
+ * @since: 17.05.2013
+ *
+ */
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
@@ -62,7 +69,7 @@ void fill_weights_data(FILE *file, WeightMatrix *weight)
  */
 Sobel load_matrices(char *matrix)
 {
-    FILE *weights_file = openfile(matrix, READ_MODE);
+    FILE *weights_file = file_open(matrix, READ_MODE);
     Sobel weights;
 
     /* Firt Sobel Matrix Gx */
@@ -75,7 +82,7 @@ Sobel load_matrices(char *matrix)
     matrix_allocation(&(weights.Gy));
     fill_weights_data(weights_file, &(weights.Gy));
 
-    closefile(weights_file);
+    file_close(weights_file);
     return weights;
 }
 
@@ -148,8 +155,6 @@ void sobel_calc(PPMImage *image, int y, int x, Sobel *sobel)
     gy = gradient(image, y, x, &(sobel->Gy));
     energy = energy(gx, gy);
     image->pixels[x][y].energy = energy;
-    if (image->energy < energy)
-        image->energy = energy;
 }
 
 
@@ -158,7 +163,6 @@ void sobel_calc(PPMImage *image, int y, int x, Sobel *sobel)
  */
 void energise(PPMImage *image, char *matrix)
 {
-    image->energy = 0;
     Sobel sobel = load_matrices(matrix);
     for(int y = 0; y < image->height; y++)
         for(int x = 0; x < image->width; x++)

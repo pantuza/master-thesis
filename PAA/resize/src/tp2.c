@@ -1,7 +1,7 @@
 /**
  * tp2 program
  *
- * @author: Gustavo Pantuza
+ * @author: Gustavo Pantuza Coelho Pinto
  * @since: 17.05.2013
  *
  */
@@ -19,6 +19,7 @@
 #include "dynamic.h"
 #include "energy.h"
 #include "debug.h"
+#include "resize.h"
 
 
 /* Time Function */
@@ -65,6 +66,7 @@ void fill_default(Options *resize)
     resize->ppmfile = NULL;
     resize->output = NULL;
     resize->outputPreview = NULL;
+    resize->test = 0;
 }
 
 
@@ -99,6 +101,9 @@ void opt_parser(int opt, Options *resize)
         case 'p':
             resize->outputPreview = optarg;
             break;
+        case 't':
+            resize->test = 1;
+            break;
         case ':':
             fprintf(stderr, "missing argument from option -%c\n", optopt);
             usage();
@@ -118,7 +123,7 @@ void opt_parser(int opt, Options *resize)
 void arg_parser(int argc, char *argv[], Options *resize)
 {
     int opt;
-    char *options = ":gdw:h:m:e:o:p:";
+    char *options = ":gdw:h:m:e:o:p:t";
 
     fill_default(resize);
 
@@ -140,13 +145,42 @@ void arg_parser(int argc, char *argv[], Options *resize)
 
 
 /* Resize the image using graph or dynamic method */
-void resize_image(PPMImage *image, Options *resize)
+PPMImage resize_image(PPMImage *image, Options *opt)
 {
-    DEBUG(fprintf(stderr,"method: %d\n", resize->method));
-    if(resize->method == GRAPH)
-        graph_resize(image, resize->width, resize->height);
-    else 
-        dynamic_resize(image, resize->width, resize->height);
+    // convert negative value in percentage reduction
+    if (opt->width < 0)
+    {
+        opt->width = (int)((float)image->width *
+                (float)((float)(abs(opt->width)) / 100.0));
+    }
+    if (opt->height < 0)
+    {
+        opt->height = (int)((float)image->height *
+                (float)((float)(abs(opt->height)) / 100.0));
+    }
+    //
+    if (opt->test)
+        return image_resize_compare(dp_shortest_path, graph_shortest_path,
+                image, opt->width, opt->height);
+    else
+    {
+        DEBUG(fprintf(stderr,"method: %d\n", opt->method));
+        ShortestPath *method;
+        if(opt->method == GRAPH)
+        {
+            INFO(fprintf(stderr, "Method: Dijkstra\n"));
+            method = &graph_shortest_path;
+        }
+        else
+        {
+            INFO(fprintf(stderr, "Method: Dynamic programming\n"));
+            method = &dp_shortest_path;
+        }
+        if (opt->outputPreview == NULL)
+            return image_resize(*method, image, opt->width, opt->height);
+        else
+            return image_resize_preview(*method, image, opt->width, opt->height);
+    }
 }
 
 
@@ -167,9 +201,9 @@ int main(int argc, char *argv[])
 
     /* Imports input file */
     start = clock();
-    FILE *fileIn = openfile(opt.ppmfile, READ_MODE);
-    PPMImage img = import(fileIn);
-    closefile(fileIn);
+    FILE *fileIn = file_open(opt.ppmfile, READ_MODE);
+    PPMImage img = image_import(fileIn);
+    file_close(fileIn);
     end = clock();
     INFO(fprintf(stderr, "Import in %f seconds\n", timediff(end, start)));
 
@@ -186,9 +220,9 @@ int main(int argc, char *argv[])
     if (opt.energisedfile != NULL)
     {
         start = clock();
-        FILE *fileGray = openfile(opt.energisedfile, WRITE_MODE);
-        export_energy(fileGray, &img);
-        closefile(fileGray);
+        FILE *fileGray = file_open(opt.energisedfile, WRITE_MODE);
+        image_export_energy(fileGray, &img);
+        file_close(fileGray);
         end = clock();
         INFO(fprintf(stderr, "Export energised image in %f seconds\n",
                 timediff(end, start)));
@@ -196,28 +230,21 @@ int main(int argc, char *argv[])
 
     /* Resize (calculation) the image */
     start = clock();
-    resize_image(&img, &opt);
+    PPMImage resized = resize_image(&img, &opt);
     end = clock();
     INFO(fprintf(stderr, "Resize (calculation) image in %f seconds\n",
             timediff(end, start)));
 
-    /* Resize (copy) image  */
-    start = clock();
-    PPMImage newImg = resize(&img, opt.width, opt.height);
-    end = clock();
-    INFO(fprintf(stderr, "Resize (copy) image in %f seconds\n",
-            timediff(end, start)));
-    
     /* exports resized image to output file */
     start = clock();
     if (opt.output != NULL)
     {
-        FILE *fileOut = openfile(opt.output, WRITE_MODE);
-        export(fileOut, &newImg);
-        closefile(fileOut);
+        FILE *fileOut = file_open(opt.output, WRITE_MODE);
+        image_export(fileOut, &resized);
+        file_close(fileOut);
     }
     else
-        export(stdout, &newImg);
+        image_export(stdout, &resized);
     end = clock();
     INFO(fprintf(stderr, "Export resized in %f seconds\n",
             timediff(end, start)));
@@ -226,17 +253,17 @@ int main(int argc, char *argv[])
     if (opt.outputPreview != NULL)
     {
         start = clock();
-        FILE *fileOut = openfile(opt.outputPreview, WRITE_MODE);
-        export(fileOut, &img);
-        closefile(fileOut);
+        FILE *fileOut = file_open(opt.outputPreview, WRITE_MODE);
+        image_export(fileOut, &img);
+        file_close(fileOut);
         end = clock();
         INFO(fprintf(stderr, "Export preview in %f seconds\n",
                 timediff(end, start)));
     }
 
     /* deallocate variables */
-    free_pixels(&img);
-    free_pixels(&newImg);
+    image_free(&img);
+    image_free(&resized);
     
     return EXIT_SUCCESS;
 }

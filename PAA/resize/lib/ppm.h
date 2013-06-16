@@ -1,7 +1,16 @@
+/*
+ * ppm.h
+ *
+ * @author: Gustavo Pantuza Coelho Pinto
+ * @since: 17.05.2013
+ *
+ */
 #ifndef PPM_H
 #define PPM_H
+#include <float.h>
 
 #include "file.h"
+#include "color.h"
 
 /* Size of magic string used in header of PPM image files */
 #define MAGIC_STRING_SIZE 3
@@ -20,6 +29,7 @@
  */
 typedef double Energy;
 #define ENERGY_FORMAT "%lf"
+#define ENERGY_MAX DBL_MAX
 
 /* Struct representing one pixel with its RGB values */
 typedef struct
@@ -27,6 +37,7 @@ typedef struct
     int R;
     int G;
     int B;
+    int x, y;
     Energy energy;
 } Pixel;
 
@@ -34,28 +45,25 @@ typedef struct
 /* Struct representing one Image in the PPM format */
 typedef struct
 {
-    char magic_string[MAGIC_STRING_SIZE];
     int width;
     int height;
     int intensity;
-    Energy energy;
     Pixel **pixels;
 } PPMImage;
 
 
 /* Public Functions */
-
-void init_buffer(char **, int *);
-void free_buffer(char **);
-
-void allocate_pixels(PPMImage *);
-void free_pixels(PPMImage *);
-void fill_pixels_data(FILE *, char *, int *, PPMImage *);
-
-PPMImage import(FILE *);
-void export(FILE *, PPMImage *);
-void export_energy(FILE *, PPMImage *);
-
-PPMImage resize(PPMImage *, int, int);
+PPMImage image_import(FILE *);
+void image_export(FILE *, const PPMImage *);
+void image_export_energy(FILE *, const PPMImage *);
+void image_free(PPMImage *);
+void image_copy(PPMImage *, const PPMImage *);
+void image_remove_path(PPMImage *, int[]);
+PPMImage image_new(int width, int height);
+PPMImage image_new_from(const PPMImage *);
+PPMImage image_new_transposed(const PPMImage *);
+void image_copy_transposed(PPMImage *,  const PPMImage *);
+void image_draw_path(const PPMImage *, const PPMImage *, int *, Color *);
+void image_draw_tpath(const PPMImage *, const PPMImage *, int *, Color *);
 
 #endif

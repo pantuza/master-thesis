@@ -15,7 +15,7 @@
 /**
  * Try to open a file. if occur an error, exits with a failure message
  */
-FILE* openfile(char *filename, char *mode)
+FILE* file_open(char *filename, char *mode)
 {
     FILE *file = fopen(filename, mode);
 
@@ -31,7 +31,7 @@ FILE* openfile(char *filename, char *mode)
 /**
  * Try to close a file. if occur an error, exits with a failure message
  */ 
-void closefile(FILE *file)
+void file_close(FILE *file)
 {
     fclose(file);
     if(errno)

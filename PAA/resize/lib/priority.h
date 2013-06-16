@@ -1,3 +1,10 @@
+/*
+ * priority.h
+ *
+ * @author: Gustavo Pantuza Coelho Pinto
+ * @since: 17.05.2013
+ *
+ */
 #ifndef PRIQ_H
 #define PRIQ_H
 /*

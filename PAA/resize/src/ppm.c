@@ -17,9 +17,8 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "file.h"
 #include "ppm.h"
-
+#include "debug.h"
 /**
  * handle the read PPM file error
  * reports an error and exit
@@ -153,53 +152,69 @@ int get_number(FILE *file, char *buffer, int *pos)
  */
 void get_magic_string(FILE *file, PPMImage *image)
 {
-    fgets(image->magic_string, MAGIC_STRING_SIZE, file);
+    char magic_string[MAGIC_STRING_SIZE];
+    fgets(magic_string, MAGIC_STRING_SIZE, file);
 
     /* Plain text files must have the 'P3' magic string as a header */
-    if(image->magic_string[0] != 'P' || image->magic_string[1] != '3')
+    if(magic_string[0] != 'P' || magic_string[1] != '3')
     {
         fprintf(stderr, "Invalid PPM magic string\n");
         exit(EXIT_FAILURE);
     }
 }
 
+
+inline static int image_copy_must_realloc(const PPMImage *d, const PPMImage *s)
+{
+    return ((d->width < s->width) || (d->height < s->height));
+}
+
+inline static int image_copy_transposed_must_realloc(
+        const PPMImage *d, const PPMImage *s)
+{
+    return ((d->width < s->height) || (d->height < s->width));
+}
+
 /**
  * Allocates the pixels matrix. The allocation uses malloc to create
  * the entire storage of the matrix based in its dimensions read from
- * the PPMImage struct. After memory allocation, it updates the pointers
- * references and then fill the chunks with values read from file
+ * the PPMImage struct.
  */
-void allocate_pixels(PPMImage *image)
+Pixel **allocate_pixels(const int width, const int height)
 {
-    int first_dimension = image->width * sizeof(int *);
-    int second_dimension = (image->width * image->height) * sizeof(Pixel);
+    int first_dimension = width * sizeof(Pixel *);
+    int second_dimension = (width * height) * sizeof(Pixel);
 
     // Allocate consecutive memory
-    image->pixels = (Pixel **)(malloc(first_dimension + second_dimension));
+    Pixel **pixels = (Pixel **)(malloc(first_dimension + second_dimension));
    
-    if (image->pixels == NULL)
+    if (pixels == NULL)
     {
         fprintf(stderr, "Image allocation failure.\n");
         exit(EXIT_FAILURE);
     }
 
     /* First data line (modifying pointers) */
-    image->pixels[0] = (Pixel *)(image->pixels + image->width);
+    pixels[0] = (Pixel *)(pixels + width);
 
     /* Subsequent data lines (modifying pointers) */
-    for(int x = 1; x < image->width; x++)
-        image->pixels[x] = (Pixel *)(image->pixels[x-1] + image->height);
+    for(int x = 1; x < width; x++)
+        pixels[x] = (Pixel *)(pixels[x-1] + height);
+
+    return pixels;
 
 }
 
 /**
  * Deallocates the pixels matrix.
  */
-void free_pixels(PPMImage *image)
+void image_free(PPMImage *image)
 {
     // Deallocate memory
     free(image->pixels);
     image->pixels = NULL;
+    image->height = 0;
+    image->height = 0;
 }
 
 /**
@@ -213,6 +228,8 @@ void fill_pixels_data(FILE *file, char *buffer, int *pos, PPMImage *image)
             image->pixels[x][y].R = get_number(file, buffer, pos);
             image->pixels[x][y].G = get_number(file, buffer, pos);
             image->pixels[x][y].B = get_number(file, buffer, pos);
+            image->pixels[x][y].x = x;
+            image->pixels[x][y].y = y;
         }
 }
 
@@ -220,7 +237,7 @@ void fill_pixels_data(FILE *file, char *buffer, int *pos, PPMImage *image)
  * Imports PPM image files and construct 
  * PPMImage struct.
  */
-PPMImage import(FILE *file)
+PPMImage image_import(FILE *file)
 {
     char *buffer;
     int pos;
@@ -232,7 +249,7 @@ PPMImage import(FILE *file)
     image.width = get_number(file, buffer, &pos);
     image.height = get_number(file, buffer, &pos);
     image.intensity = get_number(file, buffer, &pos);
-    allocate_pixels(&image);
+    image.pixels = allocate_pixels(image.width, image.height);
 
     fill_pixels_data(file, buffer, &pos, &image);
 
@@ -244,9 +261,9 @@ PPMImage import(FILE *file)
 /**
  * Exports a PPMImage to a file with PPM format
  */
-void export(FILE *file, PPMImage *image)
+void image_export(FILE *file, const PPMImage *image)
 {
-    fprintf(file, "%s\n", image->magic_string);
+    fprintf(file, "%s\n", "P3");
     fprintf(file, "# image dimensions\n");
     fprintf(file, "%d %d\n", image->width, image->height);
     fprintf(file, "# image intensity\n");
@@ -273,7 +290,7 @@ void export(FILE *file, PPMImage *image)
  * PGM is a grayscale image format
  * This is useful to check the energy function
  */
-void export_energy(FILE *file, PPMImage *image)
+void image_export_energy(FILE *file, const PPMImage *image)
 {
     int gray;
     fprintf(file, "P2\n");
@@ -298,32 +315,115 @@ void export_energy(FILE *file, PPMImage *image)
     }
 }
 
-PPMImage resize(PPMImage *source, int width, int height)
+void image_remove_path(PPMImage *image, int path[])
+{
+    for(int y = 0; y < image->height; y++)
+    {
+        for(int x = path[y]; x < image->width - 1; x++)
+            image->pixels[x][y] = image->pixels[x+1][y];
+    }
+    (image->width)--;
+}
+
+void image_draw_path(const PPMImage *original, const PPMImage *image,
+        int *path, Color *color)
+{
+    int x;
+    for(int y = 0; y < image->height; y++)
+    {
+        x = image->pixels[path[y]][y].x;
+        Pixel * p = &(original->pixels[x][y]);
+        p->R = color->r;
+        p->G = color->g;
+        p->B = color->b;
+    }
+#ifdef OPT_IMAGE_SEAM_DIFF_COLORS
+    color_next(color);
+#endif
+}
+
+void image_draw_tpath(const PPMImage *original, const PPMImage *image,
+        int *path, Color *color)
+{
+    int x;
+    for(int y = 0; y < image->height; y++)
+    {
+        x = image->pixels[path[y]][y].x;
+        Pixel * p = &(original->pixels[y][x]);
+        p->R = color->r;
+        p->G = color->g;
+        p->B = color->b;
+    }
+#ifdef OPT_IMAGE_SEAM_DIFF_COLORS
+    color_next(color);
+#endif
+}
+
+void image_copy(PPMImage *image, const PPMImage *source)
+{
+    if (image_copy_must_realloc(image, source))
+    {
+        if (image->pixels != NULL)
+                free(image->pixels);
+        image->pixels = allocate_pixels(source->width, source->height);
+    }
+    image->intensity = source->intensity;
+    image->height = source->height;
+    image->width = source->width;
+    for(int x = 0; x < source->width; x++)
+        for(int y = 0; y < source->height; y++)
+            image->pixels[x][y] = source->pixels[x][y];
+}
+
+PPMImage image_new(int width, int height)
 {
     PPMImage image;
-    strncpy(image.magic_string, source->magic_string, MAGIC_STRING_SIZE);
-    image.intensity = source->intensity;
-    image.height = source->height - height;
-    image.width = source->width - width;
-    image.energy  = 0;
-    allocate_pixels(&image);
-    int w;
-    for(int y = 0; y < source->height; y++)
-    {
-        w = 0;
-        for(int x = 0; x < source->width; x++)
-            if (source->pixels[x][y].energy <= source->energy)
-            {
-                // this must don't happening
-                // assert(w < image.width)
-                if(w >= image.width)
-                    break;
-                //
-                image.pixels[w][y] = source->pixels[x][y];
-                if (image.energy < image.pixels[w][y].energy)
-                    image.energy = image.pixels[w][y].energy;
-                w++;
-            }
-    }
+    image.intensity = 255;
+    image.height = height;
+    image.width = width;
+    image.pixels = allocate_pixels(width, height);
     return image;
 }
+
+PPMImage image_new_from(const PPMImage *source)
+{
+    PPMImage image = image_new(source->width, source->height);
+    for(int x = 0; x < source->width; x++)
+        for(int y = 0; y < source->height; y++)
+            image.pixels[x][y] = source->pixels[x][y];
+    return image;
+}
+
+PPMImage image_new_transposed(const PPMImage *source)
+{
+    PPMImage image = image_new(source->height, source->width);
+    image.intensity = source->intensity;
+    image.width = source->height;
+    image.height = source->width;
+    image.pixels = allocate_pixels(source->height, source->width);
+    int x, y;
+    for (x = 0; x < source->width; x++)
+        for (y = 0; y < source->height; y++)
+            image.pixels[y][x] = source->pixels[x][y];
+    return image;
+}
+
+void image_copy_transposed(PPMImage *image,  const PPMImage *source)
+{
+    ASSERT_TRUE(image != source,
+            fprintf(stderr, "ERROR: Impossible copy from same image.\n"); return;)
+    if (image_copy_transposed_must_realloc(image, source))
+    {
+        if (image->pixels != NULL)
+                free(image->pixels);
+        image->pixels = allocate_pixels(source->height, source->width);
+    }
+    image->intensity = source->intensity;
+    image->height = source->width;
+    image->width = source->height;
+    for(int x = 0; x < source->width; x++)
+        for(int y = 0; y < source->height; y++)
+            image->pixels[y][x] = source->pixels[x][y];
+}
+
+

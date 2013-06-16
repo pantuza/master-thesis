@@ -1,8 +1,9 @@
 /*
  * debug.h
  *
- *  Created on: 12/06/2013
- *      Author: Gustavo Pantuza
+ * @author: Gustavo Pantuza Coelho Pinto
+ * @since: 17.05.2013
+ *
  */
 
 #ifndef DEBUG_H_
@@ -19,22 +20,16 @@
 // Tuning options (Don't touch! It's too dangerous:)
 
 /*
- * Don't executes Dijkstra algorithm from a start point removed in the past.
- * Surprisingly, this increases the runtime... Why?
- */
-//#define OPT_GRAPH_IGNORE_CARVED_POINT
-
-/*
  * Terminates Dijkstra algorithm if it's reach a distance bigger than
  * the shortest path. Great results!
  */
-//#define OPT_GRAPH_SHORTEST_PATH_BREAK
+#define OPT_GRAPH_SHORTEST_PATH_BREAK
 
 /*
  * Remove vertices of shortest path from graph to perfect
  * consecutive seam-carving.
  * */
-#define OPT_GRAPH_REMOVE_SHORTEST_PATH
+//#define OPT_GRAPH_REMOVE_SHORTEST_PATH
 
 /*
  *  Paints each seam with different color

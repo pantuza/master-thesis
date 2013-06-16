@@ -1,9 +1,32 @@
+/*
+ * graph.c
+ *
+ * @author: Gustavo Pantuza Coelho Pinto
+ * @since: 17.05.2013
+ *
+ */
 #include <limits.h>
+#include <stdlib.h>
 
-#include "graph.h"
 #include "priority.h"
 #include "debug.h"
 #include "color.h"
+
+/* Struct of a Vertex */
+typedef struct Vertex
+{
+        Pixel *pixel;
+        int adj[4];
+} Vertex;
+
+
+/* Struct of the entire Graph */
+typedef struct
+{
+    int list_size;
+    Vertex *vertexes;
+} Graph;
+
 
 #define NONE  -1
 #define SKIP  -2
@@ -17,7 +40,8 @@
 /**
  * Convert position to vet[i] to image(x, y)
  */
-//#define POS2XY(i,img,x,y) {x = i / img->height; y = i % img->height;}
+#define POS2X(i,img) ((i) / (img)->height)
+#define POS2Y(i,img) ((i) % (img)->height)
 
 
 /**
@@ -31,6 +55,7 @@
 #define RIGHT  2
 #define END    3
 
+
 /**
  * Creates a graph based on the image pixels and fill the values for
  * its vertexes and edges
@@ -38,8 +63,6 @@
 void init_graph(Graph *graph, PPMImage *image)
 {
     graph->list_size = image->width * image->height;
-    graph->limit = image->energy * graph->list_size;
-    graph->energy = image->energy * image->height;
     graph->vertexes = (Vertex *) calloc(graph->list_size, sizeof(Vertex));
 
     int v, x, y;
@@ -69,15 +92,16 @@ void init_graph(Graph *graph, PPMImage *image)
 
     /* Build the leftmost vertices */
     x = image->width - 1;
-    for(y = 0; y < image->height - 1; y++)
-    {
-        v = XY2POS(image,x,y);
-        graph->vertexes[v].pixel = &(image->pixels[x][y]);
-        graph->vertexes[v].adj[LEFT]   = XY2POS(image,x-1,y+1);
-        graph->vertexes[v].adj[MIDDLE] = XY2POS(image,x,y+1);
-        graph->vertexes[v].adj[RIGHT]  = NONE;
-        graph->vertexes[v].adj[END]    = NONE;
-    }
+    if(x > 0)
+        for(y = 0; y < image->height - 1; y++)
+        {
+            v = XY2POS(image,x,y);
+            graph->vertexes[v].pixel = &(image->pixels[x][y]);
+            graph->vertexes[v].adj[LEFT]   = XY2POS(image,x-1,y+1);
+            graph->vertexes[v].adj[MIDDLE] = XY2POS(image,x,y+1);
+            graph->vertexes[v].adj[RIGHT]  = NONE;
+            graph->vertexes[v].adj[END]    = NONE;
+        }
 
     /* Build the bottom vertices */
     y = image->height - 1;
@@ -111,42 +135,36 @@ inline static void remove_vertex(Graph *graph, PPMImage *image,
     int middle = UP_MIDDLE(vertex, image);
     int right  = UP_RIGHT(vertex, image);
 
-    if (previous != left && left >= 0)
+    if (left >= 0)
         graph->vertexes[left].adj[RIGHT] = graph->vertexes[middle].adj[RIGHT];
 
-    if (previous != right && right < graph->list_size)
+    if (right < graph->list_size)
         graph->vertexes[right].adj[LEFT] = graph->vertexes[middle].adj[LEFT];
 
-    if (previous != middle)
-    {
-        if (previous == left)
-            graph->vertexes[middle].adj[MIDDLE] =
-                    graph->vertexes[left].adj[MIDDLE];
-        else //if (previous == right)
-            graph->vertexes[middle].adj[MIDDLE] =
-                    graph->vertexes[right].adj[MIDDLE];
-    }
+    if (previous == left)
+        graph->vertexes[middle].adj[MIDDLE] = graph->vertexes[left].adj[MIDDLE];
+    else //if (previous == right)
+        graph->vertexes[middle].adj[MIDDLE] = graph->vertexes[right].adj[MIDDLE];
 }
 #endif
 
 /**
  * Shortest Path solution implemented using the Dijkstra algorithm
  */
-int dijkstra(Graph *graph, int source,
+int dijkstra(Graph *graph, int source, pri_queue priq,
               Energy *distance, int previous[], Energy shortest_distance)
 {
     int vertex, adjacent, v;
     Energy alt;
-    Energy visited     = graph->limit + 4;
-    Energy no_visited  = visited - 2;
+    int *visited = calloc(graph->list_size, sizeof(int));
 
-    for(v = 0; v < graph->list_size; distance[v++] = no_visited);
+    for(v = 0; v < graph->list_size; distance[v++] = ENERGY_MAX);
+
     previous[source] = NONE;
-    distance[source] = 0;
+    distance[source] = graph->vertexes[source].pixel->energy;
+    visited[source] = 1;
 
-    pri_queue_t priq_s;
-    pri_queue priq = &priq_s;
-    priq_init(priq, graph->list_size);
+    priq_purge(priq);
     priq_push(priq, source, graph->vertexes[source].pixel->energy);
 
     int dest = NONE;
@@ -172,7 +190,7 @@ int dijkstra(Graph *graph, int source,
 
         do
         {
-            if(adjacent != SKIP && distance[adjacent] <= visited)
+            if(adjacent >= 0 && !visited[adjacent])
             {
                 alt = distance[vertex] +
                         graph->vertexes[adjacent].pixel->energy;
@@ -185,9 +203,9 @@ int dijkstra(Graph *graph, int source,
             }
             adjacent = graph->vertexes[vertex].adj[v++];
         } while(adjacent != NONE);
-        distance[vertex] = visited;
+        visited[vertex] = 1;
     }
-    priq_free(priq);
+    free(visited);
     return dest;
 }
 
@@ -195,91 +213,59 @@ int dijkstra(Graph *graph, int source,
  * Resize method that calls Dijkstra algorithm for each Vertex inside
  * the Vertexes set of the Graph
  */
-void graph_resize(PPMImage *image, int width, int height)
+void graph_shortest_path(PPMImage *image, int *path)
 {
-
-    if (width > image->width)
-    {
-        fprintf(stderr, "Image size too small to resize.");
-        exit(EXIT_FAILURE);
-    }
-
     Graph graph;
     init_graph(&graph, image);
+    pri_queue_t priq_s;
+    priq_init(&priq_s, graph.list_size);
 
     int i, x, y, dest;
     Energy *distance = calloc(graph.list_size, sizeof(Energy));
     int *previous = calloc(graph.list_size, sizeof(int));
-    int *path = calloc(image->height, sizeof(int));
     Energy shortest_distance;
+    shortest_distance = ENERGY_MAX;
 
-    Color color;
-    init_color(&color, width);
-
-    while(width--)
+    for(x = 0; x < image->width; x++)
     {
-        shortest_distance = graph.limit + 1;
-        for(x = 0; x < image->width; x++)
-        {
-            i = XY2POS(image,x,0);
+        i = XY2POS(image,x,0);
 
-#ifdef OPT_GRAPH_IGNORE_CARVED_POINT
-            if (graph.vertexes[i].pixel->energy >= graph.energy)
-                continue;
-#endif
-
-            dest = dijkstra(&graph, i, distance, previous, shortest_distance);
+        dest = dijkstra(&graph, i, &priq_s,
+                distance, previous, shortest_distance);
 
 #ifdef OPT_GRAPH_SHORTEST_PATH_BREAK
-            if(dest == BREAK)
-                continue;
-            else
+        if(dest == BREAK)
+            continue;
+        else
 #endif
-                if(dest == NONE)
-                {
-                    fprintf(stderr, "There is no path\n");
-                    exit(EXIT_FAILURE);
-                }
-
-            if (distance[dest] < shortest_distance)
+            if(dest < 0)
             {
-                shortest_distance = distance[dest];
-                y = 0;
-                while(dest != i)
-                {
-                    path[y++] = dest;
-                    dest = previous[dest];
-                }
-                path[y++] = i;
-                // assert path length
-                ASSERT_TRUE(y == image->height,
-                        fprintf(stderr,
-                                "ASSERT: Path length: %d\n (must to be %d)\n",
-                                y, image->height)
-                );
+                fprintf(stderr, "There is no path\n");
+                exit(EXIT_FAILURE);
             }
-        }
 
-        for(y = 0; y < image->height; y++)
+        if (distance[dest] < shortest_distance)
         {
-            graph.vertexes[path[y]].pixel->R = color.r;
-            graph.vertexes[path[y]].pixel->G = color.g;
-            graph.vertexes[path[y]].pixel->B = color.b;
-            graph.vertexes[path[y]].pixel->energy = graph.energy;
+            shortest_distance = distance[dest];
+            y = image->height - 1;
+            while(dest != i)
+            {
+                path[y--] = POS2X(dest, image);
+                dest = previous[dest];
+            }
+            path[y] = POS2X(i, image);
+            // assert path length
+            ASSERT_TRUE(y == 0,
+                    fprintf(stderr,
+                            "ASSERT: Path length error (must to be %d): %d\n",
+                            image->height, y)
+            );
         }
+    }
 
-#ifdef OPT_IMAGE_SEAM_DIFF_COLORS
-        next_color(&color);
-#endif
-
-#ifdef OPT_GRAPH_REMOVE_SHORTEST_PATH
-        for(y = 1; y < image->height - 1; y++)
-            remove_vertex(&graph, image, path[y], path[y-1]);
-#endif
-    };
-
+    priq_free(&priq_s);
     free_graph(&graph);
     free(distance);
     free(previous);
-    free(path);
 }
+

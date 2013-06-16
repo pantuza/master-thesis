@@ -1,23 +1,18 @@
+/*
+ * dynamic.c
+ *
+ * @author: Gustavo Pantuza Coelho Pinto
+ * @since: 17.05.2013
+ *
+ */
 #ifndef DYNAMIC_H
 #define DYNAMIC_H
 
 #include "ppm.h"
 #include "file.h"
 
-typedef struct Seam
-{
-    Energy total;
-    int dx;
-} Seam;
-
-
-typedef struct SeamsStore
-{
-    int size;
-    Seam **store;
-} SeamsStore;
-
 
 /* Public Functions */
-void dynamic_resize(PPMImage *, int, int); 
+void dp_shortest_path(PPMImage *, int *);
+
 #endif

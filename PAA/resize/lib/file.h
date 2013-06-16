@@ -1,3 +1,10 @@
+/*
+ * file.h
+ *
+ * @author: Gustavo Pantuza Coelho Pinto
+ * @since: 17.05.2013
+ *
+ */
 #ifndef FILE_H
 #define FILE_H
 
@@ -8,7 +15,7 @@
 #define WRITE_MODE "w"
 
 
-FILE* openfile(char *, char *mode);
-void closefile(FILE *);
+FILE* file_open(char *, char *mode);
+void file_close(FILE *);
 
 #endif

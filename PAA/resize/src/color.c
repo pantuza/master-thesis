@@ -1,8 +1,8 @@
 /*
  * color.c
  *
- *  Created on: 13/06/2013
- *      Author: Gustavo Pantuza
+ * @author: Gustavo Pantuza Coelho Pinto
+ * @since: 17.05.2013
  *
  *  Ref: http://en.wikipedia.org/wiki/HSV_color_space
  */
@@ -75,7 +75,7 @@ void Hue2RGB(Color *color)
     color->b = 255 * b;
 }
 
-void init_color(Color *color, const int num_colors)
+void color_init(Color *color, const int num_colors)
 {
     color->step = (360/abs(num_colors));
     if (color->step < 1)
@@ -84,7 +84,7 @@ void init_color(Color *color, const int num_colors)
     Hue2RGB(color);
 }
 
-void next_color(Color *color)
+void color_next(Color *color)
 {
     color->hue += color->step;
     if (color->hue > 360)

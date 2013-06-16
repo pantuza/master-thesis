@@ -1,8 +1,8 @@
 /*
  * priority.c
  *
- *  Created on: 12/06/2013
- *      Author: Gustavo Pantuza
+ * @author: Gustavo Pantuza Coelho Pinto
+ * @since: 17.05.2013
  *
  *  Based on: http://rosettacode.org/wiki/Priority_queue#C
  */

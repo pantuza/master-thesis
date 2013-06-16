@@ -1,3 +1,10 @@
+/*
+ * energy.h
+ *
+ * @author: Gustavo Pantuza Coelho Pinto
+ * @since: 17.05.2013
+ *
+ */
 #ifndef ENERGY_H
 #define ENERGY_H
 
