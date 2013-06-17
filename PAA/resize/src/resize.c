@@ -76,7 +76,7 @@ PPMImage image_resize(ShortestPath shortest_path_function,
  * General resizing by different shortest path algorithms
  */
 PPMImage image_resize_preview(ShortestPath shortest_path_function,
-        const PPMImage *image, int width, int height)
+        PPMImage *image, int width, int height)
 {
     PPMImage temp = image_new_from(image);
 
@@ -105,16 +105,19 @@ PPMImage image_resize_preview(ShortestPath shortest_path_function,
     {
         color_init(&color, height);
         PPMImage temp2 = image_new_transposed(&temp);
+        PPMImage temp3 = image_new_transposed(image);
         path = malloc(temp2.height * sizeof(int));
         step = height;
         while(step--)
         {
             shortest_path_function(&temp2, path);
-            image_draw_tpath(image, &temp2, path, &color);
+            image_draw_tpath(&temp3, &temp2, path, &color);
             image_remove_path(&temp2, path);
         };
         image_copy_transposed(&temp, &temp2);
+        image_copy_transposed(image, &temp3);
         free(path);
+        image_free(&temp3);
         image_free(&temp2);
     }
 
@@ -145,7 +148,7 @@ int diff(int *p1, int*p2, int n)
  * Compare results of different shortest path algorithms
  */
 PPMImage image_resize_compare(ShortestPath function1, ShortestPath function2,
-        const PPMImage *image, int width, int height)
+        PPMImage *image, int width, int height)
 {
     PPMImage temp = image_new_from(image);
 
@@ -184,6 +187,7 @@ PPMImage image_resize_compare(ShortestPath function1, ShortestPath function2,
     {
         color_init(&color, height);
         PPMImage temp2 = image_new_transposed(&temp);
+        PPMImage temp3 = image_new_transposed(&temp);
         path1 = calloc(temp.height, sizeof(int));
         path2 = calloc(temp.height, sizeof(int));
         step = height;
@@ -197,14 +201,16 @@ PPMImage image_resize_compare(ShortestPath function1, ShortestPath function2,
             {
                 print_path(path1, temp.height, cnt, dif, step);
                 print_path(path2, temp.height, cnt, dif, step);
-                image_draw_path(image, &temp, path1, &color);
+                image_draw_tpath(&temp3, &temp2, path1, &color);
             }
             image_remove_path(&temp2, path1);
         };
         image_copy_transposed(&temp, &temp2);
+        image_copy_transposed(image, &temp3);
         free(path1);
         free(path2);
         image_free(&temp2);
+        image_free(&temp3);
     }
 
     return temp;

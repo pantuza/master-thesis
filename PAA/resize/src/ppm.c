@@ -348,8 +348,8 @@ void image_draw_tpath(const PPMImage *original, const PPMImage *image,
     int x;
     for(int y = 0; y < image->height; y++)
     {
-        x = image->pixels[path[y]][y].x;
-        Pixel * p = &(original->pixels[y][x]);
+        x = image->pixels[path[y]][y].y;
+        Pixel * p = &(original->pixels[x][y]);
         p->R = color->r;
         p->G = color->g;
         p->B = color->b;
@@ -361,6 +361,8 @@ void image_draw_tpath(const PPMImage *original, const PPMImage *image,
 
 void image_copy(PPMImage *image, const PPMImage *source)
 {
+    ASSERT_TRUE(image != source,
+            fprintf(stderr, "ERROR: Copy from same image.\n"); return;);
     if (image_copy_must_realloc(image, source))
     {
         if (image->pixels != NULL)
@@ -411,7 +413,7 @@ PPMImage image_new_transposed(const PPMImage *source)
 void image_copy_transposed(PPMImage *image,  const PPMImage *source)
 {
     ASSERT_TRUE(image != source,
-            fprintf(stderr, "ERROR: Impossible copy from same image.\n"); return;)
+            fprintf(stderr, "ERROR: Copy from same image.\n"); return;);
     if (image_copy_transposed_must_realloc(image, source))
     {
         if (image->pixels != NULL)

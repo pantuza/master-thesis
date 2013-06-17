@@ -14,9 +14,9 @@
 typedef void ShortestPath(PPMImage *, int *);
 
 PPMImage image_resize(ShortestPath, const PPMImage *, int , int);
-PPMImage image_resize_preview(ShortestPath, const PPMImage *, int, int);
+PPMImage image_resize_preview(ShortestPath, PPMImage *, int, int);
 
 PPMImage image_resize_compare(ShortestPath function1, ShortestPath function2,
-        const PPMImage *image, int width, int height);
+        PPMImage *image, int width, int height);
 
 #endif /* RESIZE_H_ */
