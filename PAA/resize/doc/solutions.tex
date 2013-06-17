@@ -19,3 +19,57 @@ de seus vizinhos. A energia de um caminho é o somatório das energias
 (importâncias) dos pixels ao longo do caminho. Os caminhos com menor
 energia são os escolhidos para serem removidos. Isso possibilita 
 redimensionar uma imagem preservando seu conteúdo relevante.
+
+O presente trabalho apresenta duas soluções para o problema. Uma solução 
+baseada em \emph{grafos} e uma em \emph{programação dinâmica}. 
+Para a abordagem em \emph{grafos} foi utilizado o algorítimo de 
+\emph{Dijkstra} para encontrar o caminho de menor energia dentro do grafo. 
+A solução em \emph{programação dinâmica} utiliza um algorítmo chamado 
+\emph{Seam Carving} proposto por \citep{shai2007seam}.
+A seguir serão apresentadas as modelagens de cada uma das soluções propostas
+e discutidas suas características.
+
+
+\subsection{Solução em Grafos}
+Considere um grafo direcionado $G=(V,A)$ em que $V$ é o conjunto de vértices 
+e $A$ o conjunto de arestas na forma $w=(u \to v)$.
+$w$ é uma aresta que liga o vértice $u$ a $v$. 
+
+Para o modelo adotado, cada vértice representa um pixel. 
+Cada aresta representa uma ligação entre dois vértices (pixels) vizinhos. 
+O grafo é construído de forma \emph{top-down}, logo dado um vértice, ele 
+possui no mínimo 0 vértices adjacentes e no máximo 3. 
+Imagine uma matriz de pixels, as arestas representa essas adjacências na 
+vizinhança dos vértices.
+Cada aresta possui um peso associado que representa a energia do pixel, 
+conforme mostrado anteriormente.
+
+Em função do modelo de grafo adotado, foi construída uma estrutura de dados
+que pudesse representar o modelo: 
+
+\begin{lstlisting}
+/* Struct of a Vertex */
+typedef struct Vertex
+{
+        Pixel *pixel;
+        int adj[4];
+} Vertex;
+
+
+/* Struct of the entire Graph */
+typedef struct
+{
+    int list_size;
+    Vertex *vertexes;
+} Graph;
+\end{lstlisting}
+
+O grafo é representado por uma lista de vértices. 
+Um vértice por sua vez contém os dados do pixel que ele representa e sua 
+lista de adjacência (arestas que o liga a outros vértices).
+A última adjacência de um vértice possui o valor NONE (NULL). 
+
+
+
+
+\subsection{Solução em Progração Dinâmica}
