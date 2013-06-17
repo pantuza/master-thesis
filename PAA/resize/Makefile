@@ -20,6 +20,10 @@ TEST := test
 # Compilation target (binary file)
 program := tp2
 
+# Documentation file name
+docname := resize
+
+
 # Compiler
 CC := cc
 
@@ -39,7 +43,8 @@ help:
 all:	$(BIN)/$(program)
 
 $(BIN)/$(program): $(SRC)/$(program).c $(OBJ)/priority.o $(OBJ)/file.o \
-	$(OBJ)/ppm.o $(OBJ)/dynamic.o $(OBJ)/graph.o $(OBJ)/energy.o $(OBJ)/color.o
+	$(OBJ)/ppm.o $(OBJ)/dynamic.o $(OBJ)/graph.o $(OBJ)/energy.o \
+	$(OBJ)/color.o $(OBJ)/resize.o
 	$(CC) -o $@ $+ $(CFLAGS)
 	@echo -e "\nBinary file placed at $(BIN)/$(program)"
 
@@ -51,6 +56,6 @@ clean:
 	@rm -vf $(BIN)/* $(OBJ)/*
 	@echo -e "--\n"
 
-latex:	${DOC}/*.tex plot
-		pdflatex -output-directory=$(TEX_PATH) $(TEX_PATH)/$(DOC_NAME).tex
-		@evince $(TEX_PATH)/$(DOC_NAME).pdf
+latex:	${DOC}/*.tex
+		pdflatex -output-directory=$(DOC) $(DOC)/$(docname).tex
+		@evince $(DOC)/$(docname).pdf
