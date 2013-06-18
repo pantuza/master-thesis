@@ -61,7 +61,7 @@ void fill_default(Options *resize)
     resize->method = DYNAMIC;
     resize->width = 0;
     resize->height = 0;
-    resize->matrix = "in/sobel_weights";
+    resize->matrix = NULL;
     resize->energisedfile = NULL;
     resize->ppmfile = NULL;
     resize->output = NULL;

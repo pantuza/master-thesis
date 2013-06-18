@@ -14,14 +14,6 @@
 #include "file.h"
 #include "debug.h"
 
-/**
- * Reads from file the dimensions of a weight matrix
- */
-void read_dimension(FILE *file, WeightMatrix *matrix)
-{
-    fscanf(file, "%d %d", &matrix->width, &matrix->height);
-}
-
 
 /**
  * Allocate the storage to the matrix
@@ -46,7 +38,49 @@ void matrix_deallocation(WeightMatrix *weight)
    free(weight->matrix);
 }
 
+/**
+ * Make a default  weights matrices
+ * allocate the matrices and fill data on it
+ */
+void load_defaul(Sobel *weights)
+{
+    /* Firt Sobel Matrix Gx */
+    weights->Gx.height = 3;
+    weights->Gx.width = 3;
+    matrix_allocation(&(weights->Gx));
+    weights->Gx.matrix[0][0] =  1;
+    weights->Gx.matrix[0][1] =  2;
+    weights->Gx.matrix[0][2] =  1;
+    weights->Gx.matrix[1][0] =  0;
+    weights->Gx.matrix[1][1] =  0;
+    weights->Gx.matrix[1][2] =  0;
+    weights->Gx.matrix[2][0] = -1;
+    weights->Gx.matrix[2][1] = -2;
+    weights->Gx.matrix[2][2] = -1;
 
+    /* Second Sobel Matrix Gx */
+    /* Firt Sobel Matrix Gx */
+    weights->Gy.height = 3;
+    weights->Gy.width = 3;
+    matrix_allocation(&(weights->Gy));
+    weights->Gy.matrix[0][0] =  1;
+    weights->Gy.matrix[1][0] =  2;
+    weights->Gy.matrix[2][0] =  1;
+    weights->Gy.matrix[0][1] =  0;
+    weights->Gy.matrix[1][1] =  0;
+    weights->Gy.matrix[2][1] =  0;
+    weights->Gy.matrix[0][2] = -1;
+    weights->Gy.matrix[1][2] = -2;
+    weights->Gy.matrix[2][2] = -1;
+}
+
+/**
+ * Reads from file the dimensions of a weight matrix
+ */
+void read_dimension(FILE *file, WeightMatrix *matrix)
+{
+    fscanf(file, "%d %d", &matrix->width, &matrix->height);
+}
 /**
  * Reads from file the values to fill the weight matrix
  */
@@ -67,25 +101,22 @@ void fill_weights_data(FILE *file, WeightMatrix *weight)
  * Reads the dimension of the weights matrices
  * allocate the matrices and fill data on it
  */
-Sobel load_matrices(char *matrix)
+void load_matrices(Sobel *weights, char *matrix)
 {
     FILE *weights_file = file_open(matrix, READ_MODE);
-    Sobel weights;
 
     /* Firt Sobel Matrix Gx */
-    read_dimension(weights_file, &(weights.Gx));
-    matrix_allocation(&(weights.Gx));
-    fill_weights_data(weights_file, &(weights.Gx));
+    read_dimension(weights_file, &(weights->Gx));
+    matrix_allocation(&(weights->Gx));
+    fill_weights_data(weights_file, &(weights->Gx));
 
     /* Second Sobel Matrix Gx */
-    read_dimension(weights_file, &(weights.Gy));
-    matrix_allocation(&(weights.Gy));
-    fill_weights_data(weights_file, &(weights.Gy));
+    read_dimension(weights_file, &(weights->Gy));
+    matrix_allocation(&(weights->Gy));
+    fill_weights_data(weights_file, &(weights->Gy));
 
     file_close(weights_file);
-    return weights;
 }
-
 
 /**
  * deallocate the matrices
@@ -116,29 +147,32 @@ void free_matrices(Sobel *weights)
 
 
 /**
- * Calculates the gradient of a pixel
+ * Calculate gradient (Sobel's approximation) of a (x, y) pixel
  */
-Energy gradient(PPMImage *image, int i, int j, WeightMatrix *G)
+Energy gradient(PPMImage *image, int x, int y, WeightMatrix *G)
 {
-    int k = i - (G->height / 2);
-    int l = j - (G->width / 2);
+    int dy = x - (G->height / 2);
+    int dx = y - (G->width / 2);
 
-    int x, y;
+    int mx, my;
     Energy g = 0;
 
-    /* G(xy) gradient */
-    for(int my = 0; my < G->height; my++)
-        for(int mx = 0; mx < G->width; mx++)
+    /* G({x|y}) gradient */
+    for(int yi = 0; yi < G->height; yi++)
+        for(int xi = 0; xi < G->width; xi++)
         {
-            y = abs(k+my);
-            x = abs(l+mx);
+            // mirroring pixel at leftmost
+            my = abs(dy+yi);
+            // mirroring pixel at top
+            mx = abs(dx+xi);
+            // mirroring pixel at rightmost
+            if (my >= image->height)
+                my = 2*image->height - my - 1;
+            // mirroring pixel at bottom
+            if (mx >= image->width)
+                mx = 2*image->width - mx - 1;
 
-            if (y >= image->height)
-                y = 2*image->height - y - 1;
-            if (x >= image->width)
-                x = 2*image->width - x - 1;
-
-            g += G->matrix[mx][my] * luminosity(image->pixels[x][y]);
+            g += G->matrix[yi][xi] * luminosity(image->pixels[mx][my]);
         }
     return g;
 }
@@ -163,7 +197,13 @@ void sobel_calc(PPMImage *image, int y, int x, Sobel *sobel)
  */
 void energise(PPMImage *image, char *matrix)
 {
-    Sobel sobel = load_matrices(matrix);
+    Sobel sobel;
+
+    if (matrix == NULL)
+        load_defaul(&sobel);
+    else
+        load_matrices(&sobel, matrix);
+
     for(int y = 0; y < image->height; y++)
         for(int x = 0; x < image->width; x++)
             sobel_calc(image, y, x, &sobel);
