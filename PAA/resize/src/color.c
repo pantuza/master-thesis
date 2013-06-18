@@ -9,7 +9,10 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <stdio.h>
+
 #include "color.h"
+#include "debug.h"
 
 /*
  * Ref:  http://www.cs.rit.edu/~ncs/color/t_convert.html
@@ -75,20 +78,61 @@ void Hue2RGB(Color *color)
     color->b = 255 * b;
 }
 
+#define ABS_ANGLE(x) fmod(fmod(x, 360.0) + 360.0, 360.0);
+
+static inline float __arch__(float a, float b, int growing)
+{
+    if (a == b)
+        return 360.0;
+    float min = (a < b? a: b);
+    float max = (a > b? a: b);
+    float aa = max - min;
+    if ((growing && a > b) || (!growing && b > a))
+        aa = 360.0 - aa;
+    return aa;
+}
+
+void color_init_range(Color *color, const int num_colors,
+        const float start, const float end, const int growing)
+{
+    color->start = ABS_ANGLE(start);
+    color->end = ABS_ANGLE(end);
+    float aa = __arch__(color->start, color->end, growing);
+    color->step = fabs(aa/fabs((float)num_colors));
+    if (!growing) // decreasing
+        color->step = -color->step;
+    color->hue = start;
+    Hue2RGB(color);
+}
+
 void color_init(Color *color, const int num_colors)
 {
-    color->step = (360/abs(num_colors));
-    if (color->step < 1)
-        color->step = 1;
-    color->hue = 0;
-    Hue2RGB(color);
+    color_init_range(color, num_colors, 0.0, 360.0, 1);
 }
 
 void color_next(Color *color)
 {
-    color->hue += color->step;
-    if (color->hue > 360)
-        color->hue = 360 - color->hue;
+    color->hue = ABS_ANGLE(color->hue + color->step);
+    if (color->step && color->end != color->start)
+    {
+        if (color->step > 0)
+        {
+            if ((color->end > color->start && color->hue > color->end) ||
+                (color->end < color->start &&
+                   (color->hue < color->start && color->hue > color->end)))
+            {
+                color->hue = color->start;
+            }
+        } else
+        {
+            if ((color->end < color->start && color->hue < color->end) ||
+                (color->end > color->start &&
+                   (color->hue < color->start && color->hue > color->end)))
+            {
+                color->hue = color->start;
+            }
+        }
+    }
     Hue2RGB(color);
 }
 

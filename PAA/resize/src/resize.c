@@ -88,7 +88,7 @@ PPMImage image_resize_preview(ShortestPath shortest_path_function,
 
     if (width)
     {
-        color_init(&color, width);
+        RED(&color, width);
         path = malloc(temp.height * sizeof(int));
         step = width;
         while(step--)
@@ -103,7 +103,7 @@ PPMImage image_resize_preview(ShortestPath shortest_path_function,
 
     if (height)
     {
-        color_init(&color, height);
+        BLUE(&color, height);
         PPMImage temp2 = image_new_transposed(&temp);
         PPMImage temp3 = image_new_transposed(image);
         path = malloc(temp2.height * sizeof(int));
@@ -160,7 +160,7 @@ PPMImage image_resize_compare(ShortestPath function1, ShortestPath function2,
 
     if (width)
     {
-        color_init(&color, width);
+        RED(&color, width);
         path1 = calloc(temp.height, sizeof(int));
         path2 = calloc(temp.height, sizeof(int));
         step = width;
@@ -185,9 +185,9 @@ PPMImage image_resize_compare(ShortestPath function1, ShortestPath function2,
 
     if (height)
     {
-        color_init(&color, height);
+        BLUE(&color, height);
         PPMImage temp2 = image_new_transposed(&temp);
-        PPMImage temp3 = image_new_transposed(&temp);
+        PPMImage temp3 = image_new_transposed(image);
         path1 = calloc(temp.height, sizeof(int));
         path2 = calloc(temp.height, sizeof(int));
         step = height;

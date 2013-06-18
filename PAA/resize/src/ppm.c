@@ -345,10 +345,11 @@ void image_draw_path(const PPMImage *original, const PPMImage *image,
 void image_draw_tpath(const PPMImage *original, const PPMImage *image,
         int *path, Color *color)
 {
-    int x;
-    for(int y = 0; y < image->height; y++)
+    int x, y;
+    for(int i = 0; i < image->height; i++)
     {
-        x = image->pixels[path[y]][y].y;
+        y = image->pixels[path[i]][i].x;
+        x = image->pixels[path[i]][i].y;
         Pixel * p = &(original->pixels[x][y]);
         p->R = color->r;
         p->G = color->g;
