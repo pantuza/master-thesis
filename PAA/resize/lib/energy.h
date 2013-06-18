@@ -26,8 +26,8 @@ typedef struct
 /* The Sobel Type with two weight matrices */ 
 typedef struct
 {
-    WeightMatrix Gx;
-    WeightMatrix Gy;
+    WeightMatrix Mx;
+    WeightMatrix My;
 } Sobel;
 
 
