@@ -1,6 +1,9 @@
 #ifndef _CHAMP_H
 #define _CHAMP_H
 
+#define TEAM_NAME_SIZE 50
+
+
 /* Edge type */
 typedef struct Edge
 {
@@ -9,7 +12,27 @@ typedef struct Edge
     int capacity;
 } Edge;
 
+
+/* Team type */
+typedef struct Team
+{
+    char name[TEAM_NAME_SIZE];
+    int victories;
+    int loss;
+    int remaining;
+} Team;
+
+
+/* Graph type */
+typedef struct Graph
+{
+    int nteams;
+    Team **teams;
+    int **opponents;
+} Graph;
+
+
 /* Public functions */
-void load(FILE *);
-void save(FILE *);
+void load(FILE *, Graph *);
+void save(FILE *, Graph *);
 #endif
