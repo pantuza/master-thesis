@@ -122,7 +122,7 @@ PPMImage image_resize_compare(ShortestPath function1, ShortestPath function2,
     if (width)
     {
         RED(&color1, width);
-        CYAN(&color2, width);
+        GREEN(&color2, width);
         path1 = calloc(temp_x1.height, sizeof(int));
         path2 = calloc(temp_x2.height, sizeof(int));
         step = width;
