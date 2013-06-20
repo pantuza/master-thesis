@@ -180,7 +180,7 @@ PPMImage resize_image(PPMImage *image, Options *opt)
         if (opt->outputPreview == NULL)
             return image_resize(*method, image, opt->width, opt->height);
         else
-            return image_resize_preview(*method, image, opt->width, opt->height);
+            return image_resize_preview(*method, image,opt->width,opt->height);
     }
 }
 

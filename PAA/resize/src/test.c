@@ -46,7 +46,8 @@ int diff_image(PPMImage *img1, PPMImage *img2)
             p1 = img1->pixels[x][y];
             p2 = img2->pixels[x][y];
             if ((p1.R != p2.R) || (p1.G != p2.G) || (p1.B != p2.B))
-                fprintf(stderr, "#%d[%d,%d]:p1.color(%d,%d, %d) != p2.color(%d,%d, %d)\n",
+                fprintf(stderr, "#%d[%d,%d]:p1.color(%d,%d, %d)"
+                        "!= p2.color(%d,%d, %d)\n",
                         ++difc, x,y,p1.R,p1.G,p1.B,p2.R,p2.G,p2.B);
             if (p1.energy != p2.energy)
                 fprintf(stderr, "$%d[%d,%d]:p1.e(%f) != p2.e(%f)\n",
@@ -66,14 +67,14 @@ int diff_energy(char d, int i, int *p,
     int dif_e = 0;
     if (ep  > eq) {
         dif_e = 1;
-        fprintf(stderr, "[%c:%d] Total energy 1:%f > 2:%f!\n", d, i, ep, eq);
+        fprintf(stderr, "[%c:%d] Energy 1:%f > 2:%f!\n", d, i, ep, eq);
     }else
         if (ep  < eq) {
             dif_e = 1;
-            fprintf(stderr, "[%c:%d] Total energy 1:%f < 2:%f!\n", d, i, ep, eq);
+            fprintf(stderr, "[%c:%d] Energy 1:%f < 2:%f!\n", d, i, ep, eq);
         } else
             if (printEquals)
-                fprintf(stderr, "[%c:%d] Total energy equals %f!\n", d, i, ep);
+                fprintf(stderr, "[%c:%d] Energy equals %f!\n", d, i, ep);
     return dif_e;
 }
 
