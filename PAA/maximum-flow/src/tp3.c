@@ -44,11 +44,12 @@ int main(int argc, char *argv[])
     arg_parser(argc, argv, input, output);
     DEBUG(printf("input: %s output: %s\n", input, output));
 
-    
-    /* Import input file */
-    FILE *inpfile = openfile(input, READ_MODE);
-    
 
+    /* Import input file */
+    FILE *inpfile = openfile(input, READ_MODE); 
+
+    Graph graph;
+    load(inpfile, &graph);
 
     /* Export output file */
     FILE *outfile = openfile(output, WRITE_MODE);
