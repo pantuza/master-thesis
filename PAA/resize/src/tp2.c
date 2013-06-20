@@ -20,6 +20,7 @@
 #include "energy.h"
 #include "debug.h"
 #include "resize.h"
+#include "test.h"
 
 
 /* Time Function */

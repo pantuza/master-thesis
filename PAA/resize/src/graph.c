@@ -124,30 +124,6 @@ void free_graph(Graph *graph)
     free(graph->vertexes);
 }
 
-#ifdef OPT_GRAPH_REMOVE_SHORTEST_PATH
-/**
- * Remove a vertices from graph and adjust its adjacency
- */
-inline static void remove_vertex(Graph *graph, PPMImage *image,
-        int vertex, int previous)
-{
-    int left   = UP_LEFT(vertex, image);
-    int middle = UP_MIDDLE(vertex, image);
-    int right  = UP_RIGHT(vertex, image);
-
-    if (left >= 0)
-        graph->vertexes[left].adj[RIGHT] = graph->vertexes[middle].adj[RIGHT];
-
-    if (right < graph->list_size)
-        graph->vertexes[right].adj[LEFT] = graph->vertexes[middle].adj[LEFT];
-
-    if (previous == left)
-        graph->vertexes[middle].adj[MIDDLE] = graph->vertexes[left].adj[MIDDLE];
-    else //if (previous == right)
-        graph->vertexes[middle].adj[MIDDLE] = graph->vertexes[right].adj[MIDDLE];
-}
-#endif
-
 /**
  * Shortest Path solution implemented using the Dijkstra algorithm
  */
@@ -165,7 +141,7 @@ int dijkstra(Graph *graph, int source, pri_queue priq,
     visited[source] = 1;
 
     priq_purge(priq);
-    priq_push(priq, source, graph->vertexes[source].pixel->energy);
+    priq_push(priq, source, distance[source]);
 
     int dest = NONE;
     while(priq_size(priq))

@@ -109,16 +109,16 @@ int dp_find_shortest_path(PPMImage *image, const EnergySum sum)
 {
     // Get init of the shortest path
     int y = image->height - 1;
-    Energy min;
-    min = ENERGY_MAX;
-    int minx = 0;
+    Energy min_energy;
+    min_energy = ENERGY_MAX;
+    int min_x = 0;
     for(int x = 0; x < image->width; x++)
-        if(sum[x][y].total < min)
+        if(min_energy > sum[x][y].total)
         {
-            min = sum[x][y].total;
-            minx = x;
+            min_energy = sum[x][y].total;
+            min_x = x;
         }
-    return minx;
+    return min_x;
 }
 
 void dp_make_shortest_path(int * path, PPMImage *image,
