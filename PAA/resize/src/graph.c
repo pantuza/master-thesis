@@ -66,51 +66,51 @@ void init_graph(Graph *graph, PPMImage *image)
     graph->vertexes = (Vertex *) calloc(graph->list_size, sizeof(Vertex));
 
     int v, x, y;
-    /* Build the leftmost vertices */
-    x = 0;
-    for(y = 0; y < image->height - 1; y++)
-    {
-        v = XY2POS(image,x,y);
-        graph->vertexes[v].pixel = &(image->pixels[0][y]);
-        graph->vertexes[v].adj[LEFT]   = SKIP;
-        graph->vertexes[v].adj[MIDDLE] = XY2POS(image,x,y+1);
-        graph->vertexes[v].adj[RIGHT]  = XY2POS(image,x+1,y+1);
-        graph->vertexes[v].adj[END]    = NONE;
-    }
 
-    /* Build the middle vertices */
-    for(y = 0; y < image->height - 1; y++)
-        for(x = 1; x < image->width - 1; x++)
-        {
-            v = XY2POS(image,x,y);
-            graph->vertexes[v].pixel = &(image->pixels[x][y]);
-            graph->vertexes[v].adj[LEFT]   = XY2POS(image,x-1,y+1);
-            graph->vertexes[v].adj[MIDDLE] = XY2POS(image,x,y+1);
-            graph->vertexes[v].adj[RIGHT]  = XY2POS(image,x+1,y+1);
-            graph->vertexes[v].adj[END]    = NONE;
-        }
-
-    /* Build the leftmost vertices */
-    x = image->width - 1;
-    if(x > 0)
-        for(y = 0; y < image->height - 1; y++)
-        {
-            v = XY2POS(image,x,y);
-            graph->vertexes[v].pixel = &(image->pixels[x][y]);
-            graph->vertexes[v].adj[LEFT]   = XY2POS(image,x-1,y+1);
-            graph->vertexes[v].adj[MIDDLE] = XY2POS(image,x,y+1);
-            graph->vertexes[v].adj[RIGHT]  = NONE;
-            graph->vertexes[v].adj[END]    = NONE;
-        }
-
-    /* Build the bottom vertices */
-    y = image->height - 1;
+    /* Build the top vertices */
+    y = 0;
     for(x = 0; x < image->width; x++)
     {
         v = XY2POS(image,x,y);
         graph->vertexes[v].pixel = &(image->pixels[x][y]);
         graph->vertexes[v].adj[LEFT]   = NONE;
         graph->vertexes[v].adj[MIDDLE] = NONE;
+        graph->vertexes[v].adj[RIGHT]  = NONE;
+        graph->vertexes[v].adj[END]    = NONE;
+    }
+
+    /* Build the leftmost vertices */
+    x = 0;
+    for(y = 1; y < image->height; y++)
+    {
+        v = XY2POS(image,x,y);
+        graph->vertexes[v].pixel = &(image->pixels[x][y]);
+        graph->vertexes[v].adj[LEFT]   = SKIP;
+        graph->vertexes[v].adj[MIDDLE] = XY2POS(image,x,y-1);
+        graph->vertexes[v].adj[RIGHT]  = XY2POS(image,x+1,y-1);
+        graph->vertexes[v].adj[END]    = NONE;
+    }
+
+    /* Build the middle vertices */
+    for(y = 1; y < image->height; y++)
+        for(x = 1; x < image->width - 1; x++)
+        {
+            v = XY2POS(image,x,y);
+            graph->vertexes[v].pixel = &(image->pixels[x][y]);
+            graph->vertexes[v].adj[LEFT]   = XY2POS(image,x-1,y-1);
+            graph->vertexes[v].adj[MIDDLE] = XY2POS(image,x,y-1);
+            graph->vertexes[v].adj[RIGHT]  = XY2POS(image,x+1,y-1);
+            graph->vertexes[v].adj[END]    = NONE;
+        }
+
+    /* Build the rightmost vertices */
+    x = image->width - 1;
+    for(y = 1; y < image->height; y++)
+    {
+        v = XY2POS(image,x,y);
+        graph->vertexes[v].pixel = &(image->pixels[x][y]);
+        graph->vertexes[v].adj[LEFT]   = XY2POS(image,x-1,y-1);
+        graph->vertexes[v].adj[MIDDLE] = XY2POS(image,x,y-1);
         graph->vertexes[v].adj[RIGHT]  = NONE;
         graph->vertexes[v].adj[END]    = NONE;
     }
@@ -204,7 +204,7 @@ void graph_shortest_path(PPMImage *image, int *path)
 
     for(x = 0; x < image->width; x++)
     {
-        i = XY2POS(image,x,0);
+        i = XY2POS(image, x, image->height - 1);
 
         dest = dijkstra(&graph, i, &priq_s,
                 distance, previous, shortest_distance);
@@ -223,18 +223,18 @@ void graph_shortest_path(PPMImage *image, int *path)
         if (distance[dest] < shortest_distance)
         {
             shortest_distance = distance[dest];
-            y = image->height - 1;
+            y = 0;
             while(dest != i)
             {
-                path[y--] = POS2X(dest, image);
+                path[y++] = POS2X(dest, image);
                 dest = previous[dest];
             }
             path[y] = POS2X(i, image);
             // assert path length
-            ASSERT_TRUE(y == 0,
+            ASSERT_TRUE(y == image->height - 1,
                     fprintf(stderr,
                             "ASSERT: Path length error (must to be %d): %d\n",
-                            image->height, y)
+                            image->height - 1, y)
             );
         }
     }
