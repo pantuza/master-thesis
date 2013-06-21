@@ -1,4 +1,4 @@
-\documentclass[11pt,a4paper]{report}
+\documentclass[11pt,a4paper]{article}
 
 
 % Packages includes
@@ -6,11 +6,20 @@
 \usepackage{natbib}
 \usepackage{color}
 \usepackage{amssymb}
-\usepackage{graphicx}
 \usepackage{listingsutf8}
 \usepackage{float}
 \usepackage{titlesec}
 \usepackage[brazil]{babel}
+
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage{hyperref}
+
+\usepackage{pdflscape}
+
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
 
 % Documents settings
 \input{doc/sets}
@@ -32,11 +41,14 @@
 % Chapters includes
 \input{doc/introduction}
 \input{doc/solutions}
-\input{doc/analisys}
+\input{doc/analysis}
 \input{doc/conclusion}
 
 % Import bibliograph file
 \bibliographystyle{plain}
 \bibliography{doc/references}
+
+\input{doc/time_table}
+\input{doc/images}
 
 \end{document}

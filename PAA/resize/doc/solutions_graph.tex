@@ -1,0 +1,197 @@
+\subsection{Solução em grafos}
+\label{sol:graph}
+
+O problema de encontrar a costura ({\it seam}) de menor energia de uma imagem
+é similar ao problema de encontrar o menor caminho entre 
+os pixels adjacentes em uma direção (vertical ou horizontal).
+Este é o objetivo da função $f(I)$: dado uma imagem $I$, retornar 
+o caminho de menor energia em direção específica.
+No caso, será tratado apenas soluções na direção vertical, 
+ao longo da dimensão $y$.
+Mudar a direção é trivial, como já tratado em ``\nameref{sol:intro}''.
+Um caminho vertical pode ter dois sentidos: 
+(1) para baixo (descendente ou {\it top-down}) ou
+(2) para cima (ascendente ou {\it bottom-up}).
+Mesmo que a solução seja a mesma, independente do sentido,
+considere-se o sentido ascendente.
+
+Considere-se um grafo direcionado $G=(V,A)$ em que $V$ é o conjunto de vértices 
+e $A$ o conjunto de arestas na forma $\{u, v \in V, w \in A | w=(u \to v)\}$.
+No caso, $w$ é uma aresta que liga o vértice $u$ ao $v$. 
+
+No modelo adotado, cada vértice $v$ representa um pixel, ou seja $v \equiv (x, y)$. 
+As arestas representam as adjacências na vizinhança ascendente do vértice.
+Para um pixel qualquer em $I(x, y)$, 
+os seus pixels adjacentes superiores são, no máximo:
+
+\begin{equation}
+\label{adj_sup}
+adj_{\uparrow}(x, y) = \{I(x-1, y-1), I(x, y-1), I(x+1, y-1)\}
+\end{equation}
+
+O grafo é representado por uma lista (vetor) de vértices. 
+Um vértice, por sua vez, contém os dados do pixel que ele representa e sua 
+lista de adjacência (arestas que o liga aos outros vértices).
+O peso (distância) das arestas são as energias de cada pixel adjacente.
+Assim, a distância inicial não deve ser zero,
+mas deve ser a energia do pixel inicial da busca do menor caminho. 
+
+O programa elaborado aloca memória fixa para 4 vértices adjacentes:
+3 vértices no máximo e 1 flag de finalização.
+O final do vetor de adjacência é marcado pelo valor (flag) ``{\it NONE}'',
+que indica o fim de seu conjunto $adj_{\uparrow}(v)$.
+
+O algoritmo adotado para a solução do problema em grafo 
+é baseado no clássico \emph{Dijkstra}.
+Sua versão original tem complexidade de tempo na ordem de $O(|V|^2)$. 
+Como $|V|$ é o número de vértices, para uma imagem com $(w \times h)$ pixels, 
+a complexidade correpondente é $O((wh)^2)$.  
+
+Em um grafo não direcionado,
+algoritmo de \emph{Dijkstra} parte de um vértice qualquer (dado) e 
+percorra todos os demais vértices de um grafo conectado.
+Nesse processo, o algoritmo vai ajustando o caminho mínimo ao longo da execução. 
+São utilizados dois conjuntos fundamentais:
+
+\begin{itemize}
+\item $Q$, que é um mapa (valor-chave $\rightarrow$ vértice), 
+    sendo que o valor representa a menor distância acumulada. 
+    Inicialmente, $Q$ possui todos os vértices com valores infinitos 
+    e o vértice inicial com valor mínimo.
+\item $S$, que é um vetor indexado pelo vértice que informa 
+    seu sucessor no caminho encontrado, que será mínimo ao final da execução.
+    O caminho mínimo pode ser obtido percorrendo-se $S$ do vértice final
+    até o vértice inicial.
+\end{itemize}
+
+O algoritmo visita todos os vértices em $Q$, 
+buscando sempre o de menor distancia ($key$ mínimo).
+Como $Q$ retorna sempre o vértice com menor distância,
+se as distãncias (pesos) forem sempre positivas,
+então um vérice já visitado não precisa ser reconsiderado,
+pois qualquer outro caminho até ele será maior ou igual ao já encontrado.
+Após visitado o vértice $v$, de menor distancia $d_v$, ele é removido de $Q$.
+Para cada um dos seus vértices adjacentes ($u \in adj_{\uparrow}(v)$), 
+calcula-se a distancia de $v$ até ele:
+$d_u = d_v + d_{((v \rightarrow u))}$. 
+Relembrando, $d_{((v \rightarrow u))}$ é 
+a distãncia,  ``tamanho'' ou peso da aresta que,
+no caso, representa a energia do pixel.
+Se a distancia calculada $d_u$ for menor que o atual valor ($key(u) \in Q$),
+o valor de sua chave em $Q$ é decrementado para $d_u$ ({\it Decrease-Key}) e 
+seu antecessor é definido como o vértice que está sendo visitado: $S[u] = v$.
+O algoritmo termina quando $Q$ for vazio. 
+O caminho mínimo está em $S$, partindo-se do último vértice visitado.
+
+O escopo original do problema de \emph{Dijkstra} é similar,
+mas ligeiramente diferente do {\it Seam Carving}.
+Por exemplo, o grafo do modelo adotado é direcionado, porém não possui ciclos.
+A condição de parada pode ser mudada para 
+o momento que a execução atingir um vértice pertencente 
+à primeira linha da imagem\footnote{
+Note-se que a linha ou a coluna, inicial e final, dependem da
+direção e sentido adotado na execução do programa.
+No caso, foi estabelecida a direção vertical e direção ascendente.
+}.
+Além disso, existem variações do algoritmo, 
+como a que foi implementada no presente trabalho, 
+que não são baseadas em descremento de chave em $Q$ 
+({\it Dijkstra-NoDec})\cite{chen07priorityqueues}.
+
+A solução completa para o problema de encontrar e remover
+o caminho de menor enegia da imagem 
+deve executar os seguintes passos:
+
+\begin{itemize} 
+\item Construção do grafo em $O(wh)$.
+\item Busca do menor entre os menores caminhos;
+      cada busca em $O((wh)^2)$ partindo de
+      cada coluna,
+      totalizando $O(w) \times O((wh)^2)$ iterações. 
+\item Encontrado o menor caminho, 
+      deve-se retirá-lo da imagem em $O(h)$.
+\end{itemize}
+
+Para o redimensionamento, 
+é necessário considerar a retirada de 
+$\Delta{w}$ colunas e/ou $\Delta{h}$ linhas.
+A cada coluna ou linha removida, 
+o número de pixels considerados é reduzido, 
+reduzindo-se gradativamente 
+a complexidade para encontrar o próximo caminho de menor energia.
+
+\begin{tabular}{r l}
+$T(w,h,\Delta{w})$ & $ = \sum \limits_{i=w}^{w - \Delta{w}}{O(ih) + (O(i) \times O((ih)^2)) + O(h)}$ \\
+\end{tabular}
+
+Para fim de simplicidade e comparação, 
+considere-se apenas a retirada de uma coluna ou uma linha.
+
+\begin{tabular}{r l}
+$T(w,h)$ & $= O(wh) + O(w) \times O((wh)^2) + O(h)$ \\ 
+         & $= O(wh) + O(w^3h^2) + O(h)$ \\
+         & $= O(w^3h^2)$ \\
+\end{tabular}
+
+Dado que $w$ e $h$ são variáveis independentes que tendem a ter valores próximos,
+para que seja mantida a forma retangular de uma imagem,
+é possível considerar $O(w) = O(h) = O(n)$.
+Ou seja:
+
+\begin{tabular}{r l}
+$T(n)$ & $= O(n^5)$ \\
+\end{tabular}
+
+Para tentar reduzir a complexidade, 
+foi elaborado uma versão do \emph{Dijkstra} que utiliza 
+uma pilha de prioridade $Q$ ({\it priority queue})
+\urldef\webpriq\url{http://rosettacode.org/wiki/Priority_queue#C}
+\footnote{
+O programa de lista de prioridade usado no trabalho 
+foi adaptado do programa disponívle em 
+{\webpriq}.
+},
+mantida internamente ordenada,
+com tempo de busca do menor valor em $O(1)$, de inserção  e remoção em $O(log_2{|V|})$.
+Com a pilha de prioridade, 
+a busca do menor caminho
+é $O(|V| \times 2log_2{|V|} + |V|) = O(|V|log_2(|V|))$. 
+Considerando-se o método de análise proposto anteriormente:
+
+\begin{equation}
+\label{O-g}
+\begin{tabular}{>{$}r<{$} >{$}l<{$}}
+T(w,h,\Delta{w}) &= \sum \limits_{i=w}^{w - \Delta{w}}{O(ih) + (O(i) \times O((ih)log_2(wh))) + O(h)} \\
+T(w,h) & = O(wh) + O(w) \times O((wh)log_2(wh)) + O(h)) \\ 
+       & = O(wh) + O(w^2hlog_2(wh)) + O(h) \\
+       & = O(w^2hlog_2(wh))\\
+T(n)   & = O(n^3log_2(n^2)) = O(n^32log_2(n)) = O(n^3log_2(n))\\
+\end{tabular}
+\end{equation}
+
+Para tentar redizir ainda mais o esforço computacional,
+adotou-se um controle do menor caminho já calculado para colunas anteriores.
+Ao longo da busca, 
+se o caminho encontrado for maior que o menor já encontrado,
+o programa encerra a busca na coluna atual e passa para a próxima, se houver.
+
+Considerando o espaço de memória necessário:
+
+\begin{itemize}
+\item imagem com $O(|V|)$ elementos (pixels),
+\item grafo com as matrizes de adjacência ocupa $O(k_1+k_2|V|) = O(|V|)$,
+    no qual $k_1$ representa o número de variáveis de controle e 
+    $k_2$ o tamanho fixo do vetor de vértices adjacentes 
+    mais um ponteiro de um pixel correspondente na imagem.
+\item três vetores de controle: 
+vértices prévios no menor caminho, 
+vértices visitados e distância mínima, cada um com $O(|V|)$ elementos,
+\item pilha de prioridade, 
+    também com $O(|V|)$ de memória alocada antecipadamente.
+\end{itemize}
+
+Como todas as estruturas são $O(|V|)$, 
+a complexidade de espaço é $O(k|V|) = O(|V|) = O(wh) = O(n^2)$.
+Assim como a complexidade de tempo,
+o consumo de memória se reduz ao longo da execução,
+pois $w$ se reduz para $w - \Delta{w}$.

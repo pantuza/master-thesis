@@ -1,0 +1,33 @@
+\subsection{Correção dos algoritmos e programas de menor caminho}
+
+Um módulo específico de testes foi programado
+para comparar os resultados parciais 
+ao longo do processo de redimensionamento.
+O teste verifica, após a execução de cada algoritmo,
+(1) a igualdade dos caminho mínimos,
+(2) a igualdade do somatório das energias do caminho mínimo e
+(3) a igualdade das imagens usada em ambos os algoritmos.
+
+Vários problemas, principalmente na análise de resultados,
+foram encontrados e os testes foram
+se tornando mais abrangentes e precisos ao longo dos experimentos.
+Um exemplo de análise que mudou os testes foi a observação que,
+após uma divergência de escolha de caminho mínimo de mesma energia total,
+ocorriam, em sequência, várias outras divergências de resultados.
+O motivo é que as imagens se tornavam diferentes.
+Então, encontrada uma escolha de caminhos diferentes 
+de mesma enegia mínima,
+ao final das verificações, 
+a imagem usada em um dos algoritmos é copiada para a do outro.
+No caso de eventual divergência inválida, 
+o programa de teste relata detalhes para análise manual, 
+mas não iguala as imagens.
+
+Após experimentos em várias imagens,
+não foram encontradas nenhuma divergência inválida.
+Praticamente todas as divergências de escolha de caminho mínimo
+ocorreram em áreas ``escuras'', nas quais a enegia total é zero.
+Além disso, o programa de otimização baseado em grafo
+percorria a imagem sentido inverso ao programa de programação dinâmica.
+Após ajustar o sentido, tornando ambos ascendentes, 
+o número de divergências diminuiu muito na média.
