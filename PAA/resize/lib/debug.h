@@ -9,11 +9,11 @@
 #ifndef DEBUG_H_
 #define DEBUG_H_
 
-#define INFO(x) x
+#define INFO(x)
 #define DEBUG(x) 
 #define DEBUG1(x) 
 #define DEBUG2(x) 
-#define ASSERT(x) x
+#define ASSERT(x)
 #define ASSERT_TRUE(c,x)  ASSERT(if(!(c)){x;})
 #define ASSERT_FALSE(c,x) ASSERT(if(c){x;})
 
@@ -34,6 +34,6 @@
 /*
  *  Paints each seam with different color
  */
-#define OPT_IMAGE_SEAM_DIFF_COLORS
+//#define OPT_IMAGE_SEAM_DIFF_COLORS
 
 #endif /* DEBUG_H_ */

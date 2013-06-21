@@ -255,7 +255,7 @@ PPMImage test_times(PPMImage *image, int width, int height,
     start = clock();
     PPMImage temp = image_resize(function, image, width, height);
     end = clock();
-    *d = end - start;
+    *d = MAX(end - start, 0.01);
     *t = (double)*d / (double)CLOCKS_PER_SEC;
     *r = (double)*c / (double)*d;
     return temp;
