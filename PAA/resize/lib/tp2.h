@@ -38,8 +38,10 @@ typedef struct
     char *output;
     // Output file with the seam carving resized image
     char *outputPreview;
-    // Execute test
-    int test;
+    // Execute correction test
+    int correction_test;
+    // Execute time analisys
+    char *time_test_file;
 } Options;
 
 #endif

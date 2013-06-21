@@ -12,7 +12,7 @@
 #include "ppm.h"
 #include "resize.h"
 
-PPMImage image_resize_compare(ShortestPath function1, ShortestPath function2,
-        PPMImage *image, int width, int height);
+PPMImage test_correction(PPMImage *, int, int);
+PPMImage test_time(char *, char *, PPMImage *, int, int);
 
 #endif /* TEST_H_ */

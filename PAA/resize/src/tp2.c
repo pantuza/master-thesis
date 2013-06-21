@@ -67,7 +67,8 @@ void fill_default(Options *resize)
     resize->ppmfile = NULL;
     resize->output = NULL;
     resize->outputPreview = NULL;
-    resize->test = 0;
+    resize->correction_test = 0;
+    resize->time_test_file = NULL;
 }
 
 
@@ -102,8 +103,11 @@ void opt_parser(int opt, Options *resize)
         case 'p':
             resize->outputPreview = optarg;
             break;
+        case 'c':
+            resize->correction_test = 1;
+            break;
         case 't':
-            resize->test = 1;
+            resize->time_test_file = optarg;
             break;
         case ':':
             fprintf(stderr, "missing argument from option -%c\n", optopt);
@@ -124,7 +128,7 @@ void opt_parser(int opt, Options *resize)
 void arg_parser(int argc, char *argv[], Options *resize)
 {
     int opt;
-    char *options = ":gdw:h:m:e:o:p:t";
+    char *options = ":gdw:h:m:e:o:p:t:c";
 
     fill_default(resize);
 
@@ -160,9 +164,13 @@ PPMImage resize_image(PPMImage *image, Options *opt)
                 (float)((float)(abs(opt->height)) / 100.0));
     }
     //
-    if (opt->test)
-        return image_resize_compare(dp_shortest_path, graph_shortest_path,
-                image, opt->width, opt->height);
+    if (opt->correction_test)
+        return test_correction(image, opt->width, opt->height);
+    else if (opt->time_test_file != NULL)
+    {
+        return test_time(opt->time_test_file,
+                opt->ppmfile, image, opt->width, opt->height);
+    }
     else
     {
         DEBUG(fprintf(stderr,"method: %d\n", opt->method));
@@ -198,7 +206,6 @@ int main(int argc, char *argv[])
     clock_t start;
     clock_t end;
     
-    /* Files open */
 
     /* Imports input file */
     start = clock();
@@ -206,6 +213,8 @@ int main(int argc, char *argv[])
     PPMImage img = image_import(fileIn);
     file_close(fileIn);
     end = clock();
+    INFO(fprintf(stderr, "Image(%d,%d): %s\n",
+            img.width, img.height, opt.ppmfile));
     INFO(fprintf(stderr, "Import in %f seconds\n", timediff(end, start)));
 
     /* Calculate the energy of image pixels */

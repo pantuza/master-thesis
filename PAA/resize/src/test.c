@@ -6,7 +6,11 @@
  *
  */
 #include <stdio.h>
+#include <math.h>
+#include <time.h>
 
+#include "graph.h"
+#include "dynamic.h"
 #include "test.h"
 
 int diff(int *p1, int*p2, int n)
@@ -50,7 +54,7 @@ int diff_image(PPMImage *img1, PPMImage *img2)
                         "!= p2.color(%d,%d, %d)\n",
                         ++difc, x,y,p1.R,p1.G,p1.B,p2.R,p2.G,p2.B);
             if (p1.energy != p2.energy)
-                fprintf(stderr, "$%d[%d,%d]:p1.e(%f) != p2.e(%f)\n",
+                fprintf(stderr, "$%d[%d,%d]:p1.e(%.2f) != p2.e(%.2f)\n",
                         ++dife,x,y,p1.energy,p2.energy);
             if ((p1.x != p2.x) || (p1.y != p2.y))
                 fprintf(stderr, "$%d[%d,%d]:p1.o(%d,%d) != p2.o(%d,%d)\n",
@@ -67,14 +71,14 @@ int diff_energy(char d, int i, int *p,
     int dif_e = 0;
     if (ep  > eq) {
         dif_e = 1;
-        fprintf(stderr, "[%c:%d] Energy 1:%f > 2:%f!\n", d, i, ep, eq);
+        fprintf(stderr, "[%c:%d] Energy 1:%.2f > 2:%.2f!\n", d, i, ep, eq);
     }else
         if (ep  < eq) {
             dif_e = 1;
-            fprintf(stderr, "[%c:%d] Energy 1:%f < 2:%f!\n", d, i, ep, eq);
+            fprintf(stderr, "[%c:%d] Energy 1:%.2f < 2:%.2f!\n", d, i, ep, eq);
         } else
             if (printEquals)
-                fprintf(stderr, "[%c:%d] Energy equals %f!\n", d, i, ep);
+                fprintf(stderr, "[%c:%d] Energy equals %.2f!\n", d, i, ep);
     return dif_e;
 }
 
@@ -105,13 +109,16 @@ int differ(char d, int i, int *p, PPMImage *img_p, int *q, PPMImage *img_q)
 /**
  * Compare results of different shortest path algorithms
  */
-PPMImage image_resize_compare(ShortestPath function1, ShortestPath function2,
-        PPMImage *image, int width, int height)
+PPMImage test_correction(PPMImage *image, int width, int height)
 {
     PPMImage temp_x1 = image_new_from(image);
 
     if (!resize_pre_conditions(image, width, height))
         return temp_x1;
+
+    ShortestPath *function1, *function2;
+    function1 = &(dp_shortest_path);
+    function2 = &(graph_shortest_path);
 
     PPMImage temp_x2 = image_new_from(image);
     int *path1, *path2, step;
@@ -196,6 +203,136 @@ PPMImage image_resize_compare(ShortestPath function1, ShortestPath function2,
     return temp_x1;
 }
 
+#define LOG2(n) (log((double)n)/log(2.0))
+typedef double TO(int, int);
 
+double O_gr(int d1, int d2)
+{
+    double O, O_wh, O_whl, O_w, O_h;
+    O_wh = (double)d1*(double)d2;
+    O_whl = O_wh * (double)LOG2(d1*d2);
+    O_w = (double)d1;
+    O_h = (double)d2;
+    O = O_wh + O_w * O_whl + O_h;
+    return O;
+}
+
+double O_dp(int d1, int d2)
+{
+    double O, O_wh, O_w, O_h;
+    O_wh = (double)d1*d2;
+    O_w = (double)d1;
+    O_h = (double)d2;
+    O = O_wh + O_w + O_h;
+    return O;
+}
+
+double complexity(TO O, int w, int h, int dw, int dh)
+{
+    double c = 0;
+    if (dw)
+        for (int i = w; i >= w - dw; i--) {
+            c += O(i,h);
+        }
+    w = w - dw;
+    if (dh)
+        for (int i = h; i >= h - dh; i--) {
+            c += O(w,i);
+       }
+    return c;
+}
+
+/**
+ * Compare results of different shortest path algorithms
+ */
+PPMImage test_times(PPMImage *image, int width, int height,
+        TO O, ShortestPath function,
+        double *d, double *c, double *t, double *r)
+{
+    clock_t start, end;
+
+    *c = complexity(O, image->width, image->height, width, height);
+    start = clock();
+    PPMImage temp = image_resize(function, image, width, height);
+    end = clock();
+    *d = end - start;
+    *t = (double)*d / (double)CLOCKS_PER_SEC;
+    *r = (double)*c / (double)*d;
+    return temp;
+}
+
+void print_resize1(FILE *out, char *filename,
+        PPMImage *image, int width, int height)
+{
+    fprintf(out, "[%s] I(%d,%d) - delta(%d,%d)\n",
+            filename, image->width, image->height, width, height);
+}
+
+void print_times1(FILE *out, const char *title,
+        double d, double c, double t, double r)
+{
+    fprintf(out, "[%s] complexity: %.2f\n", title, c);
+    fprintf(out, "[%s] time: %.2f s (%.2f/%ld) \n",
+            title, t, d, CLOCKS_PER_SEC);
+    fprintf(out, "[%s] complexity / time: %.2f\n", title, r);
+
+}
+
+
+void print_result1(FILE *out, double rc, double rt, double rr)
+{
+    fprintf(out, "[!!] complexity_gr / complexity_df: %.2f\n", rc);
+    fprintf(out, "[!!] time_gr / time_df: %.2f\n", rt);
+    fprintf(out, "[!!] r_gr / r_df: %.2f\n", rr);
+}
+
+void print_resize(FILE *out, char *filename,
+        PPMImage *image, int width, int height)
+{
+    fprintf(out, "%s, %d, %d, %d, %d",
+            filename, image->width, image->height, width, height);
+}
+
+void print_times(FILE *out, const char *title,
+        double d, double c, double t, double r)
+{
+    //fprintf(stderr, ", %s, %.2f, %.2f, %.2f", title, c, d, r);
+    fprintf(out, ", %.2f, %.2f, %.2f", c, d, r);
+}
+
+void print_result(FILE *out, double rc, double rt, double rr)
+{
+    fprintf(out, ", %.2f, %.2f, %.2f\n", rc, rt, rr);
+}
+
+/**
+ * Compare results of different shortest path algorithms
+ */
+PPMImage test_time(char *output, char *filename,
+        PPMImage *image, int width, int height)
+{
+    double t_1, t_2;
+    double r_1, r_2;
+    double d_1, d_2;
+    double c_1, c_2;
+
+    PPMImage temp1 = test_times(image, width, height,
+            O_dp, dp_shortest_path,
+            &d_1, &c_1, &t_1, &r_1);
+    PPMImage temp2 = test_times(image, width, height,
+            O_gr, graph_shortest_path,
+            &d_2, &c_2, &t_2, &r_2);
+    image_copy(image, &temp2);
+    image_free(&temp2);
+
+    FILE *out = fopen(output, "a");
+    print_resize(out, filename, image, width, height);
+    print_times(out, "dp", d_1, c_1, t_1, r_1);
+    print_times(out, "gr", d_2, c_2, t_2, r_2);
+    print_result(out, (double)c_2 / (double)c_1, t_2/t_1, r_2/r_1);
+    fclose(out);
+
+    return temp1;
+}
 
 
