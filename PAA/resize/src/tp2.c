@@ -48,8 +48,10 @@ void usage()
             "\t-m file\t\tResize image using the file with "
             "the weight matrices\n"
             "\t-o file\t\tRedirect stdout to file (test)\n"
-            "\t-o file\t\tSave image preview to file (test)\n"
+            "\t-p file\t\tSave image preview to file (test)\n"
             "\t-e file\t\tSave energised image (test)\n"
+            "\t-t file\t\tCollects time analysis (test)\n"
+            "\t-c     \t\tExecute correction analysis (test)\n"
             "--\n");
     exit(EXIT_FAILURE);
 }
@@ -203,50 +205,50 @@ int main(int argc, char *argv[])
     arg_parser(argc, argv, &opt);
     
     /* Timers */
-    clock_t start;
-    clock_t end;
+    INFO(clock_t start);
+    INFO(clock_t end);
     
 
     /* Imports input file */
-    start = clock();
+    INFO(start = clock());
     FILE *fileIn = file_open(opt.ppmfile, READ_MODE);
     PPMImage img = image_import(fileIn);
     file_close(fileIn);
-    end = clock();
+    INFO(end = clock());
     INFO(fprintf(stderr, "Image(%d,%d): %s\n",
             img.width, img.height, opt.ppmfile));
     INFO(fprintf(stderr, "Import in %f seconds\n", timediff(end, start)));
 
     /* Calculate the energy of image pixels */
-    start = clock();
+    INFO(start = clock());
     // Meanwhile, at stardate 5906.4, in transporter room...
     // KIRK: All right, Mister Scott, energise.
     energise(&img, opt.matrix);
-    end = clock();
+    INFO(end = clock());
     INFO(fprintf(stderr, "Energy calculation in %f seconds\n",
             timediff(end, start)));
 
     /* exports grayscale to output file */
     if (opt.energisedfile != NULL)
     {
-        start = clock();
+        INFO(start = clock());
         FILE *fileGray = file_open(opt.energisedfile, WRITE_MODE);
         image_export_energy(fileGray, &img);
         file_close(fileGray);
-        end = clock();
+        INFO(end = clock());
         INFO(fprintf(stderr, "Export energised image in %f seconds\n",
                 timediff(end, start)));
     }
 
     /* Resize (calculation) the image */
-    start = clock();
+    INFO(start = clock());
     PPMImage resized = resize_image(&img, &opt);
-    end = clock();
+    INFO(end = clock());
     INFO(fprintf(stderr, "Resize (calculation) image in %f seconds\n",
             timediff(end, start)));
 
     /* exports resized image to output file */
-    start = clock();
+    INFO(start = clock());
     if (opt.output != NULL)
     {
         FILE *fileOut = file_open(opt.output, WRITE_MODE);
@@ -255,18 +257,18 @@ int main(int argc, char *argv[])
     }
     else
         image_export(stdout, &resized);
-    end = clock();
+    INFO(end = clock());
     INFO(fprintf(stderr, "Export resized in %f seconds\n",
             timediff(end, start)));
 
     /* exports preview to output file */
     if (opt.outputPreview != NULL)
     {
-        start = clock();
+        INFO(start = clock());
         FILE *fileOut = file_open(opt.outputPreview, WRITE_MODE);
         image_export(fileOut, &img);
         file_close(fileOut);
-        end = clock();
+        INFO(end = clock());
         INFO(fprintf(stderr, "Export preview in %f seconds\n",
                 timediff(end, start)));
     }

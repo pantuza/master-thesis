@@ -31,6 +31,10 @@ typedef double Energy;
 #define ENERGY_FORMAT "%lf"
 #define ENERGY_MAX DBL_MAX
 
+/* Utils */
+#define MAX(a,b) ((a)>(b)?(a):(b))
+#define MIN(a,b) ((a)<(b)?(a):(b))
+
 /* Struct representing one pixel with its RGB values */
 typedef struct
 {
