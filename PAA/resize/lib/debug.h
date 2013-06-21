@@ -34,6 +34,6 @@
 /*
  *  Paints each seam with different color
  */
-#define OPT_IMAGE_SEAM_DIFF_COLORS
+//#define OPT_IMAGE_SEAM_DIFF_COLORS
 
 #endif /* DEBUG_H_ */
