@@ -51,6 +51,9 @@ int main(int argc, char *argv[])
     Graph graph;
     load(inpfile, &graph);
 
+    /* Ford fulkerson algorithm */
+
+
     /* Export output file */
     FILE *outfile = openfile(output, WRITE_MODE);
 
