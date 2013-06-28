@@ -1,17 +1,9 @@
 #ifndef _CHAMP_H
 #define _CHAMP_H
 
+#include <stdio.h>
+
 #define TEAM_NAME_SIZE 50
-
-
-/* Edge type */
-typedef struct Edge
-{
-    int source;
-    int dive;
-    int capacity;
-} Edge;
-
 
 /* Team type */
 typedef struct Team
@@ -23,16 +15,16 @@ typedef struct Team
 } Team;
 
 
-/* Graph type */
-typedef struct Graph
+/* Champ type */
+typedef struct Champ
 {
     int nteams;
     Team **teams;
     int **opponents;
-} Graph;
+} Champ;
 
 
 /* Public functions */
-void load(FILE *, Graph *);
-void save(FILE *, Graph *);
+void load(FILE *, Champ *);
+void save(FILE *, Champ *);
 #endif

@@ -6,23 +6,23 @@
 
 
 /**
- * Loads the data from file to a Graph structure 
+ * Loads the data from file to a Champ structure 
  */
-void load(FILE *file, Graph *graph)
+void load(FILE *file, Champ *champ)
 {
     /* Reads the number of teams in the championship */
-    fscanf(file, "%d\n", &graph->nteams);
+    fscanf(file, "%d\n", &champ->nteams);
    
     /* Allocates the teams array */
-    graph->teams = malloc(graph->nteams * sizeof(Team *));
+    champ->teams = malloc(champ->nteams * sizeof(Team *));
 
     /* Allocates the opponents matrix */
-    graph->opponents = malloc(graph->nteams * sizeof(int));
-    for(int i = 0; i < graph->nteams; i++)
-        graph->opponents[i] = malloc(graph->nteams * sizeof(int));
+    champ->opponents = malloc(champ->nteams * sizeof(int));
+    for(int i = 0; i < champ->nteams; i++)
+        champ->opponents[i] = malloc(champ->nteams * sizeof(int));
 
     int current = 0;
-    int result = graph->nteams;
+    int result = champ->nteams;
     do
     {
         /* Allocates a Team type on memory */
@@ -36,23 +36,23 @@ void load(FILE *file, Graph *graph)
                &team->loss,
                &team->remaining);
 
-        graph->teams[current] = team;
+        champ->teams[current] = team;
 
         DEBUG(printf("name: %s\tvictories: %d\tloss: %d\tremaining: %d\t",
                      team->name, team->victories, 
                      team->loss, team->remaining));
 
         /* Fill the opponents values for the current team */
-        for(int i = 0; i < graph->nteams; i++)
-            fscanf(file, "%d", &graph->opponents[current][i]);
+        for(int i = 0; i < champ->nteams; i++)
+            fscanf(file, "%d", &champ->opponents[current][i]);
         
         DEBUG(
-            printf("opponents: [%d", graph->opponents[current][0]);
-            for(int i = 1; i < graph->nteams - 1; i++)
+            printf("opponents: [%d", champ->opponents[current][0]);
+            for(int i = 1; i < champ->nteams - 1; i++)
             {
-                printf(", %d", graph->opponents[current][i]);
+                printf(", %d", champ->opponents[current][i]);
             }
-            printf(", %d]\n", graph->opponents[current][graph->nteams - 1]);
+            printf(", %d]\n", champ->opponents[current][champ->nteams - 1]);
         );
 
         fscanf(file, "\n");
@@ -61,7 +61,7 @@ void load(FILE *file, Graph *graph)
     } while(--result);
 }
 
-void save(FILE *file, Graph *graph)
+void save(FILE *file, Champ *champ)
 {
 
 }
