@@ -12,6 +12,8 @@
 #include "file.h"
 #include "champ.h"
 #include "tp3.h"
+#include "flow.h"
+
 #include "debug.h"
 
 
@@ -48,10 +50,11 @@ int main(int argc, char *argv[])
     /* Import input file */
     FILE *inpfile = openfile(input, READ_MODE); 
 
-    Graph graph;
-    load(inpfile, &graph);
+    Champ champ;
+    load(inpfile, &champ);
 
-    /* Ford fulkerson algorithm */
+    maximum_flow(&champ);
+
 
 
     /* Export output file */
