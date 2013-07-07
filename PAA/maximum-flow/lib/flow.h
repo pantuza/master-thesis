@@ -12,7 +12,7 @@
 
 int **capacity;
 int **flow;
-int *aug_path;
+int *pred;
 
 /* Edge type */
 typedef struct Edge
@@ -29,6 +29,6 @@ typedef struct Graph
 
 
 /* Public functions */
-int ford_fulkerson(int, int, int);
+int ford_fulkerson(int, int);
 void maximum_flow(Champ *);
 #endif
