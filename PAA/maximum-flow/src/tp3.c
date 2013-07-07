@@ -15,6 +15,9 @@
 #include "flow.h"
 
 
+/**
+ * Prints how to usage the program
+ */
 void usage()
 {
     fprintf(stderr, 
@@ -22,6 +25,11 @@ void usage()
     exit(EXIT_FAILURE);
 }
 
+
+/**
+ * Parses the command line arguments and store the 
+ * input and output files
+ */ 
 void arg_parser(int argc, char *argv[], char *input, char *output)
 {
     if(argc == 3)
@@ -33,6 +41,11 @@ void arg_parser(int argc, char *argv[], char *input, char *output)
 }
 
 
+/**
+ * Main execution of the program. Function calls
+ * to load data from file, calculation of maximum flow 
+ * and to save result answer to a file
+ */ 
 int main(int argc, char *argv[])
 {
     /* Corrects terminal output buffer */
@@ -52,18 +65,18 @@ int main(int argc, char *argv[])
     /* Import input file */
     FILE *inpfile = openfile(input, READ_MODE); 
 
+    /* Loads data from file */
     Champ champ;
     load(inpfile, &champ);
+    closefile(inpfile);
 
-    maximum_flow(&champ);
-
-
-
-    /* Export output file */
+    /* output file that will store the results */
     FILE *outfile = openfile(output, WRITE_MODE);
 
 
-
-
+    /* Calculate the maximum flow on the graph */
+    maximum_flow(&champ, outfile);
+    closefile(outfile);
+    
     return EXIT_SUCCESS;
 }

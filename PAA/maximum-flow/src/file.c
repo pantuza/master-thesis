@@ -12,6 +12,7 @@
 #include <errno.h>
 #include "file.h"
 
+
 /**
  * Try to open a file. if occur an error, exits with a failure message
  */
@@ -27,6 +28,7 @@ FILE* openfile(char *filename, char *mode)
     }
     return file;
 }
+
 
 /**
  * Try to close a file. if occur an error, exits with a failure message

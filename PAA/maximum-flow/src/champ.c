@@ -1,3 +1,13 @@
+/**
+ * Championship file parser.
+ *
+ * Builds the championship data into a data structure 
+ * used to calculate the maximum flow
+ *
+ * @author: Gustavo Pantuza
+ * @since: 15.06.2013
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "champ.h"
@@ -56,9 +66,4 @@ void load(FILE *file, Champ *champ)
 
         fscanf(file, "\n");
     }
-}
-
-void save(FILE *file, Champ *champ)
-{
-
 }

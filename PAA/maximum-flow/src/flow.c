@@ -1,9 +1,25 @@
+/**
+ * For a given championship data it calculates the maximum flow 
+ * based on the current team. 
+ *
+ * This files make all analisys that eliminates a team.
+ * The maximum flow algorithm implemented here is the Ford Fulkerson
+ * using a Breadth-first Search to find augment paths inside the 
+ * residual graph. 
+ *
+ * @author: Gustavo Pantuza
+ * @since: 21.06.2013
+ */
+
+
+#include <stdlib.h>
+#include <limits.h>
+#include <math.h>
+
 #include "flow.h"
 #include "queue.h"
 #include "champ.h"
-#include "stdlib.h"
-#include <limits.h>
-#include <math.h>
+
 
 /* min macro */
 #define min(x,y) (((x)<(y)) ? (x) : (y))
@@ -132,6 +148,24 @@ void allocate(int size)
 
     Queue = malloc((n + 2) * sizeof(int));
     empty();
+}
+
+
+/**
+ * Deallocates variables:
+ *     color;
+ *     aug_path;
+ *     capacity;
+ *     flow;
+ *     Queue/
+ */
+void deallocate()
+{
+    free(color); 
+    free(pred);
+    free(capacity);
+    free(flow);
+    free(Queue);
 }
 
 
@@ -273,16 +307,17 @@ int cut_R(Champ *champ, int current, int sink, int *teams, int *teams_in_R)
 /**
  * Answer for the direct elimination of a team
  */
-void direct_elimination(Champ *champ, int current, int blocked_by)
+void direct_elimination(Champ *champ, int current, 
+                        int blocked_by, FILE *outfile)
 {
-    printf("%s foi eliminado por %s\n", champ->teams[current].name,
+    fprintf(outfile, "%s foi eliminado por %s\n", champ->teams[current].name,
             champ->teams[blocked_by].name);
-    printf("Ele pode ganhar, no máximo, %d + %d = %d jogos\n",
+    fprintf(outfile, "Ele pode ganhar, no máximo, %d + %d = %d jogos\n",
             champ->teams[current].victories,
             champ->teams[current].remaining,
             champ->teams[current].victories + 
             champ->teams[current].remaining);
-    printf("%s ganhou um total de %d jogos\n\n", 
+    fprintf(outfile, "%s ganhou um total de %d jogos\n\n", 
             champ->teams[blocked_by].name,
             champ->teams[blocked_by].victories);
 }
@@ -291,10 +326,11 @@ void direct_elimination(Champ *champ, int current, int blocked_by)
 /**
  * Answer for the analitical elimination of a team
  */
-void analitical_elimination(Champ *champ, int current, int *teams_in_R)
+void analitical_elimination(Champ *champ, int current, 
+                            int *teams_in_R, FILE *outfile)
 {
-    printf("%s é eliminado\n", champ->teams[current].name);
-    printf("Ele pode ganhar, no máximo, %d + %d = %d jogos\n", 
+    fprintf(outfile, "%s é eliminado\n", champ->teams[current].name);
+    fprintf(outfile, "Ele pode ganhar, no máximo, %d + %d = %d jogos\n", 
             champ->teams[current].victories,
             champ->teams[current].remaining,
             champ->teams[current].victories +
@@ -302,17 +338,18 @@ void analitical_elimination(Champ *champ, int current, int *teams_in_R)
 
     int k = 0; // index in R
     int sum_vic = 0; // summation of victories in R
-    printf("{ ");
+    fprintf(outfile, "{ ");
     int team = k;
     while((team = teams_in_R[k++]) != -1)
     {
-        printf("%s ", champ->teams[team].name);
+        fprintf(outfile, "%s ", champ->teams[team].name);
         sum_vic += champ->teams[team].victories;
     }
-    printf("} ");
-    printf("ganharam um total de %d jogos\n", sum_vic);
+    fprintf(outfile, "} ");
+    fprintf(outfile, "ganharam um total de %d jogos\n", sum_vic);
 
-    printf("Assim, em média, cada equipe vence %2.f/%d = %.2f jogos\n\n",
+    fprintf(outfile, 
+            "Assim, em média, cada equipe vence %2.f/%d = %.2f jogos\n\n",
             total_victories, flow_teams,
             ((double) total_victories / flow_teams));
 }
@@ -321,7 +358,7 @@ void analitical_elimination(Champ *champ, int current, int *teams_in_R)
 /**
  * Make the graph analisys based on the current team 
  */
-void champ_analisys(Champ *champ, int current)
+void champ_analisys(Champ *champ, int current, FILE *outfile)
 {
 #ifdef MYDEBUG
     printf("Analising: %s\n", champ->teams[current].name);
@@ -343,7 +380,7 @@ void champ_analisys(Champ *champ, int current)
     // Build edges and vertexes
     if(!build_graph(champ, current, source, sink, teams, &blocked_by))
     {    
-        direct_elimination(champ, current, blocked_by);
+        direct_elimination(champ, current, blocked_by, outfile);
         return;
     }
 
@@ -367,7 +404,7 @@ void champ_analisys(Champ *champ, int current)
 
     /* Eliminates team */
     if(cut > curr_victories)
-        analitical_elimination(champ, current, teams_in_R);
+        analitical_elimination(champ, current, teams_in_R, outfile);
 
 
 #ifdef MYDEBUG
@@ -402,13 +439,10 @@ void champ_analisys(Champ *champ, int current)
 /**
  * Calculate the maximum flow for each team in the championship
  */
-void maximum_flow(Champ *champ)
+void maximum_flow(Champ *champ, FILE *outfile)
 {
     for(int i = 0; i < champ->nteams; i++)
-    {
         /* Ford fulkerson algorithm */
-        champ_analisys(champ, i);
-    }
+        champ_analisys(champ, i, outfile);
+    deallocate();
 }
-
-
