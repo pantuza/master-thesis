@@ -23,7 +23,7 @@ WARNS := -Wall -lm
 STAND := -std=c99
 MACRO := -D MYDEBUG -D MYDEBUG1
 
-FLAGS := $(DEBUG) $(OPTIM) $(INLIB) $(WARNS) $(STAND) $(MACRO)
+FLAGS := $(DEBUG) $(OPTIM) $(INLIB) $(WARNS) $(STAND) #$(MACRO)
 
 
 # Compiler
