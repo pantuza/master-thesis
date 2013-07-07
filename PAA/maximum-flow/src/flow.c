@@ -4,67 +4,88 @@
 #include "stdlib.h"
 #include <limits.h>
 #include <math.h>
-#define oo INT_MAX
 
-int n;  // number of nodes
-
+/* min macro */
 #define min(x,y) (((x)<(y)) ? (x) : (y))
 
-int bfs (int start, int target) {
-    int u,v;
-    for (u=0; u<n; u++) {
-    color[u] = WHITE;
-    }   
+
+/**
+ * Global variables 
+ */
+int n;
+int nvertexes = 0;
+int relation[100][100];
+double total_victories = 0;
+int flow_teams = 0;
+
+
+/**
+ * Breadth-firt Search implementation
+ * Finds the augment paths
+ */
+int bfs (int start, int target)
+{
+    /* Sets all vertices with white color */
+    for (int u = 0; u < n; u++)
+        color[u] = WHITE;
+
+    /* Initialize the Queue */
     head = tail = 0;
     enqueue(start);
     pred[start] = -1;
-    while (head!=tail) {
-    u = dequeue();
-        // Search all adjacent white nodes v. If the capacity
-        // from u to v in the residual network is positive,
-        // enqueue v.
-    for (v=0; v<n; v++) {
-        if (color[v]==WHITE && capacity[u][v]-flow[u][v]>0) {
-        enqueue(v);
-        pred[v] = u;
-        }
+
+    while (head!=tail) 
+    {
+        int u = dequeue();
+        /**
+         * Enqueue v if there exists a capacity from u to v in
+         * the residual graph and it is positive
+         */
+        for (int v = 0; v < n; v++) 
+
+            if (color[v]==WHITE && capacity[u][v]-flow[u][v]>0) 
+            {
+                enqueue(v);
+                pred[v] = u;
+            }
     }
-    }
-    // If the color of the target node is black now,
-    // it means that we reached it.
-    return color[target]==BLACK;
+
+    /* It reaches the sink if the color of sink is black */
+    return color[target] == BLACK;
 }
 
+
+/**
+ * Ford Fulkerson algorithm implementation
+ */
 int ford_fulkerson(int source, int sink)
 {
-    int i,j,u;
-    // Initialize empty flow.
+    /* Initialize an empty flow */
     int max_flow = 0;
-    for (i=0; i<n; i++) {
-    for (j=0; j<n; j++) {
-        flow[i][j] = 0;
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            flow[i][j] = 0;
+
+    /* While exists augment paths */
+    while (bfs(source,sink)) 
+    {
+        /* calculate the amount that the flow can be incremented */
+        int increment = INT_MAX;
+        for (int u = n - 1; pred[u] >= 0; u = pred[u])
+            increment = min(increment, capacity[pred[u]][u] - flow[pred[u]][u]);
+    
+        /* increments the flow */
+        for (int u = n - 1; pred[u] >= 0; u = pred[u]) 
+        {
+            flow[pred[u]][u] += increment;
+            flow[u][pred[u]] -= increment;
+        }
+        max_flow += increment;
     }
-    }
-    // While there exists an augmenting path,
-    // increment the flow along this path.
-    while (bfs(source,sink)) {
-        // Determine the amount by which we can increment the flow.
-    int increment = oo;
-    for (u=n-1; pred[u]>=0; u=pred[u]) {
-        increment = min(increment,capacity[pred[u]][u]-flow[pred[u]][u]);
-    }
-        // Now increment the flow.
-    for (u=n-1; pred[u]>=0; u=pred[u]) {
-        flow[pred[u]][u] += increment;
-        flow[u][pred[u]] -= increment;
-    }
-    max_flow += increment;
-    }
-    // No augmenting path anymore. We are done.
+
     return max_flow;
 }
 
-int nvertexes = 0;
 
 /**
  * Empty flows, capacities, colors and augment paths (pred)
@@ -83,12 +104,14 @@ void empty()
     }
 }
 
+
 /**
  * Allocates variables:
  *     color;
  *     aug_path;
  *     capacity;
  *     flow;
+ *     Queue/
  */
 void allocate(int size)
 {
@@ -111,6 +134,10 @@ void allocate(int size)
     empty();
 }
 
+
+/**
+ * Adds a vertex to the graph
+ */
 int add_vertex()
 {
     if(nvertexes < (n - 1))
@@ -123,10 +150,15 @@ int add_vertex()
     return 0;
 }
 
+
+/** 
+ * Adds an edge to the graph
+ */
 void add_edge(int u, int v, int weight)
 {
     capacity[u][v] = weight;
 }
+
 
 /**
  * Counts the number of plays
@@ -141,10 +173,14 @@ int count_plays(Champ *champ, int current)
                     num_plays++;
     return num_plays;
 }
+
+
 /**
  * Add plays and teams edges/vertexes
+ * Verify if there exists a directed block for a team
  */
-void build_graph(Champ *champ, int current, int source, int sink, int *teams)
+int build_graph(Champ *champ, int current, int source, 
+                int sink, int *teams, int *blocked_by)
 {
     // W is the current team total victories possible.
     int W = champ->teams[current].victories + champ->teams[current].remaining;
@@ -154,8 +190,16 @@ void build_graph(Champ *champ, int current, int source, int sink, int *teams)
     
         if(i != current)
         {
-            teams[i] = add_vertex(); // W - wi
-            add_edge(teams[i], sink, W - champ->teams[i].victories);
+            teams[i] = add_vertex(); 
+            // W - wi
+            int residual = W - champ->teams[i].victories;
+
+            if(residual < 0)
+            {
+                *blocked_by = i;
+                return 0;
+            }
+            add_edge(teams[i], sink, residual);
         }
 
     for(int i=0; i < champ->nteams; i++)
@@ -168,34 +212,115 @@ void build_graph(Champ *champ, int current, int source, int sink, int *teams)
                     add_edge(source, play, champ->opponents[i][j]);
                     add_edge(play, teams[i], INT_MAX);
                     add_edge(play, teams[j], INT_MAX);
+                    relation[i][j] = play;
                 }
+    return 1;
 }
 
-int cut_R(Champ *champ, int current, int sink, int *teams)
-{
-    double total_victories = 0;
-    int flow_teams = 0;
 
+/**
+ * Calculates the cut of the set R on the graph
+ */
+int cut_R(Champ *champ, int current, int sink, int *teams, int *teams_in_R)
+{
+    total_victories = 0;
+    flow_teams = 0;
+    int R_i = 0; // index for insertion in teams_in_R
+
+#ifdef MYDEBUG
     printf("R{ ");
+#endif
+
     for(int i = 0; i < champ->nteams; i++)
         
-        if(i != current && flow[teams[i]][sink] != 0)
+        if(i != current && flow[teams[i]][sink] == capacity[teams[i]][sink])
         {
+
+#ifdef MYDEBUG
             printf("%s ", champ->teams[i].name);
+#endif
+            
+            /* Add team to the R set */
+            teams_in_R[R_i++] = i;
             flow_teams++;
-            /*
-             * R = Team nodes in the sink side
-             * T = wins(R) + remaining(R) 
-             */
-            total_victories += (double) (champ->teams[i].victories + 
-                               champ->teams[i].remaining / 2.0);
+            total_victories += (double) (champ->teams[i].victories);
         }
+
+#ifdef MYDEBUG
     printf("}\n");
-    
+#endif
+
+    teams_in_R[R_i] = -1;
+   
+    /**
+     * if there exists a game between two teams, 
+     * calculates the total victories
+     */
+    for(int i = 0; i < R_i - 1; i++)
+        for(int j = i + 1; j < R_i; j++)
+            if(champ->opponents[i][j] > 0)
+                /*
+                 * R = Team nodes in the sink side
+                 * T = wins(R) + remaining(R) 
+                 */
+                total_victories += (double) champ->opponents[i][j];
+
     /* cut(R) = T / |R| */
     return (int) ceil((double) total_victories / (double) flow_teams);
 }
 
+
+/**
+ * Answer for the direct elimination of a team
+ */
+void direct_elimination(Champ *champ, int current, int blocked_by)
+{
+    printf("%s foi eliminado por %s\n", champ->teams[current].name,
+            champ->teams[blocked_by].name);
+    printf("Ele pode ganhar, no máximo, %d + %d = %d jogos\n",
+            champ->teams[current].victories,
+            champ->teams[current].remaining,
+            champ->teams[current].victories + 
+            champ->teams[current].remaining);
+    printf("%s ganhou um total de %d jogos\n\n", 
+            champ->teams[blocked_by].name,
+            champ->teams[blocked_by].victories);
+}
+
+
+/**
+ * Answer for the analitical elimination of a team
+ */
+void analitical_elimination(Champ *champ, int current, int *teams_in_R)
+{
+    printf("%s é eliminado\n", champ->teams[current].name);
+    printf("Ele pode ganhar, no máximo, %d + %d = %d jogos\n", 
+            champ->teams[current].victories,
+            champ->teams[current].remaining,
+            champ->teams[current].victories +
+            champ->teams[current].remaining);
+
+    int k = 0; // index in R
+    int sum_vic = 0; // summation of victories in R
+    printf("{ ");
+    int team = k;
+    while((team = teams_in_R[k++]) != -1)
+    {
+        printf("%s ", champ->teams[team].name);
+        sum_vic += champ->teams[team].victories;
+    }
+    printf("} ");
+    printf("ganharam um total de %d jogos\n", sum_vic);
+
+    printf("Assim, em média, cada equipe vence %2.f/%d = %.2f jogos\n\n",
+            total_victories, flow_teams,
+            ((double) total_victories / flow_teams));
+}
+
+
+/**
+ * Make the graph analisys based on the current team 
+ */
 void champ_analisys(Champ *champ, int current)
 {
 #ifdef MYDEBUG
@@ -214,40 +339,69 @@ void champ_analisys(Champ *champ, int current)
     int source = 0;
     int sink = n - 1;
 
+    int blocked_by = 0;
     // Build edges and vertexes
-    build_graph(champ, current, source, sink, teams);
+    if(!build_graph(champ, current, source, sink, teams, &blocked_by))
+    {    
+        direct_elimination(champ, current, blocked_by);
+        return;
+    }
 
     // Gets the Ford Fulkerson algorithm result
-    int max_flow = ford_fulkerson(source, sink);
+    ford_fulkerson(source, sink);
 
-#ifdef MYDEBUG
-    printf("max_flow: %d\n", max_flow);
-#endif
-
+    // array with the teams inside the R set
+    int teams_in_R[champ->nteams];
     /* Receives the cut value of the sink side */
-    int cut = cut_R(champ, current, sink, teams);
+    int cut = cut_R(champ, current, sink, teams, teams_in_R);
     
     /* Current Victories */
     int curr_victories = champ->teams[current].victories + 
                          champ->teams[current].remaining;
 
+
 #ifdef MYDEBUG
     printf("cut: %d\tcurrent victories: %d\n", cut, curr_victories);
 #endif
 
+
     /* Eliminates team */
     if(cut > curr_victories)
-    {
-        printf("Eliminated Team: %s\n", champ->teams[current].name);
-    }
+        analitical_elimination(champ, current, teams_in_R);
+
 
 #ifdef MYDEBUG
     for(int i = 0; i < champ->nteams; i++)
         if(i != current)
-            printf("%s(%d)=%d\n",champ->teams[i].name, teams[i], flow[teams[i]][n-1]);
+            printf("%s(%d)=%d\n",champ->teams[i].name, teams[i], 
+                    flow[teams[i]][n-1]);
+    
+    for(int i = 0; i < champ->nteams; i++)
+        if(i != current)
+        {
+            printf("E->%d: %d - %d\n",i, flow[teams[i]][sink], 
+                    capacity[teams[i]][sink]);
+        }
+
+    for(int i=0; i < champ->nteams; i++)
+        if(i != current)
+            for(int j=i+1; j < champ->nteams; j++)
+
+                if(j != current && champ->opponents[i][j] > 0)
+                {
+                    printf("jogo: %dx%d --> %d = %d\n", i, j, i, 
+                            flow[relation[i][j]][teams[i]]);
+                    printf("jogo: %dx%d --> %d = %d\n", i, j, j,  
+                            flow[relation[i][j]][teams[j]]);
+                }
+
 #endif
 }
 
+
+/**
+ * Calculate the maximum flow for each team in the championship
+ */
 void maximum_flow(Champ *champ)
 {
     for(int i = 0; i < champ->nteams; i++)
