@@ -21,8 +21,9 @@ OPTIM := -O3
 INLIB := -I$(LIB)
 WARNS := -Wall -lm
 STAND := -std=c99
+MACRO := -D MYDEBUG -D MYDEBUG1
 
-FLAGS := $(DEBUG) $(OPTIM) $(INLIB) $(WARNS) $(STAND)
+FLAGS := $(DEBUG) $(OPTIM) $(INLIB) $(WARNS) $(STAND) $(MACRO)
 
 
 # Compiler
