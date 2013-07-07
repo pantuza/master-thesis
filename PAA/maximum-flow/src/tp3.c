@@ -14,8 +14,6 @@
 #include "tp3.h"
 #include "flow.h"
 
-#include "debug.h"
-
 
 void usage()
 {
@@ -39,12 +37,16 @@ int main(int argc, char *argv[])
 {
     /* Corrects terminal output buffer */
     setvbuf(stderr, NULL, _IONBF, 0);
+    setvbuf(stdout, NULL, _IONBF, 0);
 
     
     /* Parse main arguments */
     char input[ARGS_BUFFER_SIZE], output[ARGS_BUFFER_SIZE];
     arg_parser(argc, argv, input, output);
-    DEBUG(printf("input: %s output: %s\n", input, output));
+
+#ifdef MYDEBUG
+    printf("input: %s output: %s\n", input, output);
+#endif
 
 
     /* Import input file */
