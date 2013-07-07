@@ -19,7 +19,7 @@ typedef struct Team
 typedef struct Champ
 {
     int nteams;
-    Team **teams;
+    Team *teams;
     int **opponents;
 } Champ;
 
