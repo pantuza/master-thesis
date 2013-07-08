@@ -4,11 +4,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define READ_MODE  0
-#define WRITE_MODE 1
+#define READ_MODE   'r'
+#define WRITE_MODE  'w'
+#define APPEND_MODE 'a'
 
 
-FILE* openfile(char *, int write);
+FILE* openfile(char *, char);
 void closefile(FILE *);
 
 #endif

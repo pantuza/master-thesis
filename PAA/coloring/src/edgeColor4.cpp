@@ -12,11 +12,11 @@
 
 #include "debug.h"
 
-namespace baseline2 {
+namespace H2 {
 
     int firstVertex[10000],secondVertex[10000];
-    int vertexDegree[100];
-    int vertexAcrossColor[100][101];  // Given a vertex number and a color,
+    int vertexDegree[1000];
+    int vertexAcrossColor[1000][1001];  // Given a vertex number and a color,
     // indicates adjacent vertex (-1=none)
     int m,n,degree;
 
@@ -165,7 +165,7 @@ namespace baseline2 {
         }
     }
 
-    int edgeColor4Baseline(FILE *file)
+    int edge_coloring(FILE *file, FILE *out)
     {
         int i,j;
 
@@ -200,12 +200,16 @@ namespace baseline2 {
 
         //Output results
         DEBUG1(printf("Edge & color\n"));
+        if (out != NULL)
+            fprintf(out, "%d %d\n", n,m);
         for (i=0;i<n;i++)
             for (j=1;j<=degree+1;j++)
                 if (vertexAcrossColor[i][j]>i)
                 {
-                    DEBUG1(printf("%d %d %d\n",i,vertexAcrossColor[i][j],j));
                     colors[j]++;
+                    DEBUG1(printf("%d %d %d\n",i,vertexAcrossColor[i][j],j));
+                    if (out != NULL)
+                        fprintf(out,"%d %d %d\n",i,vertexAcrossColor[i][j],j);
                 }
 
         int numColors = 0;

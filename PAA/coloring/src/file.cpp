@@ -15,20 +15,17 @@
 /**
  * Try to open a file. if occur an error, exits with a failure message
  */
-FILE* openfile(char *filename, int write)
+FILE* openfile(char *filename, char fmode)
 {
     char mode[2];
-    if (write)
-        mode[0] = 'w';
-    else
-        mode[0] = 'r';
+    mode[0] = fmode;
     mode[1] = 0;
 
     FILE *file = fopen(filename, mode);
 
     if (file == NULL)
     {
-        fprintf(stderr, "Error during file open in %s mode: %s\n",
+        fprintf(stderr, "Error during file open in %s mode: '%s'\n",
                 mode, filename);
         exit(EXIT_FAILURE);
     }

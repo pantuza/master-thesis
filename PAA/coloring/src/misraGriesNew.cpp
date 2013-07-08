@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include "debug.h"
 
-namespace baseline1 {
+namespace H1 {
 
 
     struct edge {
@@ -19,12 +19,12 @@ namespace baseline1 {
     typedef struct edge edgeType;
     edgeType edgeTab[10000];
 
-    int vertexDegree[100];
-    int vertexAcrossColor[100][102];  // Given a vertex number and a color,
+    int vertexDegree[1000];
+    int vertexAcrossColor[1000][1002];  // Given a vertex number and a color,
     // indicates adjacent vertex (-1=none)
-    int prev[100][102], // Used with vertexAcrossColor for
-    next[100][102], // circular doubly-linked lists of available colors.
-    firstFree[100]; // Points to header of list.
+    int prev[1000][1002], // Used with vertexAcrossColor for
+    next[1000][1002], // circular doubly-linked lists of available colors.
+    firstFree[1000]; // Points to header of list.
 
     int m,n,degree;
 
@@ -268,7 +268,7 @@ namespace baseline1 {
             setColor(X,fan[k],fanFreeColor[k]);
     }
 
-    int misraGriesNewBaseline(FILE *file)
+    int edge_coloring(FILE *file, FILE *out)
     {
         int i,j,k;
         int v,w;
@@ -370,6 +370,12 @@ namespace baseline1 {
                 printf("{%d, %d} %d\n",edgeTab[i].firstVertex,
                         edgeTab[i].secondVertex,edgeTab[i].color);
         );
+        if (out != NULL) {
+            fprintf(out, "%d %d\n", n,m);
+            for (i=0;i<k;i++)
+                fprintf(out, "%d %d %d\n",edgeTab[i].firstVertex,
+                        edgeTab[i].secondVertex,edgeTab[i].color);
+        }
 
         int numColors = 0;
         for(i=0;i<100;i++)

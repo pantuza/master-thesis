@@ -50,6 +50,7 @@ namespace Graph {
         c = 0;
         chromaticNumber = 0;
         chromaticIndex = 0;
+        directed = false;
     }
 
     Graph::~Graph()
@@ -79,7 +80,10 @@ namespace Graph {
         {
             fscanf(f, "%d %d", &v1, &v2);
             //e.push_back(new Edge(vertex[v1], vertex[v2]));
-            addEdge(vertex[v1], vertex[v2]);
+            if (directed)
+                addEdge(vertex[v1], vertex[v2]);
+            else
+                addEdgeUnique(vertex[v1], vertex[v2]);
         }
     }
 
@@ -139,7 +143,7 @@ namespace Graph {
 
     void Graph::save(FILE *f)
     {
-        fprintf(f, "%d %d\n", v.size(), e.size());
+        fprintf(f, "%lu %lu\n", (long unsigned)v.size(), (long unsigned)e.size());
         //fprintf(f, "[%d]\n", d);
         resetId();
         //for (Vertex *vi: v)
@@ -152,6 +156,14 @@ namespace Graph {
         //}
         for (Edge *ei: e)
             fprintf(f, "%d %d %d\n", ei->v1->id, ei->v2->id, ei->c);
+    }
+
+    void Graph::saveRaw(FILE *f)
+    {
+        fprintf(f, "%lu %lu\n", (long unsigned)v.size(), (long unsigned)e.size());
+        resetId();
+        for (Edge *ei: e)
+            fprintf(f, "%d %d\n", ei->v1->id, ei->v2->id);
     }
 
     Vertex* Graph::addVertex()
@@ -173,6 +185,14 @@ namespace Graph {
         if (d >= 0 && v2->getDegree() > d)
             d = v2->getDegree();
         return ei;
+    }
+
+    Edge* Graph::addEdgeUnique(Vertex *v1, Vertex *v2)
+    {
+        for (Edge *ei: e)
+            if ((ei->v1==v1 && ei->v2==v2) || (ei->v1==v2 && ei->v2==v1))
+                return NULL;
+        return addEdge(v1, v2);
     }
 
     int Graph::colorize_edge_woc(const int maxColor)
@@ -318,18 +338,18 @@ namespace Graph {
         return colorizedEdges;
     }
 
-    Graph Graph::line()
+    void Graph::complete(int nv)
     {
-        Graph g;
-        Vertex *vi;
-        resetId();
-        for (Edge *ei: e)
-            (vi = g.addVertex())->data = (void *)ei;
-        return g;
+        for (Vertex* vi: v)
+            delete vi;
+        for (Edge* ei: e)
+            delete ei;
+        std::vector<Vertex *> vertex;
+        for(int i=0; i < nv; i++)
+            vertex.push_back(addVertex());
+        for (int i=0; i < (nv - 1); i++)
+            for (int j=i+1; j < nv; j++)
+                addEdge(vertex[i], vertex[j]);
     }
 
-    int vertex_colorize()
-    {
-        return 0;
-    }
 }

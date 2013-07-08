@@ -67,10 +67,13 @@ namespace Graph {
             //
             Color color;
             //
+            bool directed;
+            //
             void resetId();
             int colorize_edge_woc(const int);
             int next_combination(const int);
             int valid_colorization(const int, const int);
+            bool _ignore(Vertex v1, Vertex v2);
         public:
             friend class Vertex;
             friend class Edge;
@@ -81,7 +84,8 @@ namespace Graph {
             void load_colorized(FILE *);
             void save2dot(FILE *);
             void save(FILE *);
-            Graph line();
+            void saveRaw(FILE *);
+            void complete(int);
             void set_edge_colors(int);
             int edge_colorize_bf(int);
             int edge_colorize_greedy(int);
@@ -90,11 +94,12 @@ namespace Graph {
             inline int numVertex() { return v.size(); };
             inline int numEdge() { return e.size(); };
             inline int getDegree() { return d; };
-            inline int getColor() { return c; };
-            inline int getCindex() { return chromaticIndex; };
-            inline int getCnumber() { return chromaticNumber; };
+            //inline int getColor() { return c; };
+            //inline int getCindex() { return chromaticIndex; };
+            //inline int getCnumber() { return chromaticNumber; };
             Vertex* addVertex();
             Edge* addEdge(Vertex*, Vertex*);
+            Edge* addEdgeUnique(Vertex*, Vertex*);
     };
 
 }

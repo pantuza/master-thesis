@@ -8,12 +8,12 @@
 #ifndef BASELINE_H_
 #define BASELINE_H_
 
-namespace baseline1 {
-    int misraGriesNewBaseline(FILE *);
+namespace H1 {
+    int edge_coloring(FILE *, FILE *);
 }
 
-namespace baseline2 {
-    int edgeColor4Baseline(FILE *);
+namespace H2 {
+    int edge_coloring(FILE *,FILE *);
 }
 
 #endif /* BASELINE_H_ */
