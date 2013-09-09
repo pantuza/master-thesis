@@ -6,3 +6,10 @@
 
 src/bin
 *.o
+
+# latex files
+*.log
+*.aux
+*.bbl
+*.blg
+*.pdf
