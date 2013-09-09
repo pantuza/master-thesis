@@ -13,3 +13,4 @@ src/bin
 *.bbl
 *.blg
 *.pdf
+*.out
