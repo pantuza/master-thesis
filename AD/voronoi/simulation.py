@@ -1,9 +1,20 @@
 # -*- coding: utf-8 -*-
 
+try:
+    from sys import path
+    from os.path import abspath
+
+    path.append(abspath("."))
+except:
+    raise EnvironmentError("Can't append voronoi to python path :/ ")
+
+
+from random import randint
+
 from pymote.networkgenerator import NetworkGenerator
 from pymote.simulation import Simulation
 from pymote.npickle import write_npickle
-from random import randint
+
 from voronoi import Voronoi
 
 
@@ -34,6 +45,6 @@ sim.run()
 print net.algorithmState
 
 net.show()
-write_npickle(net, "net.gz")
+write_npickle([path, net], "net.gz")
 sim.reset()
 #net.show()
