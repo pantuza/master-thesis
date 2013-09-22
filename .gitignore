@@ -14,3 +14,8 @@ src/bin
 *.blg
 *.pdf
 *.out
+
+#python files
+*.pyc
+*.pym
+*.pyo
