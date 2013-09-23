@@ -42,26 +42,15 @@ print net.algorithmState
 
 # Plot voronoi diagram for each node
 for node in net.nodes():
-    import ipdb
-    ipdb.set_trace()
-    voronoi_plot_2d(node.voronoi)
-    plt.show(block=False)
+    
+    try:
+        voronoi_plot_2d(node.voronoi)
+        plt.show(block=False)
+    except AttributeError:
+        print "%s Insufficient number of nodes to compute voronoi" % node
 
 # Plot the network image
 net.show()
 # Writes
 #write_npickle(net, "net.gz")
 sim.reset()
-
-
-#from pymote.gui.simulationgui import SimulationGui
-#from pymote.gui.simulationgui import create_window
-
-#def main():
-#    global simgui
-#    simgui = create_window(SimulationGui)
-
-#if __name__ == '__main__':
-#    main()
-
-
