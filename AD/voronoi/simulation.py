@@ -18,10 +18,10 @@ import matplotlib.pyplot as plt
 
 from distributed_voronoi import DistributedVoronoi
 from point2D import Point2D
-
+from preview import Preview
 
 # generates the network with 10 hosts
-net_gen = NetworkGenerator(n_count=6, n_min=1, n_max=7)
+net_gen = NetworkGenerator(n_count=9, n_min=1, n_max=10)
 net = net_gen.generate_random_network()
 
 
@@ -31,7 +31,7 @@ net.algorithms = ((DistributedVoronoi, {'informationKey':'axis'}),)
 
 # Assign to node memory its position
 for node in net.nodes():
-    node.memory['axis'] = Point2D(int(net.pos[node][0]), int(net.pos[node][1]))
+    node.memory['axis'] = (int(net.pos[node][0]), int(net.pos[node][1]))
 
 # Creates and starts the simulation
 sim = Simulation(net)
@@ -47,7 +47,7 @@ for node in net.nodes():
     try:
         #voronoi_plot_2d(node.voronoi)
         #plt.show(block=False)
-        Preview.draw(node.voronoi, width = 200, height = 200)
+        Preview.voronoi(node.voronoi, x=1000, y=1000)
     except AttributeError:
         print "%s Insufficient number of nodes to compute voronoi" % node
 
