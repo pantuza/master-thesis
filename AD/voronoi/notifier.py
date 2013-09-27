@@ -29,5 +29,4 @@ class Notifier(NodeAlgorithm):
                               source=node,
                               destination=neighbor,
                               data=node.memory['axis'])
-
                 node.send(msg)
