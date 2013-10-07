@@ -17,5 +17,5 @@ class Point2D(tuple):
         return '(' + str(self[0]) + ',' + str(self[1]) + ')'
 
     def __str__(self):
-        return self.__repr__() 
+        return self.__repr__()
 

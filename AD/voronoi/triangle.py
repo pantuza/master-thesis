@@ -16,7 +16,10 @@ class Triangle(tuple):
     EPSILON = 0.0000000001
 
     @staticmethod
-    def determinant(p1, p2, p3):
+    def orientation(p1, p2, p3):
+        '''
+        
+        '''
         # Test the relation of the points using determinat
         d = det(((p1[0], p1[1], 1),
                  (p2[0], p2[1], 1),
@@ -29,7 +32,7 @@ class Triangle(tuple):
 
     @staticmethod
     def __new__(cls, p1, p2, p3):
-        # the last is the 'bigger' point
+        # make the last be the 'bigger' point
         if p1 > p2:
             if p1 > p3:
                 tp = p3
@@ -41,7 +44,7 @@ class Triangle(tuple):
                 p3 = p2
                 p2 = tp
         # Test the relation of the points using determinat
-        d = Triangle.determinant(p1, p2, p3)
+        d = Triangle.orientation(p1, p2, p3)
         # Collinear
         if (d == 0):
             raise Exception("Can't create a triangle with collinear points!")
@@ -55,9 +58,10 @@ class Triangle(tuple):
     def __init__(self, p1, p2, p3):
         # precalculate center
         if not self._pre_circumcenter():
-            raise Exception("Too small or float point precision limit (r=%f)." 
+            raise Exception("Too small or float point precision limit (r=%f)."
                             % self.radius ) 
-        # postpone calculation of matrix whitch verify if point is inside circle
+        # postpone calculation of matrix whitch 
+        # verify if point is inside circle
         #self.m = None
 
     def __repr__(self):
@@ -79,8 +83,8 @@ class Triangle(tuple):
 
     def _pre_circumcenter(self):
         '''
-        calculate the circumcircle center and the radius r
-        NOTE: A point on the edge is inside the circumcircle
+        calculate the circumscribe center and the radius r
+        NOTE: A point on the edge is inside the circumscribe
         http://paulbourke.net/papers/triangulate/
         '''
         x1 = self[0][0]
@@ -132,17 +136,17 @@ class Triangle(tuple):
         
         return (self.radius > Triangle.EPSILON)
 
-    def getCircumcenter(self):
+    def circumcenter(self):
         return (self.cx, self.cy)
 
-    def getCircumcircleRadius(self):
+    def circumcircle_radius(self):
         return self.radius
 
     """
-    def circumcircle2(self, point):
+    def circumscribe(self, point):
         '''
-        Verify if triangle circumcircle the point
-        via determinant of matrix m 
+        Verify if triangle circumscribe the point
+        via orientation of matrix m 
         '''
         if self.m is None:
         # precalculate matrix for test point inside circle
@@ -153,7 +157,7 @@ class Triangle(tuple):
                 dist2 = x*x + y*y
                 self.m.append([x, y, dist2, 1])
             self.m.append([])
-        # calculate the determinant of matrix m
+        # calculate the orientation of matrix m
         self.m[3] = [point[0], point[1], 
                      point[0]*point[0] + point[1]* point[1], 1]
         d = det(self.m)
@@ -163,9 +167,9 @@ class Triangle(tuple):
         return d < 0
     """
     
-    def circumcircle(self, point):
+    def circumscribe(self, point):
         '''
-        Verify if triangle circumcircle the point
+        Verify if triangle circumscribe the point
         via distance between point and the circumcenter 
         '''
         dx = self.cx - point[0]
@@ -176,7 +180,10 @@ class Triangle(tuple):
             dist = 0.0
         return dist < self.radius
 
-    def getOppositeFacet(self, point):
+    def opposite_facet(self, point):
+        '''
+        gets the opposite facet of a triangle vertex
+        '''
         if point == self[0]:
             return Segment(self[1], self[2])
         elif point == self[1]:
@@ -186,15 +193,21 @@ class Triangle(tuple):
         else:
             raise Exception("Point is not a triangle vertex")
 
-    def isNeighbor(self, triangle):
+    def is_neighbor(self, triangle):
+        '''
+        Check if the triangles has a common facet
+        '''
         count = 0
         for vertex in self:
             if (not triangle.contains(vertex)):
                 count += 1
         return count == 1
 
-    def getNextVertexExcept(self, exclude):
-        # must guarantee the order (CW or CCW)
+    def next_vertex_except(self, exclude):
+        '''
+        Get the next vertex of a triangle, considering exceptions
+        PS: must guarantee the order (CW or CCW)
+        '''
         for point in self:
             if point not in exclude:
                 return point
@@ -206,6 +219,9 @@ class Triangle(tuple):
                (p2[0] - p3[0]) * (p1[1] - p3[1])
 
     def collide(self, point):
+        '''
+        Check if a point is inside a triangle area
+        '''
         b1 = Triangle._sign(point, self[0], self[1]) < 0.0
         b2 = Triangle._sign(point, self[1], self[2]) < 0.0
         b3 = Triangle._sign(point, self[2], self[0]) < 0.0
@@ -230,16 +246,16 @@ if __name__ == '__main__':
     t = Triangle(Point2D(-1, -2),
                  Point2D( 2,  3),
                  Point2D( 3, -3));
-    print "Center = " + str(t.getCircumcenter())
-    print "Radius = " + str(t.getCircumcircleRadius())
+    print "Center = " + str(t.circumcenter())
+    print "Radius = " + str(t.circumcircle_radius())
     
-    print "circumcircle:"
-    print t.circumcircle(Point2D(1,0))
-    print t.circumcircle(Point2D(-1,-1))
-    print t.circumcircle(Point2D(0,0))
-    print t.circumcircle(Point2D(-3,-2))
-    print t.circumcircle(Point2D(4,4))
-    print t.circumcircle(Point2D(-4,-4))
+    print "circumscribe:"
+    print t.circumscribe(Point2D(1,0))
+    print t.circumscribe(Point2D(-1,-1))
+    print t.circumscribe(Point2D(0,0))
+    print t.circumscribe(Point2D(-3,-2))
+    print t.circumscribe(Point2D(4,4))
+    print t.circumscribe(Point2D(-4,-4))
     print "collide:"
     print t.collide(Point2D(1,0))
     print t.collide(Point2D(-1,-1))
@@ -251,7 +267,7 @@ if __name__ == '__main__':
     print "-------------"
     
     t2 = Triangle(Point2D(-10.0,-10.0), Point2D(0.0,10.0), Point2D(0.0,0.0))
-    print t2.circumcircle(Point2D(0,1))
+    print t2.circumscribe(Point2D(0,1))
     
     t3 = Triangle(Point2D(2,3), Point2D(3,-3), Point2D(-1, -2))
     t4 = Triangle(Point2D(3,-3), Point2D(-1, -2), Point2D(2,3))
@@ -265,12 +281,17 @@ if __name__ == '__main__':
     else:
         print "ERRO? " + str(t4) + " != " + str(t3)
 
-    ta = Triangle(Point2D(150.0,75.0),Point2D(150.0,125.0),Point2D(125.0,150.0))
-    print "Center a= " + str(ta.getCircumcenter())
-    print "Radius a= " + str(ta.getCircumcircleRadius())
-    print ta.circumcircle(Point2D(50.0,125.0))
+    ta = Triangle(Point2D(150.0,75.0),
+                  Point2D(150.0,125.0),
+                  Point2D(125.0,150.0))
+    print "Center a= " + str(ta.circumcenter())
+    print "Radius a= " + str(ta.circumcircle_radius())
+    print ta.circumscribe(Point2D(50.0,125.0))
 
-    print Triangle.determinant((30.0,170.0),(75.0,150.0),(150.0,125.0))
+    print Triangle.orientation((30.0,170.0),(75.0,150.0),(150.0,125.0))
     
-    tx = Triangle((100.0,100.0),(100.0,190.0),(125.0,150.0))
-    print tx.circumcircle((30.0,170.0))
+    tx = Triangle((125.0,150.0), (30.0,170.0), (100.0,190.0))
+    print tx.radius
+    p = (0.0,10000.0)
+    print tx.circumscribe(p)
+    print str(sqrt((tx.cx - p[0])*(tx.cx - p[0])+(tx.cy-p[1])*(tx.cy-p[1])))

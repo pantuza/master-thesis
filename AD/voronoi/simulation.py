@@ -1,27 +1,19 @@
 # -*- coding: utf-8 -*-
 
-try:
-    from sys import path
-    from os.path import abspath
-
-    path.append(abspath("."))
-except:
-    raise EnvironmentError("Can't append voronoi on python path :/ ")
-
-
 from pymote.networkgenerator import NetworkGenerator
 from pymote.simulation import Simulation
 from pymote.npickle import write_npickle
 
-#from scipy.spatial import voronoi_plot_2d
-import matplotlib.pyplot as plt
 
 from distributed_voronoi import DistributedVoronoi
 from point2D import Point2D
 from preview import Preview
 
+
+Preview.start_voronoi()
+
 # generates the network with 10 hosts
-net_gen = NetworkGenerator(n_count=9, n_min=1, n_max=10)
+net_gen = NetworkGenerator(n_count=4, n_min=1, n_max=5)
 net = net_gen.generate_random_network()
 
 
@@ -45,9 +37,7 @@ print net.algorithmState
 for node in net.nodes():
     
     try:
-        #voronoi_plot_2d(node.voronoi)
-        #plt.show(block=False)
-        Preview.voronoi(node.voronoi, x=1000, y=1000)
+        Preview.voronoi(node.voronoi)
     except AttributeError:
         print "%s Insufficient number of nodes to compute voronoi" % node
 

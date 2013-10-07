@@ -1,144 +1,239 @@
 """
-Demo of a PathPatch object.
+Preview of a Delaunay Triangulation and Voronoi Diagram using matplotlib.
 """
-import matplotlib.path as mpath
-import matplotlib.patches as mpatches
-import matplotlib.pyplot as plt
+import pygame
 from delaunay import Delaunay
+import threading
 
-class Preview(object): 
 
-    def __init__(self, delaunay):
-        if not isinstance(delaunay, Delaunay):
-            raise Exception("Object is not a Delaunay Triangulation.")
-        self.delaunay = delaunay
-        self.siteRadius=2
-        self.max_x = 400
-        self.max_y = 400
-        self.min_x = 0
-        self.min_y = 0
-        self.clear()
-        self.ion = True
-        plt.ion()
+class Color(object):
+    CYAN = pygame.Color(0, 183, 235)
+    YELLOW = pygame.Color(255,255,0)
+    MAGENT = pygame.Color(255,20,147)
+    ORANGE = pygame.Color(255,165,0)
+    RED = pygame.Color(255, 0, 0)
+    BLUE = pygame.Color(0, 0, 255)
+    GREEN = pygame.Color(0, 255, 0)
+    GRAY = pygame.Color(105,105,105)
+    BLACK = pygame.Color(0,0,0)
+    WHITE = pygame.Color(255,255,255)
+
+
+class Panel(object):
+    
+    def __init__(self, width = 800, height = 600):
+        self.width = width
+        self.height = height
+        self.surface = pygame.Surface((self.width, self.height))
+        self.pos = (0, 0) # test
+        self.color = Color.WHITE
+        self.alpha = []
+    
+    def set_position(self, pos):
+        # copy to avoid reference leaking
+        self.pos[0] = pos[0]
+        self.pos[1] = pos[1]
         
+    def push_alpha(self, opacity):
+        self.alpha.append(self.surface.get_alpha())
+        self.surface.set_alpha(opacity)
+
+    def pop_alpha(self):
+        opacity = self.alpha.pop()
+        self.surface.set_alpha(opacity)
+
+
+class Preview(threading.Thread): 
+
+    STARTING = 0
+    RUNNING = 1
+    STOPPING = 2
+    KILLED = 3
+
+    preview = None
+
+    def __init__(self, title = "Voronoi diagram", x = 800, 
+                 y = 600):
+
+        self.state = Preview.STARTING
+        self.width = x
+        self.height = y
+        self.display = pygame.display.set_mode((x, y))
+        self.siteRadius = 2
+        self.panel = {}
+        #self.addDiagram(diagram, x, y)
+        self.set_title(title)
+        pygame.init()
+        threading.Thread.__init__(self)
+        
+    def __del__(self):
+        if self.state != Preview.KILLED:
+            pygame.quit()
 
     @staticmethod
-    def voronoi(delaunay, title = "Voronoi diagram", x = 200, y = 200):
-        preview = Preview(delaunay)
-        preview.max_x = x
-        preview.max_y = y
-        preview.drawVoronoi()
-        preview.draw()
-        preview.setTitle(title)
-        preview.interactive(False)
-        preview.show()
+    def start_voronoi():
+         Preview.preview = Preview()
+         Preview.preview.start()
 
-    def setTitle(self, title):
-        if title is not None:
-            plt.gcf().canvas.set_window_title(title)
-        
-    def interactive(self, interac = True):
-        self.ion = interac
-        if self.ion:
-            plt.ion()
-        else:
-            plt.ioff()
+    @staticmethod
+    def new_diagram(diagram):
+        Preview.preview.add_diagram(diagram)
+
+    def start(self):
+        threading.Thread.start(self)
+
+    def run(self):
+        self.clock = pygame.time.Clock()
+        self.state = Preview.RUNNING
+        while self.state == Preview.RUNNING:
             
-    def clear(self):
-        self.fig, self.ax = plt.subplots()
-        self.Path = mpath.Path
+            for diagram in self.panel.keys():
+                self.draw_voronoi(diagram)
+            self.show()
+            self.clear()
+            self.process_events()
+            self.clock.tick(30)
 
-    def _apply(self, path_data, **style):
+    def add_diagram(self, diagram):
+        if not isinstance(diagram, Delaunay):
+            raise Exception("Object is not a Delaunay Triangulation.")
+        self.panel[diagram] = Panel()
+
+    def quit(self):
+        return self.state == Preview.KILLED
+        pygame.quit()
+        
+    def is_running(self):
+        return self.state == Preview.RUNNING
+
+    def _get_default(self, diagram):
+        if diagram is None:
+            return self.default, self.panel[self.default]
+        return diagram, self.panel[diagram]
+
+    def addDiagram(self, diagram, x, y):
+        self.default = diagram
+        panel = Panel(x,y)
+        panel.surface.fill(panel.color)
+        self.panel[diagram] = panel
+        
+    @staticmethod
+    def distance(size):
+        return int(size)
+        
+    @staticmethod
+    def position(point):
+        return (int(round(point[0])), int(round(point[1])))
+        
+    @staticmethod
+    def voronoi(diagram, title = "Voronoi diagram"):
+        preview = Preview(diagram, title)
+        while preview.is_running():
+            preview.draw_voronoi()
+            preview.show()
+            preview.clear()
+            preview.process_events()
+
+    def process_events(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.state = Preview.STOPPING
+                return
+    
+    def set_title(self, title):
+        if title is not None:
+            pygame.display.set_caption(title)
+
+    def interactive(self, interac = True):
+        pass
+    
+    def clear(self, diagram = None):
+        diagram, panel = self._get_default(diagram)
+        panel.surface.fill(panel.color)
+
+    def _apply(self, panel):
         # apply drawings
-        codes, verts = zip(*path_data)
-        path = mpath.Path(verts, codes)
-        patch = mpatches.PathPatch(path, **style)
-        self.ax.add_patch(patch)
-
+        self.display.blit(panel.surface, panel.pos)
+    
     def draw(self):
-        # plot control 
-        self.ax.set_ylim([self.min_y, self.max_y])
-        self.ax.set_xlim([self.min_y, self.max_x]) 
-        plt.draw()
+        # plot control
+        pass
 
     def show(self):
-        plt.show()
+        pygame.display.flip()
+        
+    def setDefault(self, diagram):
+        self.default = diagram
 
-    def drawVoronoi(self):
-        path_data = []
+    def draw_voronoi(self, diagram = None):
         # plot the voronoi cells
-        cells = self.delaunay.getVoronoiCells()
+        diagram, panel = self._get_default(diagram)
+        cells = diagram.voronoi_cells()
         for site, cell in cells.items():
             # draw cell
-            path_data.append((self.Path.MOVETO, cell[len(cell) - 1]))
-            for point in cell:
-                path_data.append((self.Path.LINETO, point))
-            #draw site
-            self.drawPoint(site)
+            pygame.draw.aalines(panel.surface, Color.BLACK, True, cell)
+            pos = Preview.position(site)
+            pygame.draw.circle(panel.surface, Color.BLACK, pos, self.siteRadius)
         # apply drawings
-        self._apply(path_data, facecolor='w', alpha=0.5)
+        self._apply(panel)
 
-    def drawVoronoiCell(self, theSite):
-        path_data = []
+    def draw_voronoi_cell(self, theSite, diagram = None):
         # plot the voronoi cells
-        cells = self.delaunay.getVoronoiCells()
+        diagram, panel = self._get_default(diagram)
+        cells = diagram.voronoi_cells()
         for site, cell in cells.items():
             if site == theSite:
                 # draw cell
-                path_data.append((self.Path.MOVETO, cell[len(cell) - 1]))
-                for point in cell:
-                    path_data.append((self.Path.LINETO, point))
-                    #draw site
-                    self.drawPoint(site)
-                # apply drawings
-                self._apply(path_data, facecolor='r', alpha=0.5)
+                pygame.draw.aalines(panel.surface, Color.BLACK, True, cell)
+                pos = Preview.position(site)
+                pygame.draw.circle(panel.surface, Color.BLACK, pos, self.siteRadius)
+                self._apply(panel)
                 return
-
-    def drawVoronoiCellTriangulation(self, site):
-        path_data = []
+        
+    def draw_voronoi_cell_triangulation(self, site, diagram = None):
         # plot the voronoi cells
-        triangules, initial = self.delaunay.getVoronoiCellTrinagulation(site)
-        opacity = 0.35
-        self.drawPoint(site, color='r')
+        diagram, panel = self._get_default(diagram)
+        triangules, initial = self.delaunay.voronoi_cell_trinagulation(site)
+        pygame.draw.circle(panel.surface, Color.RED, pos, self.siteRadius)
+        panel.push_alpha(90)
         for triangle in triangules:
-            self.drawTriangle(triangle, facecolor='g', alpha=opacity)
-        self.drawTriangle(initial, facecolor='b', alpha=opacity)
-        self.drawNeighbors(initial)
+            pygame.draw.aalines(panel.surface, Color.GREEN, True, triangle)
+        panel.surface.pop_alpha()
+        self.draw_neighbors(initial, diagram, panel)
+        self._apply(panel)
 
-    def drawTriangle(self, triangle, **style):
-        path_data = [(self.Path.MOVETO, triangle[2])]
-        for point in triangle:
-            path_data.append((self.Path.LINETO, point))
-        self._apply(path_data, **style)
+    def draw_triangulation(self, diagram = None):
+        diagram, panel = self._get_default(diagram)
+        panel.push_alpha(50)
+        for triangle in diagram.neighborhood.keys():
+            pygame.draw.aalines(panel.surface, Color.BLUE, True, triangle)
+        panel.pop_alpha()
+        self._apply(panel)
 
-    def drawTriangulation(self):
-        for triangle in self.delaunay.neighborhood.keys():
-            self.drawTriangle(triangle, color='b', fill=False, alpha=0.2)
+    def draw_circumcircles(self, diagram = None):
+        diagram, panel = self._get_default(diagram)
+        for triangle in diagram.neighborhood.keys():
+            center = triangle.circumcenter()
+            if (center[0] <= panel.width) and (center[1] <= self.height) and \
+               (center[0] >= 0) and (center[1] >= 0):
+                pos = Preview.position(center)
+                radius = Preview.distance(triangle.circumcircle_radius())
+                pygame.draw.circle(panel.surface, Color.YELLOW, pos, radius, 1)
+        self._apply(panel) 
 
-    def drawCircumcircles(self):
-        for triangle in self.delaunay.neighborhood.keys():
-            center = triangle.getCircumcenter()
-            if (center[0] <= self.max_x) and (center[1] <= self.max_y) and \
-               (center[0] >= self.min_x) and (center[1] >= self.min_y):
-                self.drawCircle(center, triangle.getCircumcircleRadius(), color = 'y')
-
-    def drawCircle(self, point, radius, color='g'):
-        circle=plt.Circle(point, radius, color=color, fill=False, alpha=0.8)
-        self.fig.gca().add_artist(circle)
-
-    def drawPoint(self, point, color='b'):
-        circle=plt.Circle(point, self.siteRadius, color=color, fill=True)
-        self.fig.gca().add_artist(circle)
-
-    def drawNeighbors(self, triangle):
-        #triangle = self.delaunay._findTriangleContains(test)
+    def _draw_neighbors(self, triangle, diagram, panel):
         if triangle is not None:
-            neighborhood = self.delaunay.neighborhood[triangle]
+            neighborhood = diagram.neighborhood[triangle]
+            panel.push_alpha(70)
             for neighbor in neighborhood:
-                self.drawTriangle(neighbor, color='r', alpha=0.3)
+                pygame.draw.polygon(panel.surface, Color.BLUE, neighbor, 0)
+            panel.surface.pop_alpha()
+        
     
 if __name__ == '__main__':
 
+    import random
+    import time
     from point2D import Point2D
     
     sites= [
@@ -160,59 +255,51 @@ if __name__ == '__main__':
             Point2D(30, 170)
             ]
 
-    max = 200
-    
-    # test mode: manual cleanup: clear_main_site()
+    # test manual cleanup: 
     d = Delaunay()
-    d.addMainSite(Point2D(100, 100))
+    #d.add_as_main(Point2D(100, 100))
     d.add(Point2D(100, 100))
     for site in sites:
         d.add(site)
-    d.clear_main_site()
+    #d.clear_far_sites()
     Preview.voronoi(d, title = "Manual 'main site' cleanup mode")
     
-    # test mode: automatic cleanup: addSurrounding(site)
+    # test automatic cleanup: 
     d = Delaunay()
-    d.addMainSite(Point2D(100, 100))
+    d.add_as_main(Point2D(100, 100))
     d.add(Point2D(100, 100))
     for site in sites:
-        d.addSurrounding(site)
+        d.add_near(site)
     Preview.voronoi(d, title = "Automatic 'main site' cleanup mode")
     
-    
-    d = Delaunay()
-    d.addMainSite(Point2D(100, 100))
+    d = Delaunay(10000)
     d.add(Point2D(100, 100))
     for site in sites:
         d.add(site)
 
+    # test site deletion: 
     preview = Preview(d)
-    preview.interactive(False) 
-    preview.max_x = max
-    preview.max_y = max
-    #preview.min_x = -max
-    #preview.min_y = -max
-    preview.setTitle("Simulation of remove(site)")
-    preview.draw()
-    preview.drawVoronoi()
-    preview.drawTriangulation()
-    preview.drawCircumcircles()
-    #preview.drawVoronoiCellTriangulation(Point2D(100.0,100.0))
-    preview.show()
-    
-
     preview.interactive(True) 
-    import random
+    preview.set_title("Simulation of remove(site)")
+    preview.draw_voronoi()
+    preview.draw_triangulation()
+    preview.draw_circumcircles()
+    preview.show()
+    preview.clear()
+    preview.process_events()
+    time.sleep(5)
+
     deleted = []
-    while len(sites) > 0:
+    while (preview.is_running()) and (len(sites) > 0):
         i = random.randint(0, len(sites) - 1)
         if i in deleted:
             continue
         deleted.append(i)
-        preview.drawVoronoi()
-        #preview.drawTriangulation()
-        #preview.drawCircumcircles()
-        preview.drawVoronoiCell(sites[i])
-        preview.draw()
+        preview.draw_voronoi()
+        preview.draw_voronoi_cell(sites[i])
+        preview.show()
         preview.clear()
+        preview.process_events()
+        time.sleep(1)
         d.remove(sites[i])
+

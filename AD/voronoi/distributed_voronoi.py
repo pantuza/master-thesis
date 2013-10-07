@@ -9,6 +9,7 @@ from pymote.algorithm import NodeAlgorithm
 from notifier import Notifier
 from delaunay import Delaunay
 from point2D import Point2D
+from preview import Preview
 
 
 class DistributedVoronoi(Notifier):
@@ -23,6 +24,7 @@ class DistributedVoronoi(Notifier):
             node.points = [(int(node.network.pos[node][0]),
                             int(node.network.pos[node][1]))]
             node.voronoi = Delaunay()
+            Preview.new_diagram(node.voronoi)
             node.voronoi.add(node.points[0])
 
         super(DistributedVoronoi, self).initializer()
