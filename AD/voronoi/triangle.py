@@ -64,7 +64,7 @@ class Triangle(tuple):
                             % self.radius ) 
         # postpone calculation of matrix whitch 
         # verify if point is inside circle
-        #self.m = None
+        self.matrix = None
 
     def __repr__(self):
         return 'Triangle[' + str(self[0]) + \
@@ -148,27 +148,27 @@ class Triangle(tuple):
     def circumscribe(self, point):
         '''
         Verify if triangle circumscribe the point
-        via orientation of matrix m 
+        via orientation of matrix matrix 
         '''
-        if self.m is None:
+        if self.matrix is None:
         # precalculate matrix for test point inside circle
-            self.m = []
+            self.matrix = []
             for i in (0,1,2):
                 x = self[i][0]
                 y = self[i][1]
                 dist2 = x*x + y*y
-                self.m.append([x, y, dist2, 1])
-            self.m.append([])
-        # calculate the orientation of matrix m
-        self.m[3] = [point[0], point[1], 
+                self.matrix.append([x, y, dist2, 1])
+            self.matrix.append([])
+        # calculate the orientation of matrix matrix
+        self.matrix[3] = [point[0], point[1], 
                      point[0]*point[0] + point[1]* point[1], 1]
-        d = det(self.m)
+        d = det(self.matrix)
         # check float point precision
         if fabs(d) < Triangle.EPSILON:
             d = 0.0
         return d < 0
-    """
     
+    """
     def circumscribe(self, point):
         '''
         Verify if triangle circumscribe the point
@@ -183,7 +183,7 @@ class Triangle(tuple):
         if dist < self.radius:
             return (self.radius - dist) > Triangle.EPSILON
         return False
-
+    
     def debug_distance(self, point):
         '''
         Verify if triangle circumscribe the point
@@ -198,16 +198,16 @@ class Triangle(tuple):
         print "----------------------------------------------------------"
         print "Triangle " + str(self)
         if dist < self.radius:
-            distance = str(self.radius - dist)
+            distance = (self.radius - dist)
             if distance > Triangle.EPSILON:
                 print "-- Circumscribe point " + str(point)
             else:
-                print "-- Almost circumscribe point "+str(point)
+                print "-- Almost circumscribe point " + str(point)
         else:
             distance = (dist - self.radius)
-            print "-- NOT circumscribe point "+str(point)
+            print "-- NOT circumscribe point " + str(point)
         print "-- Radius   = " + str(self.radius)
-        print "-- Distance = " + str(distance)
+        print "-- Distance = " + str(distance) + " / " + str(dist)
         print "-- EPSILON  = " + str(Triangle.EPSILON)
         print "----------------------------------------------------------"
 
@@ -261,9 +261,9 @@ class Triangle(tuple):
     # Planning: use to accelerate "remove(site)" algorithm
     # see reference...
     def getPower(self, point):
-        self.m[3] = [point[0], point[1], 
+        self.matrix[3] = [point[0], point[1], 
                      point[0]*point[0] + point[1]* point[1], 1]
-        h = det(self.m)
+        h = det(self.matrix)
         if fabs(d) < Triangle.EPSILON:
             d = 0.0
         d = self.getDeterminant()

@@ -151,15 +151,18 @@ class DiagramTest(threading.Thread):
     
     num_threads = 0
     lock = threading.Lock()
+    _big_delay = 0.25
     
     def __init__(self, sites, delay):
         with DiagramTest.lock:
             self.id = DiagramTest.num_threads
             DiagramTest.num_threads += 1
-            self.diagram = Delaunay()
+            self.diagram = Delaunay(test = True)
             self.site_set = SiteSet(sites)
         self.delay = delay
-        self.big_delay = 2.0 if delay < 2.0 else delay
+        self.big_delay = DiagramTest._big_delay \
+                         if delay < DiagramTest._big_delay \
+                         else delay
         self.state = DiagramTest.STARTING
         threading.Thread.__init__(self)
         self.counter = 0
@@ -184,7 +187,6 @@ class DiagramTest(threading.Thread):
     def run(self):
         self.state = DiagramTest.RUNNING
         while True:
-            #self.diagram.include_as_main(self.site_set.pick_main())
             if self.must_exit(): break
             while self.site_set.can_pick():
                 self.diagram.include(self.site_set.pick())
@@ -192,7 +194,6 @@ class DiagramTest(threading.Thread):
             while self.site_set.has_picked():
                 self.diagram.remove(self.site_set.unpick())
                 if self.must_exit(): break
-            #self.diagram.remove(self.site_set.unset_main())
             if self.must_exit(): break
         # keep running until receive a stop sign
         while self.state == DiagramTest.RUNNING:
@@ -245,7 +246,7 @@ class TestCases(threading.Thread):
     def simple(sites, main_index):
         # simple test without cleanup:
         assert len(sites) > 1 
-        d = Delaunay()
+        d = Delaunay(test = True)
         d.include(sites[main_index])
         for site in sites:
             if site == sites[main_index]: continue
@@ -259,7 +260,7 @@ class TestCases(threading.Thread):
     def auto_cleanup(sites, main_index):
         # test automatic cleanup: 
         assert len(sites) > 1 
-        d = Delaunay()
+        d = Delaunay(test = True)
         d.include(sites[main_index])
         for site in sites:
             if site == sites[main_index]: continue
@@ -271,7 +272,7 @@ class TestCases(threading.Thread):
     def manual_cleanup(sites, main_index):
         # test manual cleanup: 
         assert len(sites) > 1 
-        d = Delaunay()
+        d = Delaunay(test = True)
         d.include(sites[main_index])
         for site in sites:
             if site == sites[main_index]: continue
@@ -281,10 +282,11 @@ class TestCases(threading.Thread):
         VoronoiDiagram.show(d, title = "Manual 'main site' cleanup mode")
 
     @staticmethod
-    def multi_thread(points, delay, n, lines, columns, fps = 0, 
+    def new_thread(points, delay, n, lines, columns, fps = 0, 
                      test_class = DiagramTest):
         # test multi-thread execution: 
-        VoronoiDiagram.start(title = test_class.__name__ + " - Multi-thread test", 
+        VoronoiDiagram.start(title = test_class.__name__ + 
+                             " - New-thread test", 
                              lines = lines, columns = columns, fps_limit = fps)
         # configure
         threads = []
@@ -302,10 +304,10 @@ class TestCases(threading.Thread):
             t.stop()
 
     @staticmethod
-    def mono_thread(points, delay, n, lines, columns, fps = 250,
+    def main_thread(points, delay, n, lines, columns, fps = 250,
                     test_class = DiagramTest):
-        # test mono-thread execution (previewer run as main thread): 
-        preview = Preview(title = test_class.__name__ + " - Mono-thread test", 
+        # test main-thread execution (previewer run as main thread): 
+        preview = Preview(title = test_class.__name__ + " - Main-thread test", 
                           lines = lines, columns = columns, fps_limit = fps,
                           painter_class = VoronoiDiagram)
         preview.interactive(True)
@@ -329,8 +331,8 @@ class TestCases(threading.Thread):
 
     @staticmethod
     def painter_test(n, lines, columns, fps = 25000):
-        # test mono-thread execution (previewer run as main thread): 
-        preview = Preview(title = "Mono-thread test without diagram", 
+        # test main-thread execution (previewer run as main thread): 
+        preview = Preview(title = "Main-thread test without diagram", 
                           lines = lines, columns = columns, fps_limit = fps,
                           painter_class = TestPainter)
         
@@ -347,8 +349,8 @@ class TestCases(threading.Thread):
 
     @staticmethod
     def painter_test2(n, lines, columns, fps = 25000):
-        # test mono-thread execution (previewer run as main thread): 
-        preview = Preview(title = "Mono-thread test without diagram", 
+        # test main-thread execution (previewer run as main thread): 
+        preview = Preview(title = "Main-thread test without diagram", 
                           lines = lines, columns = columns, fps_limit = fps,
                           painter_class = TestPainter)
         timer = Timer(0.1)
@@ -402,11 +404,11 @@ class TestCases(threading.Thread):
 
 
     @staticmethod
-    def mono_thread_fps(points, delay, n, lines, columns, fps = 250, 
+    def main_thread_fps(points, delay, n, lines, columns, fps = 250, 
                         max_threads = 10, test_class = DiagramTest):
-        # test mono-thread execution (previewer run as main thread): 
+        # test main-thread execution (previewer run as main thread): 
         preview = Preview(title = test_class.__name__ + 
-                          " - Mono-thread test mixed with diagram (FPS limited)", 
+                          " - Main-thread test mixed with diagram (FPS limit)",
                           lines = lines, columns = columns, fps_limit = fps)
 
         preview.interactive(True)
@@ -436,9 +438,9 @@ class TestCases(threading.Thread):
     @staticmethod
     def random_points_test(min, max, delay, n, lines, columns, max_count,
                            fps, test_class = DiagramTest):
-        # test mono-thread execution (previewer run as main thread): 
+        # test main-thread execution (previewer run as main thread): 
         preview = Preview(title = test_class.__name__ + 
-                          " - Mono-thread test with random points", 
+                          " - Main-thread test with random points", 
                           lines = lines, columns = columns, fps_limit = fps,
                           painter_class = VoronoiDiagram)
 
@@ -476,7 +478,7 @@ class TestCases(threading.Thread):
         self.pointSet = []
         self.main_index = 0
         self.fps = 0
-        self.force_multi_thread_execution = False
+        self.force_new_thread_execution = False
 
     def set_cenario(self):
         self.pointSet = [
@@ -510,6 +512,13 @@ class TestCases(threading.Thread):
         self.max_sites = 20 
         self.max_diagram_version = 80
 
+    def do_triangulation_test(self, test_class, dx, dy):
+        points = TestCases.displace(self.pointSet, dx, dy)
+        TestCases.main_thread(points, 0, 1, 1, 1, 0, test_class)
+
+    def do_randon_triangulation_test(self, test_class):
+        TestCases.random_points_test(10, 200, 0, 1, 1, 1, 1000, 0, test_class)
+    
     def do_basic_tests(self, dx, dy):
         points = TestCases.displace(self.pointSet, dx, dy)
         TestCases.simple(points, self.main_index)
@@ -524,11 +533,11 @@ class TestCases(threading.Thread):
 
     def do_thread_tests(self, test_class = DiagramTest):
         
-        TestCases.mono_thread(self.pointSet, self.delay, self.diagrams, 
+        TestCases.main_thread(self.pointSet, self.delay, self.diagrams, 
                               self.lines, self.columns, self.fps,
                               test_class)
 
-        TestCases.mono_thread_fps(self.pointSet, self.delay, 
+        TestCases.main_thread_fps(self.pointSet, self.delay, 
                                   self.painters, 
                                   self.lines, self.columns, self.fps, 
                                   self.mixed_diagrams, test_class)
@@ -539,17 +548,11 @@ class TestCases(threading.Thread):
                                      self.max_diagram_version, 
                                      self.fps, test_class)
         import platform
-        if platform.system() == "Linux" or self.force_multi_thread_execution:
-            TestCases.multi_thread(self.pointSet, self.delay, 
-                                   self.diagrams, self.lines, self.columns, 
-                                   self.fps, test_class)
+        if platform.system() == "Linux" or self.force_new_thread_execution:
+            TestCases.new_thread(self.pointSet, self.delay, 
+                                 self.diagrams, self.lines, self.columns, 
+                                 self.fps, test_class)
 
-    def do_exaustive_test(self):
-        TestCases.random_points_test(min_sites, max_sites, self.delay, 
-                                     diagrams, lines, columns, 
-                                     max_diagram_version, 
-                                     self.fps, test_class)
-        
 if __name__ == '__main__':
 
     test = TestCases()
@@ -558,4 +561,7 @@ if __name__ == '__main__':
     test.do_painter_tests()
     test.do_thread_tests(DiagramTest)
     test.do_thread_tests(DiagramTestNear)
-    
+    test.do_triangulation_test(DiagramTest, 250, 250)
+    test.do_triangulation_test(DiagramTestNear, 250, 250)
+    test.do_randon_triangulation_test(DiagramTest)
+    test.do_randon_triangulation_test(DiagramTestNear)

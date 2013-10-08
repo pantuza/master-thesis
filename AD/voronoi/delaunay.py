@@ -16,10 +16,11 @@ class Delaunay(object):
     ref: http://www.cs.cornell.edu/home/chew/Delaunay.html
     '''
 
-    # INT => MAX = +(pow(2,31) - 1)(2147483647) & MIN = -pow(2,31)(-2147483648)
+    # INT => MAX=+(pow(2,31) - 1)(2147483647) & MIN=-pow(2,31)(-2147483648)
     # inf = 1000000 was empirically limited due to pygame simulator
+    # inf = 2^16 was empirically limited due to float point precision
 
-    def __init__(self, inf = 1000000):
+    def __init__(self, inf = 65536, test = False):
         self._initTriangle = Triangle(Point2D(-inf, -inf), 
                                       Point2D(inf, -inf), 
                                       Point2D(0, inf))
@@ -30,7 +31,7 @@ class Delaunay(object):
         self.fail_triangle = None
         self.fail_witness = None
         self.version = 0
-        self.check_triangulation = True
+        self.check_triangulation = test
 
     def __repr__(self):
         return 'Triangulation with ' + str(len(self.neighborhood)) + \

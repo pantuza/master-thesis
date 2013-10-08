@@ -53,7 +53,7 @@ class VoronoiDiagram(object):
         '''
         Stop the default previewer
         '''
-        VoronoiDiagram.preview.quit()
+        VoronoiDiagram.preview.stop()
 
     @staticmethod
     def new_diagram(diagram):
@@ -125,8 +125,8 @@ class VoronoiDiagram(object):
                 # It can lead to a improper cell drawing of site in convex hull
                 pygame.draw.polygon(panel.surface, color, cell, 0)
                 pos = int(round(site[0])), int(round(site[1]))
-                pygame.draw.circle(panel.surface, 
-                                   Color.BLACK, pos, VoronoiDiagram.site_radius)
+                pygame.draw.circle(panel.surface, Color.BLACK, pos,
+                                   VoronoiDiagram.site_radius)
                 return
         
     def _draw_voronoi_cell_triangulation(self, panel, site, tri = None):
@@ -140,7 +140,7 @@ class VoronoiDiagram(object):
             radius = int(round(triangle.circumcircle_radius()))
             pygame.draw.circle(panel.surface, Color.RED, pos, radius, 1)
         if (tri is None):
-            self._draw_neighbors(initial, diagram, panel)
+            self._draw_neighbors(panel, initial)
         else:
             self._draw_neighbors(panel, tri)
         #self._draw(panel)
@@ -151,11 +151,11 @@ class VoronoiDiagram(object):
     def _draw_circumcircles(self, panel):
         for triangle in self.diagram.neighborhood.keys():
             center = triangle.circumcenter()
-            if (center[0] <= panel.width) and (center[1] <= self.height) \
-            and (center[0] >= 0) and (center[1] >= 0):
-                pos = int(round(center[0])), int(round(center[1]))
-                radius = int(round(triangle.circumcircle_radius()))
-                pygame.draw.circle(panel.surface, Color.GREEN, pos, radius, 1)
+            #if (center[0] <= panel.width) and (center[1] <= self.height) \
+            #and (center[0] >= 0) and (center[1] >= 0):
+            pos = int(round(center[0])), int(round(center[1]))
+            radius = int(round(triangle.circumcircle_radius()))
+            pygame.draw.circle(panel.surface, Color.GREEN, pos, radius, 1)
 
     def _draw_neighbors(self, panel, triangle):
         if triangle is not None:
@@ -182,6 +182,8 @@ class VoronoiDiagram(object):
         ## _draw diagram to panel
         self._draw_voronoi(panel)
         if self.diagram.fail_site is not None:
+            self._draw_circumcircles(panel)
+            self._draw_triangulation(panel)
             self._draw_voronoi_cell(panel, self.diagram.fail_site)
             self._draw_voronoi_cell_triangulation(panel,
                                                   self.diagram.fail_site, 

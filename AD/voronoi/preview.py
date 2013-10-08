@@ -394,12 +394,6 @@ class Preview(threading.Thread):
         # multi-thread control
         self.lock = threading.Lock()
     
-    def __del__(self):
-        '''
-        Automatic object destruction handler
-        '''
-        pygame.quit()
-
     def panel_dimensions(self):
         '''
         Get panel dimensions
@@ -447,12 +441,11 @@ class Preview(threading.Thread):
         '''
         self.frame_timer.pause(delay)
 
-    def quit(self):
+    def stop(self):
         '''
         Request the termination of panel
         '''
-        return self.state == Preview.KILLED
-        pygame.quit()
+        self.state = Preview.KILLED
 
     def is_running(self):
         '''
