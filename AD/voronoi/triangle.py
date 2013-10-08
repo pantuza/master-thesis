@@ -13,7 +13,7 @@ class Triangle(tuple):
     classdocs
     '''
     # float point precision
-    EPSILON = 0.0000000001
+    EPSILON = 0.000000001
 
     @staticmethod
     def orientation(p1, p2, p3):
@@ -45,6 +45,8 @@ class Triangle(tuple):
                 p2 = tp
         # Test the relation of the points using determinat
         d = Triangle.orientation(p1, p2, p3)
+        if fabs(d) < Triangle.EPSILON:
+            d = 0
         # Collinear
         if (d == 0):
             raise Exception("Can't create a triangle with collinear points!")
@@ -178,7 +180,36 @@ class Triangle(tuple):
         # check float point precision
         if fabs(dist) < Triangle.EPSILON:
             dist = 0.0
-        return dist < self.radius
+        if dist < self.radius:
+            return (self.radius - dist) > Triangle.EPSILON
+        return False
+
+    def debug_distance(self, point):
+        '''
+        Verify if triangle circumscribe the point
+        via distance between point and the circumcenter 
+        '''
+        dx = self.cx - point[0]
+        dy = self.cy - point[1]
+        dist = sqrt(dx*dx + dy*dy)
+        # check float point precision
+        if fabs(dist) < Triangle.EPSILON:
+            dist = 0.0
+        print "----------------------------------------------------------"
+        print "Triangle " + str(self)
+        if dist < self.radius:
+            distance = str(self.radius - dist)
+            if distance > Triangle.EPSILON:
+                print "-- Circumscribe point " + str(point)
+            else:
+                print "-- Almost circumscribe point "+str(point)
+        else:
+            distance = (dist - self.radius)
+            print "-- NOT circumscribe point "+str(point)
+        print "-- Radius   = " + str(self.radius)
+        print "-- Distance = " + str(distance)
+        print "-- EPSILON  = " + str(Triangle.EPSILON)
+        print "----------------------------------------------------------"
 
     def opposite_facet(self, point):
         '''

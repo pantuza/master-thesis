@@ -3,10 +3,12 @@ Created on 22/09/2013
 
 @author: Gustavo Pantuza
 '''
+from __future__ import division
 from point2D import Point2D
 from triangle import Triangle
 from sys import maxint
 from numpy.linalg import det
+import threading;
 
 class Delaunay(object):
     '''
@@ -14,15 +16,21 @@ class Delaunay(object):
     ref: http://www.cs.cornell.edu/home/chew/Delaunay.html
     '''
 
+    # INT => MAX = +(pow(2,31) - 1)(2147483647) & MIN = -pow(2,31)(-2147483648)
+    # inf = 1000000 was empirically limited due to pygame simulator
 
-    def __init__(self, inf = 2147483648):
+    def __init__(self, inf = 1000000):
         self._initTriangle = Triangle(Point2D(-inf, -inf), 
                                       Point2D(inf, -inf), 
                                       Point2D(0, inf))
         self.neighborhood = {self._initTriangle: {}}
+        self.lock = threading.RLock()
         self.main_site = None
-        self.main_triangles = None
-        self.main_points = None
+        self.fail_site = None
+        self.fail_triangle = None
+        self.fail_witness = None
+        self.version = 0
+        self.check_triangulation = True
 
     def __repr__(self):
         return 'Triangulation with ' + str(len(self.neighborhood)) + \
@@ -31,84 +39,71 @@ class Delaunay(object):
     def __str__(self):
         return self.__repr__() 
 
-    def _add(self, site, triangle):
-        '''
-        Add a site to triangulation with specific triangle
-        '''
-        if not triangle.contains(site):
-            cavity = self._cavity(site, triangle)
-            self._insert(site, cavity)
-            self.main_triangles = None
-            return True
-        return False
+    def _new_version(self):
+        self.version += 1
+        # cicle version
+        if self.version > 2147483640:
+            self.version = 0
 
-    def add(self, site):
+    def updated_since(self, version):
+        return (version != self.version)
+
+    def has_error(self):
+        return self.fail_site is not None
+
+    def include(self, site):
         '''
         Add a site to triangulation
         '''
-        triangle = self._find_triangle_circumscribe(site)
-        return self._add(site, triangle)
+        if self.fail_site is not None:
+            return False
+        with self.lock:
+            triangle = self._find_triangle_circumscribe(site)
+            return self._add(site, triangle)
     
-    def add_as_main(self, site):
+    def remove_far_sites(self, from_site):
         '''
-        Define a main site
-        '''
-        if self.add(site):
-            self.main_site = site
-            self.main_triangles = None
-            return True
-        return False
-
-    def _update_main_site_control(self):
-        '''
-        If needs, update controls of "main site"
-        '''
-        if self.main_triangles is None:
-            triangle = self._find_triangle_by_vertex(self.main_site)
-            self.main_triangles, self.main_points = \
-                    self.surrounding_triangles(self.main_site, triangle)
-
-    def clear_far_sites(self):
-        '''
-        Remove all sites that do not affect a "main site" cell
+        Remove all sites that do not affect a "from site" cell
         Returns the number of removed sites
         '''
-        self._update_main_site_control()
-        # search irrlevant sites
-        dispensables = []
-        for triangle in self.neighborhood:
-            if (not triangle in self.main_triangles):
-                dispensable = True
-                for vertex in self.main_points:
-                    if triangle.contains(vertex):
-                        dispensable = False
-                        break
-                if dispensable:
-                   dispensables.append(triangle)
-        # remove irrlevant sites
-        removed = 0
-        for triangle in dispensables:
-            for site in triangle:
+        if self.fail_site is not None:
+            return False
+        with self.lock:
+            from_triangle = self._find_triangle_by_vertex(from_site)
+            if (from_triangle is None):
+                return 0
+            triangles, points = \
+                    self.surrounding_triangles(from_site, from_triangle)
+            # search irrlevant sites
+            dispensables = []
+            for triangle in self.neighborhood.keys():
+                if (not triangle in triangles):
+                    dispensable = True
+                    for vertex in triangle:
+                        if not vertex in points:
+                            dispensables.append(vertex)
+            # remove irrlevant sites
+            removed = 0
+            for site in dispensables:
                 if not self._initTriangle.contains(site):
-                    try:
-                        self.remove(site)
-                        removed += 1
-                    except:
-                        pass
-        return removed
+                    self.remove(site)
+                    removed += 1
+            return removed
 
-    def add_near(self, site):
+    def include_near(self, site, from_site):
         '''
-        Add a site only if it will affect a main site cell
+        Add a site only if it will affect a "from site" cell
         '''
-        if self.main_site is None:
-            # default add
-            return self.add(site)
-        else:
-            # verify cache
-            self._update_main_site_control()
+        if self.fail_site is not None:
+            return False
+        with self.lock:
+            triangle = self._find_triangle_by_vertex(from_site)
+            if (triangle is None):
+                raise Exception("'From site' don't found.")
+            triangles, points = \
+                    self.surrounding_triangles(from_site, triangle)
             # verify site influence
-            for triangle in self.main_triangles:
+            for triangle in triangles:
                 if triangle.circumscribe(site):
                     return self._add(site, triangle)
             return False
@@ -117,15 +112,15 @@ class Delaunay(object):
         '''
         Remove a site from triagulation
         '''
-        if (self.main_site is not None) and (site == self.main_site):
+        if self.fail_site is not None:
             return False
-        triangle = self._find_triangle_by_vertex(site)
-        if triangle is not None:
-            triangles, points = self.surrounding_triangles(site, triangle)
-            self._remove(site, points, triangles)
-            self.main_triangles = None
-            return True
-        return False
+        with self.lock:
+            triangle = self._find_triangle_by_vertex(site)
+            if triangle is not None:
+                triangles, points = self.surrounding_triangles(site, triangle)
+                self._remove(site, points, triangles)
+                return True
+            return False
 
     def _find_triangle_circumscribe(self, site):
         '''
@@ -143,7 +138,7 @@ class Delaunay(object):
         for triangle in self.neighborhood.keys():
             if triangle.contains(site):
                 return triangle
-        raise Exception("Site does not exist:" + str(site))
+        return None
     
     def _cavity(self, site, triangle):
         '''
@@ -165,6 +160,16 @@ class Delaunay(object):
                     toBeChecked.append(neighbor)
         return encroached
 
+    def _add(self, site, triangle):
+        '''
+        Add a site to triangulation with specific triangle
+        '''
+        if not triangle.contains(site):
+            cavity = self._cavity(site, triangle)
+            self._insert(site, cavity)
+            return True
+        return False
+
     def _add_triangle(self, t1, t2):
         '''
         Add a triangle to neighborhood control
@@ -182,7 +187,7 @@ class Delaunay(object):
         for neighbor in self.neighborhood.values():
             if triangle in neighbor:
                 del neighbor[triangle]
-
+        
     def _link_triangles(self, t1, t2):
         '''
         Include mutual neighbor triangles
@@ -215,7 +220,7 @@ class Delaunay(object):
         for triangle in cavity:
             self._del_triangle(triangle)
 
-        # Build each new triangle and add it to the triangulation
+        # Build each new triangle and include it to the triangulation
         new_triangles = {}
         for facet in boundary.keys():
             newTriangle = Triangle(facet[0], facet[1], site)
@@ -229,6 +234,13 @@ class Delaunay(object):
             for other in triangles:
                 if triangle.is_neighbor(other):
                     self._link_triangles(triangle, other)
+                    
+        if self.main_site is None:
+            self.main_site = site
+        self._new_version()
+        if self.check_triangulation:
+            if not self.valid():
+                print "### Including failure"
 
     def _remove(self, site, points, triangles):
         '''
@@ -241,9 +253,9 @@ class Delaunay(object):
              DOI=10.1016/S0098-3004(03)00017-7 
              http://dx.doi.org/10.1016/S0098-3004(03)00017-7
         '''
-        # verify compatibility of lists of surrounding points and old triangles
+        # verify compatibility of surrounding points and old triangles
         if len(points) != len(triangles):
-            raise Exception("Current triangulation lists has different sizes.")
+            raise Exception("Triangulation has different sizes.")
         # verify is the triangulation is empty (or insufficient?)
         if len(points) < 3:
             return
@@ -288,9 +300,9 @@ class Delaunay(object):
                             break
                 # if it is a Delaunay triangle...
                 if ear_is_delaunay:
-                    # add to new triangle control
+                    # include to new triangle control
                     new_triangles[valid_ear] = None
-                    # add to neighborhood control
+                    # include to neighborhood control
                     self.neighborhood[valid_ear] = {}
                     # link to the opposite triangles from the removed vertices
                     self._link_ear(site, valid_ear, triangles[i], 
@@ -316,10 +328,18 @@ class Delaunay(object):
         self._link_ear(site, last_ear, triangles[1], new_triangles)
         self._link_ear(site, last_ear, triangles[2], new_triangles)
 
+        if self.main_site is not None:
+            if self.main_site == site:
+                self.main_site = None
+        self._new_version()
+        if self.check_triangulation:
+            if not self.valid():
+                print "### Removing failure"
+
     def _link_ear(self, site, ear, triangle, new_triangles):
         # check if the triangle has neighbor that is opposite from the site
         neighbor = self.neighbor_opposite(site, triangle)
-        # if not, it's a external triangulation (connected to initial triangle) 
+        # if not, it's a external triangulation (from initial triangle)
         # or it's a new triangulation...
         if neighbor is None:
             # if the triangle related to the vertex is new
@@ -328,7 +348,7 @@ class Delaunay(object):
                 self._link_triangles(ear, triangle)
             else:
                 # otherwise, old triangle doesn't had a neighbor: 
-                # ignore its neighborhood and delete it                
+                # ignore its neighborhood and delete it
                 self._del_triangle(triangle)
         else:
             # update neighborhood of new triangle (ear)
@@ -342,10 +362,11 @@ class Delaunay(object):
         '''
         if site not in triangle:
             return None
-        for neighbor in self.neighborhood[triangle]:
-            if not neighbor.contains(site):
-                return neighbor
-        return None
+        with self.lock:
+            for neighbor in self.neighborhood[triangle]:
+                if not neighbor.contains(site):
+                    return neighbor
+            return None
 
     def surrounding_triangles(self, site, triangle):
         '''
@@ -353,46 +374,68 @@ class Delaunay(object):
         '''
         if site not in triangle:
             raise Exception("Site not in triangle.")
-        points = []
-        triangles = []
-        start = triangle
-        # cw or cww (pay attention)
-        guide = triangle.next_vertex_except({site})
-        while triangle is not None:
-            triangles.append(triangle)
-            points.append(guide)
-            previous = triangle
-            triangle = self.neighbor_opposite(guide, triangle)
-            guide = previous.next_vertex_except({site, guide})
-            if (triangle == start):
-                break
-        return triangles, points
+        with self.lock:
+            points = []
+            triangles = []
+            start = triangle
+            # cw or cww (pay attention)
+            guide = triangle.next_vertex_except({site})
+            while triangle is not None:
+                triangles.append(triangle)
+                points.append(guide)
+                previous = triangle
+                triangle = self.neighbor_opposite(guide, triangle)
+                guide = previous.next_vertex_except({site, guide})
+                if (triangle == start):
+                    break
+            return triangles, points
 
     def voronoi_cells(self):
         '''
         Report polygons of each voronoi cell
         '''
-        cells = {}
-        ignore = {x:None for x in self._initTriangle}
-        for triangle in self.neighborhood.keys():
-            for site in triangle:
-                if site in ignore:
-                    continue
-                ignore[site] = None
-                triangles, points = self.surrounding_triangles(site, triangle)
-                cell = []
-                for tri in triangles:
-                    cell.append(tri.circumcenter())
-                cells[site] = cell 
-        return cells
+        with self.lock:
+            cells = {}
+            ignore = {} #x:None for x in self._initTriangle}
+            for triangle in self.neighborhood.keys():
+                for site in triangle:
+                    if site in ignore:
+                        continue
+                    ignore[site] = None
+                    triangles, points = self.surrounding_triangles(site, 
+                                                                   triangle)
+                    cell = []
+                    for tri in triangles:
+                        cell.append(tri.circumcenter())
+                    cells[site] = cell 
+            return cells
 
     def voronoi_cell_trinagulation(self, site):
         '''
         Test purpose only
         '''
-        triangle = self._find_triangle_by_vertex(site)
-        triangles, points = self.surrounding_triangles(site, triangle)
-        return triangles, triangle
+        with self.lock:
+            triangle = self._find_triangle_by_vertex(site)
+            triangles, points = self.surrounding_triangles(site, triangle)
+            return triangles, triangle
+
+    def valid(self):
+        for triangle in self.neighborhood.keys():
+            for other in self.neighborhood.keys():
+                if (other != triangle):
+                    for vertex in other:
+                        if not triangle.contains(vertex):
+                            if triangle.circumscribe(vertex):
+                                self.fail_site = vertex
+                                self.fail_triangle = triangle
+                                self.fail_witness = other
+                                print "Triangle     : " + str(triangle)
+                                print "Other        : " + str(other)
+                                print "Other vertex : " + str(vertex)
+                                triangle.debug_distance(vertex)
+                                return False
+        return True
+            
 
 if __name__ == '__main__':
 
@@ -402,8 +445,8 @@ if __name__ == '__main__':
             Point2D(300, 150),
             Point2D(250, 200)]
     for s in sites:
-        v.add(s)
-    print "DelaunayTriangulation created: Triangulation with " + \
+        v.include(s)
+    print "Delaunay Triangulation created: Triangulation with " + \
         str(len(v.neighborhood)) + " triangles"
     c = 0
     for t in v.neighborhood:
@@ -411,16 +454,16 @@ if __name__ == '__main__':
         print str(c) + ":" + str(t)
         for n in v.neighborhood[t]:
             print "--> " + str(n)
-    '''
-    v2 = Delaunay(10)
-    v2.add(Point2D(0,0))
-    v2.add(Point2D(1,0))
-    v2.add(Point2D(0,1))
-    print "DelaunayTriangulation created: Triangulation with " + \
+
+    v2 = Delaunay(100)
+    v2.include(Point2D(0,0))
+    v2.include(Point2D(1,0))
+    v2.include(Point2D(0,1))
+    print "Delaunay Triangulation created: Triangulation with " + \
         str(len(v2.neighborhood)) + " triangles"
     c = 0
-    for t in v2.neighborhood:
+    for t in v2.neighborhood.keys():
         c += 1
         print str(c) + ":" + str(t)
-    '''
-        
+        for n in v2.neighborhood[t]:
+            print "-->" + str(n)
