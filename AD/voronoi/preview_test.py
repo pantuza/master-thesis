@@ -20,7 +20,7 @@ class TestPainter():
     counter = 0
     lock = threading.Lock()
    
-    def __init__(self, number, view):
+    def __init__(self, number, view, label=''):
         self.number = number
         self.text = str(view)
         with TestPainter.lock:
@@ -52,7 +52,7 @@ class TestFpsPainter():
     Test with random generated frames to tests FPS control
     '''
    
-    def __init__(self, number, object):
+    def __init__(self, number, object, label = ''):
         self.number = number
     
     def changed(self):
@@ -294,7 +294,7 @@ class TestCases(threading.Thread):
         for i in xrange(0,n):
             test = test_class(points, delay)
             threads.append(test)
-            VoronoiDiagram.new_diagram(test.diagram)
+            VoronoiDiagram.new_diagram(test.diagram, label="test")
             test.start()
         # waiting until previewer terminates
         while VoronoiDiagram.in_state(Preview.RUNNING):

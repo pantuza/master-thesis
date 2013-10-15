@@ -9,7 +9,7 @@ from pymote.algorithm import NodeAlgorithm
 from notifier import Notifier
 from delaunay import Delaunay
 from point2D import Point2D
-from preview import Preview
+from voronoi import VoronoiDiagram
 
 
 class DistributedVoronoi(Notifier):
@@ -24,8 +24,8 @@ class DistributedVoronoi(Notifier):
             node.points = [(int(node.network.pos[node][0]),
                             int(node.network.pos[node][1]))]
             node.voronoi = Delaunay()
-            Preview.new_diagram(node.voronoi)
-            node.voronoi.add(node.points[0])
+            VoronoiDiagram.new_diagram(node.voronoi, str(node.id))
+            node.voronoi.include(node.points[0])
 
         super(DistributedVoronoi, self).initializer()
 
@@ -34,12 +34,27 @@ class DistributedVoronoi(Notifier):
 
         try:
 
-            if msg is not None and (msg.source is None or msg.source != node):
+            if msg is not None and msg.source != node:
+
                 node.memory['neighbors_data'][msg.source.id] = msg.data
                 node.points.append(msg.data)
 
                 # adds new point and recalculates voronoi
-                node.voronoi.add(msg.data)
+                node.voronoi.include(msg.data)
+
+                # notifies the node neighbors about the message received
+                self.notify(node, msg.source, msg.data)
+
         except Exception as e:
-            raise Exception("Erro during processing message from node %s" 
+            raise Exception("Erro during processing message from node %s"
                             % node)
+
+    def notify(self, node, source, data):
+
+        # Starts communication through neighbors nodes
+        for neighbor in node.memory[self.neighborsKey]:
+            msg = Message(header=NodeAlgorithm.INI,
+                          source=source,
+                          destination=neighbor,
+                          data=data)
+            node.send(msg)

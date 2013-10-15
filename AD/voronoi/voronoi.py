@@ -45,7 +45,7 @@ class VoronoiDiagram(object):
         '''
         Automatic create a default previewer object
         '''
-        VoronoiDiagram.preview = Preview(**args)
+        VoronoiDiagram.preview = Preview(painter_class=VoronoiDiagram, **args)
         VoronoiDiagram.preview.start()
 
     @staticmethod
@@ -56,11 +56,12 @@ class VoronoiDiagram(object):
         VoronoiDiagram.preview.stop()
 
     @staticmethod
-    def new_diagram(diagram):
+    def new_diagram(diagram, label=''):
         '''
         Include a diagram into the default previewer
         '''
-        VoronoiDiagram.preview.add_view(diagram, VoronoiDiagram)
+        print "new_diagram call: label=%s" % label
+        VoronoiDiagram.preview.add_view(diagram, label=label)
 
     @staticmethod
     def in_state(state):
@@ -72,18 +73,23 @@ class VoronoiDiagram(object):
         return state == VoronoiDiagram.preview.state
 
     @staticmethod
-    def show(diagram, title):
-        preview = Preview(title, lines=1, columns=1)
-        preview.add_view(diagram, VoronoiDiagram)
+    def show(diagram, title = ''):
+        preview = Preview(title = title, lines=1, columns=1)
+        preview.add_view(diagram, VoronoiDiagram, title)
         preview.interactive(True)
         preview.start()
         while preview.step():
             pass
+
+    @staticmethod
+    def panel_dim():
+        return VoronoiDiagram.preview.panel_dim()
     
-    def __init__(self, number, view):
+    def __init__(self, number, view, label=''):
         self.number = number
         self.diagram = view
         self.version = -1
+        self.label = label
     
     def changed(self):
         if (self.diagram.version != self.version):
@@ -195,6 +201,7 @@ class VoronoiDiagram(object):
                                                       self.diagram.main_site)
         # draw labels
         panel.draw_line(str(index) + "/" + str(self.number), Color.RED)
+        panel.draw_line("node:" + str(self.label), Color.ORANGE)
         if VoronoiDiagram.draw_fps:
             panel.draw_line("FPS:" + str(panel.fps), Color.BLUE)
         if VoronoiDiagram.draw_frame_counter:

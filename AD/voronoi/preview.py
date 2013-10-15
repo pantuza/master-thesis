@@ -27,7 +27,7 @@ class Painter():
     A simple painter
     A painter object must to have this interface:
 
-    def __init__(self, number, view):
+    def __init__(self, number, view, label):
         """
         Receive a identification number and a object (view) to paint
         """
@@ -41,9 +41,10 @@ class Painter():
         """
     '''
    
-    def __init__(self, number, view):
+    def __init__(self, number, view, label=''):
         self.number = number
-        self.text = str(view) 
+        self.text = view
+        self.label = label
     
     def changed(self):
         return False
@@ -52,7 +53,8 @@ class Painter():
         panel.clear()
         panel.draw_line(str(index) + "/" + str(self.number), Color.RED)
         panel.draw_line("FPS:" + str(panel.fps), Color.BLUE)
-        panel.draw_line("Object:" + self.text, Color.BLUE)
+        panel.draw_line("Object:" + str(self.text), Color.BLUE)
+        panel.draw_line("label:" + str(self.label), Color.ORANGE)
 
 
 
@@ -71,8 +73,7 @@ class Panel(object):
         self.bgcolor = Color.WHITE
         self.frame_counter = 0
         self.current_time = time.clock() -1
-        self.fps = 0
-        # PyGame font resource
+        self.fps = 0 # PyGame font resource
         pygame.font.init()
         self.font_size = 12
         self.font = pygame.font.Font(pygame.font.get_default_font(), 
@@ -405,8 +406,14 @@ class Preview(threading.Thread):
         Change app window caption
         '''
         pygame.display.set_caption(title)
-    
-    def add_view(self, view, painter_class = None):
+   
+    def panel_dim(self):
+        ''' 
+        Returns a tuple with the panel dimensions
+        '''
+        return (self.grid.panel_width, self.grid.panel_height)
+
+    def add_view(self, view, painter_class = None, label=''):
         '''
         Include a diagram in previewer
         '''
@@ -418,9 +425,9 @@ class Preview(threading.Thread):
             # create a painter to object
             if painter_class is None:
                 painter = self.default_painter_class(self.count_painters, 
-                                                     view)
+                                                     view, label)
             else:
-                painter = painter_class(self.count_painters, view)
+                painter = painter_class(self.count_painters, view, label)
             self.count_painters += 1
             # make control 
             index = self.grid.add_painter(painter)

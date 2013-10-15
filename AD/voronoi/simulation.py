@@ -3,23 +3,25 @@
 from pymote.networkgenerator import NetworkGenerator
 from pymote.simulation import Simulation
 from pymote.npickle import write_npickle
-
+from pymote.conf import global_settings
 
 from distributed_voronoi import DistributedVoronoi
 from point2D import Point2D
-from preview import Preview
+from voronoi import VoronoiDiagram
 
 
-Preview.start_voronoi()
+VoronoiDiagram.start()
+print "start"
+
+global_settings.ENVIRONMENT2D_SHAPE = VoronoiDiagram.panel_dim()
 
 # generates the network with 10 hosts
-net_gen = NetworkGenerator(n_count=4, n_min=1, n_max=5)
+net_gen = NetworkGenerator(n_count=14, n_min=1, n_max=15)
 net = net_gen.generate_random_network()
-
 
 # Defines the network algorithm
 net.algorithms = ((DistributedVoronoi, {'informationKey':'axis'}),)
-
+print "Distributed voronoi"
 
 # Assign to node memory its position
 for node in net.nodes():
@@ -27,8 +29,8 @@ for node in net.nodes():
 
 # Creates and starts the simulation
 sim = Simulation(net)
+print "running"
 sim.run()
-
 # Show the State of the Voronoi Algorith execution
 print net.algorithmState
 
@@ -37,12 +39,11 @@ print net.algorithmState
 for node in net.nodes():
     
     try:
-        Preview.voronoi(node.voronoi)
+        while VoronoiDiagram.preview.step(): pass
     except AttributeError:
         print "%s Insufficient number of nodes to compute voronoi" % node
 
-# Plot the network image
-net.show()
+VoronoiDiagram.stop()
 # Writes
 #write_npickle(net, "net.gz")
 sim.reset()
