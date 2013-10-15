@@ -11,28 +11,29 @@ from voronoi import VoronoiDiagram
 
 
 VoronoiDiagram.start()
-print "start"
-
 global_settings.ENVIRONMENT2D_SHAPE = VoronoiDiagram.panel_dim()
+
 
 # generates the network with 10 hosts
 net_gen = NetworkGenerator(n_count=14, n_min=1, n_max=15)
 net = net_gen.generate_random_network()
 
+
 # Defines the network algorithm
 net.algorithms = ((DistributedVoronoi, {'informationKey':'axis'}),)
-print "Distributed voronoi"
+
 
 # Assign to node memory its position
 for node in net.nodes():
     node.memory['axis'] = (int(net.pos[node][0]), int(net.pos[node][1]))
 
+
 # Creates and starts the simulation
 sim = Simulation(net)
-print "running"
 sim.run()
+
 # Show the State of the Voronoi Algorith execution
-print net.algorithmState
+#print net.algorithmState
 
 
 # Plot voronoi diagram for each node
@@ -42,6 +43,7 @@ for node in net.nodes():
         while VoronoiDiagram.preview.step(): pass
     except AttributeError:
         print "%s Insufficient number of nodes to compute voronoi" % node
+
 
 VoronoiDiagram.stop()
 # Writes
