@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+
+import logging.config
+
 from pymote.networkgenerator import NetworkGenerator
 from pymote.simulation import Simulation
 from pymote.npickle import write_npickle
@@ -9,6 +12,8 @@ from distributed_voronoi import DistributedVoronoi
 from point2D import Point2D
 from voronoi import VoronoiDiagram
 
+# Do not show log
+logging.config.dictConfig({'version': 1,'loggers':{}})
 
 VoronoiDiagram.start()
 global_settings.ENVIRONMENT2D_SHAPE = VoronoiDiagram.panel_dim()
