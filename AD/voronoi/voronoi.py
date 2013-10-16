@@ -60,7 +60,6 @@ class VoronoiDiagram(object):
         '''
         Include a diagram into the default previewer
         '''
-        print "new_diagram call: label=%s" % label
         VoronoiDiagram.preview.add_view(diagram, label=label)
 
     @staticmethod
