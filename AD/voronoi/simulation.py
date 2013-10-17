@@ -20,7 +20,7 @@ global_settings.ENVIRONMENT2D_SHAPE = VoronoiDiagram.panel_dim()
 
 
 # generates the network with 10 hosts
-net_gen = NetworkGenerator(n_count=14, n_min=1, n_max=15)
+net_gen = NetworkGenerator(n_count=99, n_min=1, n_max=100)
 net = net_gen.generate_random_network()
 
 
