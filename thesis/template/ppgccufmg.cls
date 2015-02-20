@@ -1277,7 +1277,7 @@
 
   \cleardoublepage
   \pagestyle{bibliography}
-  \bibliographystyle{ppgccufmg}
+  \bibliographystyle{template/ppgccufmg}
   \begingroup
     \ppgcc@redefchaptitlefont
     \if@nobreakitems\raggedbottom\interlinepenalty=10000\relax\fi
