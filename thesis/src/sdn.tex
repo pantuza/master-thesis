@@ -2,10 +2,46 @@
 
 
 \subsection{Definição}
+SDN é um modelo de implementação de redes em que separa-se o plano de controle
+(decisões) do plano de encaminhamento (comutação de pacotes). 
+Através desse modelo o OpenFlow \citep{nick2008openflow} é uma proposta SDN 
+bem sucedida. 
+Essa separação dos planos de controle e de dados torna o funcionamento da
+rede mais flexível.
+
+As motivações das redes definidas por software vem desde o surgimento das 
+redes \emph{overlay} \citep{clark2006overlay}, às quais as redes são definidas
+sobre outras redes, como camadas isoladas.
+O paradigma de Redes definidas por software abre a possibilidade de se 
+desenvolver novas aplicações que controlem os elementos de comutação de uma
+rede física de maneiras impensadas no passado \citep{guedes2012redes}.
+
+As aplicações modernas são muito dinâmicas. 
+Quando se trata de um ambiente distribuído, por exemplo em um datacenter, 
+essas aplicações demandam que o funcionamento de sua rede seja também 
+dinâmico e flexível às necessidades das aplicaçãos. 
+SDN permite satisfazer essas condições de funcionamento. 
+
+Novos protocolos, servições e redes podem ser facilmente desenvolvidos através
+do paradigma das Redes definidas por software.
+Ao tornar os elementos de comutação de uma rede programáveis, a 
+experimentação torna-se mais direta e independente dos fabricantes de 
+\emph{hardware} e equipamentos de rede. 
+Isso permite que pesquisadores façam experimentações e gerem inovações 
+na área de Redes de computadores \citep{nick2008openflow}.
+
+A Internet é uma rede de redes de computadores madura. 
+No entanto possui muitas deficiências. 
+Para resolver o problema da evolução da Internet, tornar os equipamentos 
+programáveis é uma boa aboradagem. 
+Muitas redes \emph{overlay} como \emph{PlanetLab} 
+\citep{peterson2006experiences} e \emph{GENI} \citep{berman2014geni} tentaram
+resolver o problema mas a necessidade de alteração nos equipamentos de rede
+fizeram com que tivessem baixa aceitação.
+Foi nesse ponto que a solução OpenFlow em SDN acertou.
 
 
 \subsection{Plano de dados}
-
 
 \subsection{Plano de controle}
 
