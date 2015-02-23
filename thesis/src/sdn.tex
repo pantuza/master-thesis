@@ -33,7 +33,7 @@ na área de Redes de computadores \citep{nick2008openflow}.
 A Internet é uma rede de redes de computadores madura. 
 No entanto possui muitas deficiências. 
 Para resolver o problema da evolução da Internet, tornar os equipamentos 
-programáveis é uma boa aboradagem. 
+programáveis é uma boa aboradagem.
 Muitas redes \emph{overlay} como \emph{PlanetLab} 
 \citep{peterson2006experiences} e \emph{GENI} \citep{berman2014geni} tentaram
 resolver o problema mas a necessidade de alteração nos equipamentos de rede
@@ -43,7 +43,31 @@ Foi nesse ponto que a solução OpenFlow em SDN acertou.
 
 \subsection{Plano de dados}
 
+O plano de dados é responsável pelo encaminhamento de pacotes. 
+Esse encaminhamento pode ser implementado através de \emph{hardware} 
+comum em roteadores e switches. 
+O encaminhamento de pacotes consiste em executar algumas operações 
+como alterar cabeçalhos dos pacotes, descartá-los e encaminhar para alguma 
+porta específica do equipamento.
+
 \subsection{Plano de controle}
 
+O plano de controle consiste em tomar as decisões de como as operações do 
+plano de dados serão executadas.
+Como uma entidade separada do plano de dados, o plano de controle, para 
+tomar as decisões, precisa ter uma visão topológica e global da rede. 
+A visão global pode levar a entender uma entidade centralizada. 
+No entanto o plano de controle pode ser distribuído. 
+Decisões como roteamento, \emph{firewall}, priorização de pacotes são 
+responsabilidade do plano de controle.
+O plano de controle tem uma natureza de sistemas de tempo real.
 
 \subsection{Características}
+
+As Redes definidas por software tornam a rede programável.
+Essa característica dá flexibilidade na administração da rede.
+O plano de controle isolado cria uma entidade logicamente centralizada.
+A evolução e adaptação da rede em relação as aplicações que a utilizam 
+simplifica-se e torna-se menos custosa. 
+Tanto tecnicamente quanto financeiramente.
+SDN é apenas um modelo, um novo paradigma em redes de computadores.
