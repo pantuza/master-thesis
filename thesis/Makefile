@@ -2,7 +2,7 @@
 # My Master's thesis Makefile 
 #
 
-TEX := pdflatex
+TEX := colorpdflatex
 BIB := bibtex
 
 FLAGS := -halt-on-error -file-line-error
@@ -27,8 +27,9 @@ read: $(BIN)/$(DOCUMENT).pdf
 
 latex: thesis read
 
-deps: DEPENDENCIES
-	sudo zypper install $(shell cat $^)
+deps: DEPENDENCIES colorlatex.sh
+	sudo zypper install $(shell cat $<)
+	bash $(word 2, $^)
 
 clean:
 	@rm -rvf *.aux *.pdf *.dvi *.log *.bbl *.blg *.lof *.lot *.out \
