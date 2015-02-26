@@ -23,12 +23,76 @@ ou que utilizam o protocolo.
 
 \subsection{Componentes}
 
+Na arquitetura estabelicida pelo protocolo OpenFlow existem dois papéis
+principais.
+O controlador e o switch OpenFlow. 
+Uma separação baseada no modelo das Redes definidas por software (SDN)
+conforme pode ser visto na figura~\ref{fig:of-arch}.
+
+\begin{figure}[h!]
+    \centering
+    \label{fig:of-arch}
+    \includegraphics{img/openflow-architecture}
+    \caption{Divisão da arquitetura OpenFlow}
+\end{figure}
 
 \subsection{Arquitetura do Switch}
 
+O switch OpenFlow pode ser dividido em três principais partes. 
+A primeira é o canal de comunicação seguro com o controlador.
+A segunda é a interface do protocolo OpenFlow que permite ao controlador
+controlar o switch.
+A terceira é sua tabela de fluxos.
+
+O canal de comunicação seguro tem a garantia de confiabilidade na troca 
+de mensagens entre o controlador e o switch através do protocolo SSL 
+(Secure Socket Layer). 
+Isso adiciona proteção à rede em relação a ataques de elementos mal 
+intencionados \citep{rothenberg2010openflow}.
+
+A interface do protocolo OpenFlow é a padronização das mensagens enviadas 
+pelo controlador ao switch de modo a definir o comportamento do encaminhamento
+de pacotes. 
+Ou seja, é o conjunto de possíveis instruções para se controlar de maneira
+genérica o plano de dados de qualquer \emph{hardware} de redes habilitado 
+ao padrão OpenFlow.
+
+A tabela de fluxos é composta por regras.
+Cada regra consiste em ações associadas à fluxos. 
+Através dessa tabela o switch executa o encaminhamento de pacotes. 
+As entradas dessa tabela são atualizadas pelo controlador.
+
+\begin{figure}[h!]
+    \centering
+    \label{fig:switch-arch}
+    \includegraphics{img/switch-architecture}
+    \caption{Arquitetura do switch OpenFlow}
+\end{figure}
+
+
 \subsection{Fluxos}
 
+Um fluxo é a representação de um ou mais pacotes em função de suas
+características.
+Essas características variam de acordo com o cabeçalho OpenFlow.
+Os fluxos são genéricos. 
+Ao invés de analisar pacotes e portas para fazer a análise do trafego,
+que representam o passado, o fluxos são a representação do futuro. 
+Um fluxo pode caracterizar pacotes que ainda não passaram pelo switch mas 
+que possuem as mesmas características que compõem aquele fluxo. 
+Sendo assim, a ação associada ao fluxo é aplicada a esses novos pacotes.
+
 \subsection{Cabeçalho}
+
+O cabeçalho OpenFlow se estende da camada 1 até a camada 4 da pilha TCP/IP.
+A figura \ref{fig:of-header} apresenta os campos e suas respectivas camadas.
+
+\begin{figure}[h!]
+    \centering
+    \label{fig:of-header}
+    \includegraphics{img/openflow-header}
+    \caption{Cabeçalho OpenFlow}
+\end{figure}
 
 \subsection{Ações}
 
