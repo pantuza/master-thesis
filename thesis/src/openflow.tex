@@ -65,7 +65,7 @@ As entradas dessa tabela são atualizadas pelo controlador.
 \begin{figure}[h!]
     \centering
     \label{fig:switch-arch}
-    \includegraphics{img/switch-architecture}
+    \includegraphics[width=\linewidth]{img/switch-architecture}
     \caption{Arquitetura do switch OpenFlow}
 \end{figure}
 
@@ -90,10 +90,27 @@ A figura \ref{fig:of-header} apresenta os campos e suas respectivas camadas.
 \begin{figure}[h!]
     \centering
     \label{fig:of-header}
-    \includegraphics{img/openflow-header}
+    \includegraphics[width=\linewidth]{img/openflow-header}
     \caption{Cabeçalho OpenFlow}
 \end{figure}
 
+Quando um novo pacote ingressa no switch OpenFlow esse cabeçalho é preenchido
+e encaminhado para o controlador. 
+Através da análise dessas informações do fluxo o controlador envia uma 
+mensagem ao switch instalando/atualizando regras na tabela de fluxos. 
+
+Esse mecanismo de rotulagem e identificação de tráfego e pacotes (fluxos) é
+inspirado no MPLS (\emph{Multi-protocol Label Switching}) 
+\citep{bruce2008mpls}.
+
 \subsection{Ações}
+
+As ações (\emph{actions}) são aplicadas aos fluxos especificados na tabela
+de fluxos do switch.
+Ações como encaminhamento, atualização de cabeçalho e rejeição podem ser 
+aplicadas aos pacotes pertencentes àquele fluxo.
+
+A especificação do protocolo OpenFlow \citep{ofprotocol2015} descreve todas 
+as possíveis ações que podem ser aplicadas.
 
 \subsection{Controlador}
