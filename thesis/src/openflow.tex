@@ -149,4 +149,56 @@ A lista abaixo apresenta algumas ações:
     \end{itemize}
 \end{multicols}
 
+Essas ações são aplicadas a cada novo pacote pertencente ao algum determinado
+fluxo pertencente à tabela de fluxos.
+
 \subsection{Controlador}
+
+O controlador é a entidade na rede que representa o plano de controle dentro
+da arquitetura OpenFlow.
+Apesar de ser um entidade logicamente centralizada, ele pode ser distribuído.
+O controlador é um software que se conecta de maneira segura ao switch 
+OpenFlow.
+Através da interface de programação do protocolo o controlador manipula 
+a tabela de fluxos do switch.
+
+Em função dessa arquitetura, é possível ter visão e controle de estado global
+da rede.
+Como o protocolo OpenFlow especifica que o switch armazena alguns dados 
+estatísticos, por exemplo de portas e fluxos, o controlador pode tomar 
+decisões ou executar análises sobre a rede baseando-se nessas estatísticas.
+
+O controlador exerce um papel importante para os serviços em execução dentro
+da rede. 
+Outros servidores rodando aplicações podem fazer requisições e troca de 
+mensagens com o controlador da rede, de modo a obter informações topológicas
+ou de estado da rede.
+
+Com o plano de controle isolado em uma aplicação logicamente centralizada, 
+um programador tem de lidar com problemas típicos de desenvolvimento de 
+software e sistemas distribuídos como:
+
+\begin{itemize}
+    \item Tolerância a falhas
+    \item Persistência
+    \item Eficiência
+    \item Design de implementação
+    \item Debugging
+    \item Testes
+\end{itemize}
+
+Existem vários softwares controladores \emph{open source} no mercado que 
+podem ser utilizados em produção em para desenvolvimento de pesquisas:
+
+\begin{itemize}
+    \item Biblioteca \href{http://opennetworkingfoundation.github.io/libfluid/index.html}{Libfluid}
+        para criação de aplicações/controladores em SDN \citep{libfluid2015}
+    \item \href{http://www.noxrepo.org/nox/about-nox/}{Nox Controller}
+        \citep{nox2015}
+    \item \href{https://openflow.stanford.edu/display/Beacon/Home}{Beacon}
+        \citep{beacon2015}
+    \item \href{http://www.noxrepo.org/pox/about-pox/}{Pox Controller}
+        \citep{pox2015}
+    \item \href{http://osrg.github.io/ryu/}{Ryu} \citep{ryu2015}
+\end{itemize}
+
