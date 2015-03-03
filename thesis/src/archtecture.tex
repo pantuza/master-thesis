@@ -75,4 +75,25 @@ topologia.
 
 \subsection{Controlador distribuído}
 
+Um dos fatores mais importantes do protocolo OpenFlow foi permitir que 
+uma arquitetura distrubuída pudesse ser aplicada ao controlador da rede.
+Sem essa possibilidade, o controlador da rede se torna um gargalo na rede, 
+pois à medida que o número de pacotes aumenta, o volume de trabalho do 
+controlador cresce. 
+Através de uma arquitetura distribuída, o controlador pode dividir a carga 
+de trabalho com outros controladores.
+É importante ressaltar que mesmo distribuído, a entidade controlador
+é tratada como logicamente centralizada.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics{img/distributed-controller}
+    \label{fig:distributed-controller}
+    \caption{Topologia de um controlador distribuído}
+\end{figure}
+
+Explicar figura e explicar modelo cliente servidor, master e slave, etc do 
+OpenFlow.
+
+
 \subsection{Arquitetura para a Internet}
