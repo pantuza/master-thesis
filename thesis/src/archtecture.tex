@@ -114,3 +114,21 @@ mestre, recomeçando assim, o processo de eleição.
 
 
 \subsection{Arquitetura para a Internet}
+
+Uma arquitetura foi proposta por \citep{barath2012software} em que SDN, 
+através do OpenFlow, fosse aplicada a arquitetura da Internet. 
+A imagem \ref{fig:edge-core-sdn} apresenta uma arquitetura de domínios 
+ao longo da Internet.
+Nesse cenário, os switches internos aos domínios de rede cuidam do 
+encaminhamento de pacotes no núcleo da rede.
+Já os switches de borda, são responsáveis pela comunicação entre domínios
+(Interdomain communication).
+Essa comunicação de borda pode ocorrer entre serviços, ou seja,
+na camada de aplicação.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{img/edge-core-sdn}
+    \label{fig:edge-core-sdn}
+    \caption{Arquitetura para Internet através de SDN e OpenFlow}
+\end{figure}
