@@ -103,10 +103,14 @@ configurado para trabalhar com controladores distribuídos.
 Quando operam no modo réplica, os controladores recebem as mesmas mensagens
 encaminhadas pelo switch.
 Distribuir o controlador torna a rede mais confiável, dado que se um 
-controlador cair o switches continuam operando em modo OpenFlow.
-
-Explicar figura e explicar modelo cliente servidor, master e slave, etc do 
-OpenFlow.
+controlador cair os switches continuam operando em modo OpenFlow.
+Os controladores podem também operar no modo mestre/escravo 
+(\emph{Master/slave}).
+Nesse cenário, um dos controladores é eleito mestre. 
+Ao configurar o controlador mestre, o switch OpenFlow altera todos os demais
+controladores para o modo escravo. 
+Em qualquer instante, outro controlador pode solicitar alteração para 
+mestre, recomeçando assim, o processo de eleição.
 
 
 \subsection{Arquitetura para a Internet}
