@@ -82,20 +82,8 @@ Um fluxo pode caracterizar pacotes que ainda não passaram pelo switch mas
 que possuem as mesmas características que compõem aquele fluxo. 
 Sendo assim, a ação associada ao fluxo é aplicada a esses novos pacotes.
 
-\begin{table}[h!]
-    \centering
-    \begin{tabular}{ | l | l | l | l |}
-    \hline
-    \textbf{Header} & \textbf{Counters} & \textbf{Actions} & \textbf{Priority} 
-    \\ \hline in\_port=5 & 55635 bytes & \pbox{20cm}{Forward \\ port=8} 
-    & 100 \\ \hline
-    \pbox{20cm}{ip=192.168.1.42 \\ port=80} & 4032 bytes & \pbox{30cm}{Set 
-    \\ rewrite \\ ip=192.168.1.100} & 500 \\ \hline ipproto=UDP & 100 bytes 
-    & Drop & 700 \\ \hline
-    \end{tabular}
-    \caption{Tabela de fluxos simplificada}
-    \label{tbl:flowtable}
-\end{table}
+\input{tbl/counters}
+
 
 A tabela de fluxos dentro do switch OpenFlow identifica os fluxos para que o 
 plano de dados execute ações sobre os pacotes que são pertencentes àquele
