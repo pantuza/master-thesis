@@ -192,8 +192,31 @@ em controle de acesso, autenticação e processamento de pacotes.
 O OpenFlow possibilita experimentações de maneira uniforme em switches 
 completamente heterogeneos. 
 
+Um projeto (\emph{design}) de rede é apresentado através abordagem híbrida 
+entre MPLS e SDN com o objetivo de simplificar o hardware e flexibilizar 
+o controle \citep{fabric2012martin}. 
+
+O artigo apresenta uma divisão lógica entre núcleo (\emph{core}) e 
+borda (\emph{edge}) da rede.
+O núcleo simplifica a rede.
+Ele se preocupa apenas com o encaminhamento de pacotes dentro do núcleo 
+atráves dos rotulagens (\emph{labels}) MPLS. 
+A borda mantém um controlador SDN que permite adicionar os rótulos 
+\emph{labels} MPLS para repassar ao núcleo. 
+O serviços conversam apenas com a borda. 
+Uma máquina (\emph{host}) ao enviar um pacote a outra máquina em outro domínio, 
+primeiramente passa pelo controlador na borda. 
+Esse pacote chega pelo controlador de entrada (borda) e é repassado ao 
+controlador do núcleo com o rótulo colocado pelo controlador da borda.
+O núcleo por sua vez faz o devido encaminhamento à máquina de destino. 
+Essa abordagem simplifica e desacopla as redes. 
+Elas podem ter no núcleo algorítmos e protocolos próprios sem interferir nas 
+redes adjacentes pois há um isolamento bem estruturada através do controlador 
+na borda das redes.
+
 Baseando-se em SDN, o artigo \citep{barath2012software} propõe uma arquitetura 
 na linha evolucionária para Internet.
+Esse trabalho é uma generalização para a Internet do \citep{fabric2012martin}.
 Como a arquitetura da Internet possui deficiências e possui diversos fatores
 que impedem que ela seja substituída, o artigo traz uma abordagem que dissocia 
 a infraestrutura da arquitetura da Internet. 
