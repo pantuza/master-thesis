@@ -140,6 +140,19 @@ Diferentemente de P2Ps como Napster e Gnutella, o protocolo Chord melhora a
 escalabilidade da tarefa de embaralhamento (hashing), pois ele evita que 
 todos os nós tenham que saber sobre todos os demais nós. 
 
+ICN (Information Centric Network) \citep{bong2009information} é uma abordagem 
+parecida com a CCN (Content centric Network). 
+O artigo mostra uma arquitetura bem parecida com SDNs onde o plano de controle 
+está separado do plano de dados. Mostra também que esses planos são unidades 
+lógicas dentro da rede. Ou seja, o controlador pode ser composto por diversos 
+equipamentos (entidades) na rede. 
+
+O artigo, abstrai o funcionamento da busca de dados dentro da rede. 
+Ele parte do pressuposto que a busca funcione como um DNS, dado que a busca é 
+feita por pacotes que carregam os interesses de quem iniciou a requisição. 
+Os switches ao longo da rede fazem cache dos pacotes de dado, podendo 
+responder a requisição sozinhos. 
+
 \section{O protocolo OpenFlow e as inovações em rede}
 
 A evolução da Internet é uma discussão polêmica. 
