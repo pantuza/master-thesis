@@ -140,8 +140,6 @@ Diferentemente de P2Ps como Napster e Gnutella, o protocolo Chord melhora a
 escalabilidade da tarefa de embaralhamento (hashing), pois ele evita que 
 todos os nós tenham que saber sobre todos os demais nós. 
 
-\section{Computação em arquiteturas na nuvem (\emph{cloud})}
-
 \section{O protocolo OpenFlow e as inovações em rede}
 
 A evolução da Internet é uma discussão polêmica. 
@@ -180,6 +178,26 @@ alternativas ao protocolo IP.
 em controle de acesso, autenticação e processamento de pacotes.
 O OpenFlow possibilita experimentações de maneira uniforme em switches 
 completamente heterogeneos. 
+
+\section{Computação em arquiteturas na nuvem (\emph{cloud})}
+
+O artigo \citep{arsalan2009applying} apresenta o NOX 
+(\emph{Networking Operanting System}). 
+O NOX traz um controle lógico centralizado de alto nível de abstrações de 
+rede como usuários, topologia, serviços e controle da rede. 
+Através do OpenFlow ele adiciona entradas de fluxo (\emph{flow entries}) na 
+tabela de encaminhamento dos switches. 
+
+O projeto permite implementações em C++ e Python. 
+A abordagem do artigo é voltada para datacenters. 
+São demonstradas interações com PortLand e LV2. 
+O grande objetivo desse sistema de gerenciamento é prover um controle da rede,
+flexível suficiente, para atender uma ampla gama de necessidades de rede em 
+datacenters. 
+Pelo fato de artigo trazer uma abordagem mais comercial (\emph{datacenters}), 
+são demonstradas as necessidades e problemas enfrentados por 
+\emph{datacenters} e como o NOX demonstra-se uma ferramenta que flexibiliza 
+e facilita o design dessas aplicações comerciais.
 
 \section{Recuperação de informação topológica}
 
