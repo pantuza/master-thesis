@@ -192,6 +192,27 @@ em controle de acesso, autenticação e processamento de pacotes.
 O OpenFlow possibilita experimentações de maneira uniforme em switches 
 completamente heterogeneos. 
 
+Baseando-se em SDN, o artigo \citep{barath2012software} propõe uma arquitetura 
+na linha evolucionária para Internet.
+Como a arquitetura da Internet possui deficiências e possui diversos fatores
+que impedem que ela seja substituída, o artigo traz uma abordagem que dissocia 
+a infraestrutura da arquitetura da Internet. 
+
+A arquitetura proposta envolve fundamentos trazidos de SDN, MPLS e 
+encamimhamento via programas (\emph{software forwarding}). 
+Nessa arquitetura, as redes seriam domínios. 
+Cada domínio possui um controlador do núcleo (\emph{core}) e um 
+de borda (\emph{edge}). 
+Os controladores de borda controlam o tráfego externo. 
+Os de núcleo controlam o interior dos domínios. 
+Isso cria uma camada de isolamento em que pode-se alterar protocolos e 
+algorítmos em ambos os ambientes, núcleo e borda, sem que um interfira 
+no outro.
+Além disso foram mostrados modelos de serviços que podem ser estruturados 
+sobre essa arquitetura. 
+O artigo apresenta três exemplos de sistemas de redes que poderiam funcionar 
+perfeitamente sobre essa arquitetura.
+
 \section{Computação em arquiteturas na nuvem (\emph{cloud})}
 
 O artigo \citep{arsalan2009applying} apresenta o NOX 
