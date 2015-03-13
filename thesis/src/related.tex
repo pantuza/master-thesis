@@ -1,9 +1,110 @@
 \chapter{Trabalhos relacionados}
 
-Alguns trabalhos apresentam ou sugerem uma abordagem em grafos como uma 
-solução em Redes Definidas por Software.
 Essa seção apresenta os trabalhos relacionados ao presente projeto de 
 dissertação e discute suas características.
+A seção segue uma linha cronológica com temas e artigos que levam a 
+formulação que é a base do presente trabalho.
+
+\section{As redes em camadas (\emph{Overlay})}
+
+Um entendimento das implicações de redes \emph{overlays} para a 
+arquitetura da Internet, para o mercado e para a política
+é apresentado em \citep{clark2006overlay}. 
+De modo geral o artigo descreve, principalmente, as redes de 
+CDN (Redes de entrega de conteúdo), segurança e roteamento em camadas. 
+O artigo posiciona as \emph{overlays} como uma uma camada intermediária, 
+acima dos protocolos básicos IP e abaixo da camada de 
+aplicação. 
+Segundo essa visão, \emph{overlays} são para a internet básica (ponto-a-ponto)
+usuários finais em que, por exemplo, um roteador apenas encaminha pacotes sem
+se importar com seu conteúdo ou finalidade. 
+Por outro lado, para a aplicação ela se comporta como sua infraestrutura. 
+Segundo o autor, as \emph{overlays} se tornaram o principal meio de 
+evolução da arquitetura da Internet.
+
+Utilizar \emph{overlay} para tratar as deficiências da rede é custoso, no
+entanto atualizar a infraestrutura da Internet básica seria ainda mais. 
+As redes \emph{overlays} irão, de maneira disruptiva, representar o modo de 
+inovar dentro da Internet criando novos jogadores, 
+um novo cenário econômico e novas regras.
+
+A arquitetura RON (\emph{Resilient Overlay Network}) 
+\citep{anderson2001resilient} é capaz de tornar a entrega de pacotes na 
+Internet mais confiável através de detecção e recuperação de interrupções e 
+falhas no roteamento. 
+A Internet foi criada como uma rede \emph{overlay} que funcionava sobre a rede 
+de telefonia. Ou seja, o conceito de Redes \emph{overlay} não é uma idéia nova.
+No entanto, poucas dessas redes foram estruturadas para se recuperar e tolerar 
+falhas de forma eficiente. Nesse contexto é que as RONs demonstram ser 
+confiáveis.
+
+As RONs possuem três Metas/objetivos. O primeiro objetivo e principal é 
+permitir que um grupo de nós possam se comunicar independente de haver uma 
+falha na rota entre eles. 
+Isso torna o roteamente confiável. O segundo objetivo
+é tornar o roteamento e a seleção de próximo host com aplicações distribuídas 
+mais forte, mais eficiente do que tradicionalmente é feito com outras 
+arquiteturas e protocolos. 
+O terceiro e último objetivo é fornecer um framework 
+para implementação de políticas de roteamento que governam a escolha de rotas 
+dentro da rede. 
+
+As implicações de desempenho entre a rede \emph{overlay} Gnutella e a 
+infra-estrutura da Internet é descrito em \citep{ripeanu2002mapping}. 
+Redes P2P agregam vários computadores que entram e saem da rede todo o tempo. 
+Esses Peers (computadores) podem não ter um endereço IP permanente. 
+As redes P2P são entidades independentes e auto organizadas. 
+Esse trabalho descreve um período de avaliação de sete meses do crescimento das 
+redes Gnutella assim como suas implicações de desempenho. 
+A rede é composta por serventes (computadores) que são os nós da rede virtual 
+na camada de aplicação em que seus enlaces são formados por conexões 
+TCPs abertas. 
+Ao analisar a topologia utilizada pelo Gnutella o artigo explicita que apesar 
+de essas redes serem eficientes em lidar com falhas aleatórias em computadores,
+elas estão vulneráveis a ataques bem planejados.
+
+\section{Redes centradas em conteúdo}
+
+\emph{Content-Centric Networking} (CCN, redes centradas no conteúdo) trata o 
+conteúdo como uma primitiva\citep{van2009networking}. 
+Esse conteúdo é requisitado através de um nome. 
+Em analogia ao IP, a CCN substitui o 'onde', utilizado no IP, pelo 'o que'. 
+A comunicação dentro da CCN é definida por 'consumidores de dados'. 
+Existem dois tipos de pacotes: \emph{Interest} (interesse) 
+e \emph{Data} (dado).    
+
+O documento descreve o funcionamento completo do roteamento dos pacotes 
+baseados em conteúdo, assim como seria seu comportamento dentro de 
+intra-domínios e inter-domínios. 
+A segurança acontece no nível do dado ao invés de apenas uma propriedade da 
+conexão pela qual o dado trafega. 
+O projeto de CCN's a protege de várias classes de ataques de rede. 
+O artigo apresenta comparações e avaliações de CCN's em relação ao TCP/IP. 
+São relacionados temas como eficiência na tranferência de dados, 
+eficiência na distribuição de conteúdo, a estratégia de camadas da rede 
+e voz sobre CCN. 
+A CCN foi projetada para substituir o IP, mas pode ser distribuída 
+como um overlay. 
+
+
+\section{Computação em arquiteturas na nuvem (\emph{cloud})}
+
+\section{O protocolo OpenFlow e as inovações em rede}
+
+\section{Recuperação de informação topológica}
+
+A necessidade de se buscar e monitorar dados 
+específicos, principalmente em redes complexas, atrai o desenvolvimento
+de linguagens DSL (linguagens de domínio especifico) que simplifique, 
+organize, generalize e garanta eficiência na manipulação desses dados.
+Esse é o exemplo do Frenetic \citep{foster2011frenetic} 
+e do Pyretic \citep{monsanto2013composing}.
+
+Enquanto a abordagem da DSL é baseada em atuação, execução,
+conjunta com o controlador,
+o NIB é baseada em um banco de dados distribuído,
+com uma abordagem mais ampla e atacando problemas mais gerais
+como persistência, concorrência, redundância, escalabilidade, etc.
 
 \section{A abordagem em grafos}
 
@@ -29,3 +130,4 @@ MIB (\emph{Management Information Base}) implementada sobre o
 protocolo SNMP.
 Essa representação baseada em grafos é alcançada indexando cada
 entrada de elemento em relação a seus vizinhos.
+
