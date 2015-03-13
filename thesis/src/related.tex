@@ -212,6 +212,19 @@ são demonstradas as necessidades e problemas enfrentados por
 \emph{datacenters} e como o NOX demonstra-se uma ferramenta que flexibiliza 
 e facilita o design dessas aplicações comerciais.
 
+Visando solucionar o problema de migração de máquinas virtuais, 
+o artigo \citep{erik2012live} apresentao LIME.
+Ele é uma solução baseada em SDN que isola a aplicação da topologia da rede e 
+de como ela é controlada. 
+A proposta visa reduzir o tempo com que a migração e sincronia acontecem.
+
+Ao iniciar uma migração de máquina virtual, os switches que estavam no local 
+de origem e os do local de destino são agrupados em um único switch virtual. 
+Todo o fluxo de dados é repassado ao controlador SDN que controla todo o 
+tráfego durante o processo de migração. 
+Concluída a migração o LIME reprograma os switches e descarta a necessidade 
+do controlador SDN interferir no trafego.
+
 \section{Recuperação de informação topológica}
 
 A necessidade de se buscar e monitorar dados 
