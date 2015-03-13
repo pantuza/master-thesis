@@ -86,6 +86,23 @@ e voz sobre CCN.
 A CCN foi projetada para substituir o IP, mas pode ser distribuída 
 como um overlay. 
 
+O artigo \citep{dilley2002globally} apresenta como o CDN 
+(\emph{Content Delivery Network}) da Akamai's lidou com gargalos e falhas 
+através de servidores de borda. 
+Esses servidores são responsáveis por aliviar o serviço de estressar um único 
+servidor. 
+Servir conteúdo na \emph{Web} com apenas um servidor são sérios problemas 
+para escalabilidade, confiança e performance de um sítio/serviço.
+
+Ao estabelecer servidores de borda que possuem tarefas específicas, 
+é necessário tratar suas falhas individulamente.
+Em função dessas características, o artigo apresenta soluções com servidores de
+borda através da utilização de aproximação (proxy), provisionamento (caches), 
+replicação, sincronia, balanceamento de carga, tolerância a falhas, 
+autenticação, segurança, recuperação de erros e monitoramento de serviços. 
+O artigo propôe que o grande desafio para lidar com esses circunstâncias é 
+identificar os design patterns (padrões de desenho/implementação) que são 
+soluções de custo efetivo e úteis ao sistema de maneira global.
 
 \section{Computação em arquiteturas na nuvem (\emph{cloud})}
 
