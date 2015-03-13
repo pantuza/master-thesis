@@ -125,6 +125,21 @@ populares, excessos para conteúdos populares e de muito acesso. O CDN
 disponibiliza também, uma API aberta para permitir elasticidade na 
 distribuição de conteúdo. 
 
+O protocolo Chord de pesquisa de itens em nós dentro de uma 
+rede Peer-to-peer é aprensentado em \citep{ion2001chord}. 
+O Chord executa apenas uma operação em que, dada uma chave, 
+ele mapeia a chave a um nó (host). 
+A tabela de roteamento Chord é distribuída e utiliza hashing para 
+atribuir uma chave a um nó. 
+O artigo prova que a complexidade algorítmica dessa busca é O(log N).
+O Chord simplifica o modelo P2P, lidando apenas com balanceamento de carga, 
+descentralização, escalabilidade, disponibilidade e nomeação flexível. 
+É provado que as buscas recursivas são mais eficientes em 
+função do tempo de execução do que as pesquisas iterativas. 
+Diferentemente de P2Ps como Napster e Gnutella, o protocolo Chord melhora a 
+escalabilidade da tarefa de embaralhamento (hashing), pois ele evita que 
+todos os nós tenham que saber sobre todos os demais nós. 
+
 \section{Computação em arquiteturas na nuvem (\emph{cloud})}
 
 \section{O protocolo OpenFlow e as inovações em rede}
