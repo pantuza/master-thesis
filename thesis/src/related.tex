@@ -104,6 +104,27 @@ O artigo propôe que o grande desafio para lidar com esses circunstâncias é
 identificar os design patterns (padrões de desenho/implementação) que são 
 soluções de custo efetivo e úteis ao sistema de maneira global.
 
+
+Uma experiência relevante foi a utilização do CoralCDN durante seus cinco
+anos de deploy (publicação).
+Com o enorme crescimento em utilizar virtualização e deploy em cloud, 
+os serviços na Internet estão cada vez mais descentralizando
+sua infra-estrutura. 
+O CoralCDN foi desenvolvido de maneira escalável e automática para lidar com 
+picos repentinos no tráfego de conteúdo \citep{freedman2010experiences}. 
+O artigo demonstra a sequência de acontecimentos que ocorrem dentro da rede de 
+aproximadores (proxys), servidores de índice, DNS e origem quando um cliente 
+requisita uma url ao CDN. 
+
+O CoralCDN, objetiva poupar ao máximo os servidores origem. 
+A utilização de aproximadores (proxys) e provisionamento (cache) 
+garantem que esse objetivo seja cumprido. 
+O funcinamento interno do CDN estabelece políticas de acesso aos conteúdos. 
+Diferenciando políticas para recuperar conteúdos antigos, conteúdos não 
+populares, excessos para conteúdos populares e de muito acesso. O CDN 
+disponibiliza também, uma API aberta para permitir elasticidade na 
+distribuição de conteúdo. 
+
 \section{Computação em arquiteturas na nuvem (\emph{cloud})}
 
 \section{O protocolo OpenFlow e as inovações em rede}
