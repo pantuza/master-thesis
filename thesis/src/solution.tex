@@ -1,13 +1,42 @@
 \chapter{Solução}
 
-
-\section{Projeto de implementação}
-
-
-\subsection{Controlador}
-
-\subsection{Mudanças na arquitetura}
+A solução proposta por este trabalho foi implementada em cima do controlador
+POX \citep{pox}. 
+Uma abstração da rede em forma de grafo foi construída como um módulo 
+do controlador da rede.
+Esse grafo, em tempo real, representando a rede é a base para toda computação
+executada sobre a rede.
+A solução objetiva simplificar o gerenciamento em redes reduzindo o volume 
+de computações ao longo dos nós da rede aproveitando a separação do plano 
+de dados e do plano de controle.
 
 \subsection{A abstração em grafos}
 
-\subsection{A interface de programação}
+O grafo propost é representado por $G=(V, A)$, em que $V$ e $A$ são conjuntos
+finitos de vértices e arestas, respectivamente.
+Cada vértice $v \in V$ representa um computador (\emph{host}) ou comutador
+(\emph{switch}) dentro da rede.
+Cada aresta $u \to v \in A$ representa um enlace (\emph{link}) entre dois
+vértices.
+O peso das arestas $g(u, v)$ descreve a quantidade de \emph{bytes} trafegados
+na aresta entre os dois vértices.
+
+\subsection{Controlador}
+
+O controlador POX é um arcabouço para elaboração de módulos/programas 
+em Redes Definidas por \emph{Software}.
+Totalmente voltado para pesquisa, o POX é um controlador simples, 
+escrito na linguagem de programação \emph{Python}.
+
+Ao ser carregado, o POX, executa o seu núcleo (\emph{core}). 
+Esse módulo principal é responsável por carregar os demais 
+módulo e garantir a comunição entre eles.
+
+Ele exporta uma interface baseada em eventos. 
+Eventos que descrevem ou representam ações ocorridas na rede.
+Um módulo implementado dentro do controlador POX pode ser um 
+produtor/consumidor de eventos.
+
+
+\section{Projeto de implementação}
+
