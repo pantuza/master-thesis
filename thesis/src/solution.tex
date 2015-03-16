@@ -29,13 +29,41 @@ Totalmente voltado para pesquisa, o POX é um controlador simples,
 escrito na linguagem de programação \emph{Python}.
 
 Ao ser carregado, o POX, executa o seu núcleo (\emph{core}). 
-Esse módulo principal é responsável por carregar os demais 
+Esse módulo principal, é responsável por carregar os demais 
 módulo e garantir a comunição entre eles.
-
 Ele exporta uma interface baseada em eventos. 
 Eventos que descrevem ou representam ações ocorridas na rede.
 Um módulo implementado dentro do controlador POX pode ser um 
 produtor/consumidor de eventos.
+
+O POX contém alguns módulos de descoberta que publicam eventos relacionados
+à topologia da rede:
+
+\begin{itemize}
+
+\item{\emph{topology}}: 
+
+O módulo \emph{topology}, é responsável por mapear a topologia da rede. 
+Utilizando os recursos do \emph{core}, ele atua como um canal de eventos 
+relacionados à topologia e que os demais módulos podem fazer escuta 
+(\emph{listening}).
+
+\item{\emph{host\_tracker}}: 
+Seu objetivo é buscar e rastrear informações sobre os computadores 
+(\emph{hosts}) dentro da rede.
+
+\item{\emph{openflow.topology}}: 
+Um controle de topologia específico para switches OpenFlow.
+Ele é integrado com o módulo \emph{topology} do POX.
+
+\item{\emph{openflow.discovery}}: 
+Identifica links entre switches OpenFlow por meio do protocolo LLDP.
+
+\item{\emph{misc.dhcpd}}:
+Servidor de DHCP para configuração dinâmica da rede IP.
+
+\end{itemize}
+
 
 
 \section{Projeto de implementação}
