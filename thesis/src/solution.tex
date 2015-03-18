@@ -134,6 +134,17 @@ Os enlaces entre computadores e comutadores é identificado quando, ao
 adicionar um vértice do tipo \emph{Host}, esse vértice possuir a informação
 de qual comutador ele está diretamente conectado.
 
+O peso das arestas é obtido através da leitura dos contadores de fluxos 
+presentes nos comutadores OpenFlow.
+Para o módulo \emph{graph} são lidos os contadores de fluxo da porta 
+no switch. 
+A lista de contadores é apresentada na Tabela \ref{tbl:counters} e em 
+\citep{ofprotocol2015}.
+Através da contagem desses fluxos é possível mensurar o tráfego 
+decorrente na aresta.
+
+\input{tbl/counters}
+
 \subsection{O módulo \emph{host\_tracker}}
 
 Além da criação do módulo composto pelas classes acima descritas, alterações
