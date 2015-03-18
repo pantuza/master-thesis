@@ -1,18 +1,23 @@
 
 \begin{table}[h!]
     \centering
-    \begin{tabular}{ | l | l | l | l |}
+    \begin{tabular}{| l | l |}
     \hline
-    \textbf{Cabeçalho} & \textbf{Contadores} & \textbf{Ações} &
-    \textbf{Prioridade} 
-    \\ \hline porta de ingresso=5 & 55635 bytes & \pbox{20cm}{Encaminhar 
-    \\ porta=8} 
-    & 100 \\ \hline
-    \pbox{20cm}{Endereço ip=192.168.1.42 \\ porta=80} & 4032 bytes &
-    \pbox{30cm}{Rescrita \\ ip=192.168.1.100} & 500 \\ 
-    \hline Protocolo IP=UDP & 100 bytes 
-    & Drop & 700 \\ \hline
+    \textbf{Contador} & \textbf{Bits} \\ \hline
+    Pacotes Recebidos & 64 \\ \hline
+    Pacotes Transmitidos & 64 \\ \hline
+    Bytes Recebidos & 64 \\ \hline
+    Bytes Transmitidos & 64 \\ \hline
+    Drops Recebidos & 64 \\ \hline
+    Drops Transmitidos & 64 \\ \hline
+    Erros Recebidos & 64 \\ \hline
+    Erros Transmitidos & 64 \\ \hline
+    Erros de Frames Recebidos & 64 \\ \hline
+    Erros de Transbordo Transmitidos & 64 \\ \hline
+    Erros de CRC Recebidos & 64 \\ \hline
+    Colisões & 64 \\
+    \hline
     \end{tabular}
-    \caption{Tabela de fluxos simplificada}
-    \label{tbl:flowtable}
+    \caption{Contadores de fluxos por Porta}
+    \label{tbl:counters}
 \end{table}
