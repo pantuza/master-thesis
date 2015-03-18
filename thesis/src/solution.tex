@@ -22,6 +22,7 @@ O peso das arestas $g(u, v)$ descreve a quantidade de \emph{bytes} trafegados
 na aresta entre os dois vértices.
 
 \subsection{Controlador}
+\label{sec:controller}
 
 O controlador POX é um arcabouço para elaboração de módulos/programas 
 em Redes Definidas por \emph{Software}.
@@ -64,7 +65,38 @@ Servidor de DHCP para configuração dinâmica da rede IP.
 
 \end{itemize}
 
-
+Esses módulos são os módulos relevantes para o presente trabalho.
+Existem diversos outros módulos dentro do controlador POX, no entanto
+eles não serão abordados nesse trabalho.
 
 \section{Projeto de implementação}
+
+A proposta do módulo em grafos é integrada aos módulos citados na seção do 
+\ref{sec:controller} (Controlador).
+A implementação do módulo é composta por cinco classes:
+
+\begin{itemize}
+    \item{Graph} Classe responsável por gerenciar o grafo.
+        Todo o tratamento de eventos é feito por essa classe.
+        O controle de criação, remoção e atualização de vertices e arestas 
+        é feito por essa classe.
+    \item{GraphEntity} Classe abstrata que implementa arestas e vértices.
+        Essas entidades, vértices e arestas, herdam da classe 
+        \emph{GraphEntity}
+    \item{Vertex} Classe que representa os vértices do grafo.
+        Vértices podem ser máquinas (\emph{hosts}) ou comutadores
+        (\emph{switches})
+    \item{Edges} Classe que representa as arestas do grafo.
+        Arestas são enlaces (\emph{links}) entre dois vértices.
+        O peso das arestas é um atributo dos objetos dessa classe.
+    \item{GraphManager} Classe responsável por executar computações no 
+        grafo.
+        Toda implementação de algoritmos em grafos é feita dentro dessa classe.
+    \item
+\end{itemize}
+
+\subsection{Vértices}
+
+O módulo \emph{topology} dispara os eventos \emph{HostJoin}, \emph{HostLeave},
+\emph{SwitchJoin}, \emph{SwitchLeave}.
 
