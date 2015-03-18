@@ -50,17 +50,21 @@ relacionados à topologia e que os demais módulos podem fazer escuta
 (\emph{listening}).
 
 \item{\emph{host\_tracker}}: 
+
 Seu objetivo é buscar e rastrear informações sobre os computadores 
 (\emph{hosts}) dentro da rede.
 
 \item{\emph{openflow.topology}}: 
+
 Um controle de topologia específico para switches OpenFlow.
 Ele é integrado com o módulo \emph{topology} do POX.
 
 \item{\emph{openflow.discovery}}: 
+
 Identifica links entre switches OpenFlow por meio do protocolo LLDP.
 
 \item{\emph{misc.dhcpd}}:
+
 Servidor de DHCP para configuração dinâmica da rede IP.
 
 \end{itemize}
@@ -76,23 +80,31 @@ A proposta do módulo em grafos é integrada aos módulos citados na seção do
 A implementação do módulo é composta por cinco classes:
 
 \begin{itemize}
-    \item{Graph} Classe responsável por gerenciar o grafo.
+    \item{Graph}: 
+        
+        Classe responsável por gerenciar o grafo.
         Todo o tratamento de eventos é feito por essa classe.
         O controle de criação, remoção e atualização de vertices e arestas 
         é feito por essa classe.
-    \item{GraphEntity} Classe abstrata que implementa arestas e vértices.
+    \item{GraphEntity}: 
+        
+        Classe abstrata que implementa arestas e vértices.
         Essas entidades, vértices e arestas, herdam da classe 
         \emph{GraphEntity}
-    \item{Vertex} Classe que representa os vértices do grafo.
+    \item{Vertex}: 
+        
+        Classe que representa os vértices do grafo.
         Vértices podem ser máquinas (\emph{hosts}) ou comutadores
         (\emph{switches})
-    \item{Edges} Classe que representa as arestas do grafo.
+    \item{Edges}: 
+        
+        Classe que representa as arestas do grafo.
         Arestas são enlaces (\emph{links}) entre dois vértices.
         O peso das arestas é um atributo dos objetos dessa classe.
-    \item{GraphManager} Classe responsável por executar computações no 
-        grafo.
+    \item{GraphManager}: 
+        
+        Classe responsável por executar computações no grafo.
         Toda implementação de algoritmos em grafos é feita dentro dessa classe.
-    \item
 \end{itemize}
 
 \subsection{Vértices}
@@ -104,6 +116,13 @@ Quando eles são disparados pelo \emph{topology} o grafo é atualizado.
 Assim, os vértices são criados no grafo em tempo real, à medida que os
 eventos ocorrem na rede.
 
+Todo vértice tem um identificador único.
+No caso de vértices do tipo computador (\emph{Host}), o identificador 
+é o endereço MAC (\emph{Media Access Control}) da interface de rede.
+Já os vértices do tipo comutador (\emph{Switch}) são identificados pelo 
+DPID (\emph{Datapath ID}) que é associado ao comutador no momento de sua 
+conexão com o controlador.
+
 \subsection{Arestas}
 
 As arestas podem ser enlaces (\emph{links}) entre computadores e comutadores ou
@@ -114,3 +133,30 @@ escuta o evento \emph{LinkJoin} que é disparado pelo módulo
 Os enlaces entre computadores e comutadores é identificado quando, ao 
 adicionar um vértice do tipo \emph{Host}, esse vértice possuir a informação
 de qual comutador ele está diretamente conectado.
+
+\subsection{O módulo \emph{host\_tracker}}
+
+Além da criação do módulo composto pelas classes acima descritas, alterações
+no módulo \emph{host\_tracker} foram feitas.
+O \emph{host\_tracker} identifica os pacotes de DHCP (\emph{Dinamic Host
+Configuration Protocol}) e descobre novos computadores (\emph{hosts}) na rede.
+Ao construir um novo objeto da classe \emph{Host} o \emph{topology} dispara
+um evento de \emph{HostJoin} ao qual o módulo \emph{graph} irá atualizar
+o grafo da rede.
+
+Assim como \emph{openflow.discovery} identifica os comutadores, o 
+\emph{host\_tracker} o faz para máquinas (\emph{hosts}).
+Isso é feito através de um interceptador ARP (\emph{Address Resolution 
+Protocol}).
+Todos os comutadores (\emph{switches}) OpenFlow são programados para encaminhar
+os pacotes de consulta \emph{ARPQuery} para o controlador.
+Se essa consulta for destinada a um computador conhecido pelo
+\emph{host\_tracker}, um pacote de resposta \emph{ARPReply} é contruído e 
+encaminhado para a máquina que originou a consulta.
+
+Periodicamente, o \emph{host\_tracker} envia mensagens \emph{ARPQuery} falsas
+para todos os computadores conhecidos a fim de verificar se eles estão ativos
+na rede.
+Através dos contadores dos comutadores OpenFlow, o \emph{host\_tracker} 
+monitora a atividade nos enlaces podendo inferir a presença de atividade
+dos computadores sem ter que enviar mensagens ARP.
