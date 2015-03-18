@@ -99,4 +99,18 @@ A implementação do módulo é composta por cinco classes:
 
 O módulo \emph{topology} dispara os eventos \emph{HostJoin}, \emph{HostLeave},
 \emph{SwitchJoin}, \emph{SwitchLeave}.
+Ao ser carregado, o módulo \emph{graph} passa a escutar esses eventos.
+Quando eles são disparados pelo \emph{topology} o grafo é atualizado.
+Assim, os vértices são criados no grafo em tempo real, à medida que os
+eventos ocorrem na rede.
 
+\subsection{Arestas}
+
+As arestas podem ser enlaces (\emph{links}) entre computadores e comutadores ou
+entre comutadores.
+Para a identificação das arestas entre os comutadores, o módulo \emph{graph} 
+escuta o evento \emph{LinkJoin} que é disparado pelo módulo 
+\emph{openflow.discovery}.
+Os enlaces entre computadores e comutadores é identificado quando, ao 
+adicionar um vértice do tipo \emph{Host}, esse vértice possuir a informação
+de qual comutador ele está diretamente conectado.
