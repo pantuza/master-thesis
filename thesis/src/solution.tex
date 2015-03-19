@@ -10,7 +10,7 @@ A solução objetiva simplificar o gerenciamento em redes reduzindo o volume
 de computações ao longo dos nós da rede aproveitando a separação do plano 
 de dados e do plano de controle.
 
-\subsection{A abstração em grafos}
+\section{A abstração em grafos}
 
 O grafo propost é representado por $G=(V, A)$, em que $V$ e $A$ são conjuntos
 finitos de vértices e arestas, respectivamente.
@@ -21,7 +21,7 @@ vértices.
 O peso das arestas $g(u, v)$ descreve a quantidade de \emph{bytes} trafegados
 na aresta entre os dois vértices.
 
-\subsection{Controlador}
+\section{Controlador}
 \label{sec:controller}
 
 O controlador POX é um arcabouço para elaboração de módulos/programas 
@@ -107,7 +107,7 @@ A implementação do módulo é composta por cinco classes:
         Toda implementação de algoritmos em grafos é feita dentro dessa classe.
 \end{itemize}
 
-\subsection{Vértices}
+\section{Vértices}
 
 O módulo \emph{topology} dispara os eventos \emph{HostJoin}, \emph{HostLeave},
 \emph{SwitchJoin}, \emph{SwitchLeave}.
@@ -123,7 +123,7 @@ Já os vértices do tipo comutador (\emph{Switch}) são identificados pelo
 DPID (\emph{Datapath ID}) que é associado ao comutador no momento de sua 
 conexão com o controlador.
 
-\subsection{Arestas}
+\section{Arestas}
 
 As arestas podem ser enlaces (\emph{links}) entre computadores e comutadores ou
 entre comutadores.
@@ -145,7 +145,7 @@ decorrente na aresta.
 
 \input{tbl/counters}
 
-\subsection{O módulo \emph{host\_tracker}}
+\section{O módulo \emph{host\_tracker}}
 
 Além da criação do módulo composto pelas classes acima descritas, alterações
 no módulo \emph{host\_tracker} foram feitas.
@@ -171,3 +171,62 @@ na rede.
 Através dos contadores dos comutadores OpenFlow, o \emph{host\_tracker} 
 monitora a atividade nos enlaces podendo inferir a presença de atividade
 dos computadores sem ter que enviar mensagens ARP.
+
+\section{Interface de programação}
+
+O módulo \emph{Graph} exporta uma interface de programação (API).
+Através dessa interface, outros módulos do controlador podem requisitar 
+informações da topologia, do tráfego e do estado da rede através do grafo.
+Essas informações podem ser utilizadas para implementar serviços em diversas
+camadas de rede que necessitam dessa informação.
+Os metodos permitidos por esse módulo são:
+
+\begin{itemize}
+    \item \emph{get\_vertex(id)}
+
+        Retorna um vértice do grafo (máquinas ou comutadores). 
+        O parâmetro \emph{id} pode ser um endereço MAC ou o DPID.
+
+    \item \emph{get\_adjacents(id)}
+
+        Dado um vértice, retorna sua lista de adjacência.
+
+    \item \emph{snapshot()}
+
+        Retorna o estado instantâneo da aplicação na forma de duas coleções,
+        uma de vértices e outra de arestas.
+\end{itemize}
+
+\section{Integração}
+
+A integração do módulo \emph{graph} com os demais módulos do controlador POX
+é apresentado na figura \ref{fig:graph-integration}.
+A forma como o controlador POX implementa seu controle de eventos é 
+inteiramente dependente do seu núcleo (\emph{core}).
+O núcleo é responsável por notificar os módulos inscritos (que fazem escuta) 
+nos eventos a serem disparados.
+Toda troca de mensagens passa primeiramente por ele.
+A implementação do módulo \emph{graph} está disponível em 
+\url{https://github.com/pantuza/pox}.
+
+Os módulos \emph{openflow.discovery} e \emph{openflow.topology} identificam 
+comutadores (\emph{switches}) e notificam o módulo \emph{topology} através do
+\emph{core}. 
+O \emph{topology} por sua vez, cria o evento que causa a atualização no grafo
+através do módulo \emph{graph}.
+
+As ações referentes a computadores são de responsabilidade dos módulos
+\emph{misc.dhcp} e \emph{host\_tracker}.
+Nesses casos, o \emph{topology} também é comunicado atraveś do \emph{core} e
+dispara eventos que atualizam o grafo através do módulo \emph{graph}.
+
+Caso algum módulo queira recuperar informações topológicas ou do estado da
+rede, ele o faz através de chamadas à interface (API) do módulo \emph{graph}.
+
+\begin{figure}[h!]
+    \centering
+    \label{fig:graph-integration}
+    \includegraphics{img/graph-module-integration}
+    \caption{Integração do módulo \emph{graph} no controlador POX}
+\end{figure}
+
