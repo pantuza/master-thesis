@@ -1,3 +1,4 @@
+\break
 \section{Arquiteturas}
 
 Esse capítulo apresenta diversas arquiteturas possíveis através do 
@@ -11,13 +12,6 @@ Uma topologia simples pode ser vista na figura \ref{fig:simple-topology} onde
 um controlador manipula o plano de dados através de um switch OpenFlow 
 que possui 3 computadores (\emph{hosts}).
 
-\begin{figure}[h!]
-    \centering
-    \includegraphics[scale=0.85]{img/simple-topology}
-    \label{fig:simple-topology}
-    \caption{Topologia simples de redes de computadores}
-\end{figure}
-
 Nesse cenário, até mesmo resolução ARP (Address Resolution Protocol) ficam
 a cargo do controlador. 
 A tabela ARP não é resolvida no switch, mesmo todos as máquinas (hosts) 
@@ -25,6 +19,14 @@ estando na mesmo sub-rede.
 Todo as decisões são feitas no plano de controle, logo o controlador 
 é quem manipula e atualiza a tabela de fluxos com as regras para 
 implementar a resolução de pacotes ARP.
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics{img/simple-topology}
+    \label{fig:simple-topology}
+    \caption{Topologia simples de redes de computadores}
+\end{figure}
+
 
 \subsection{Um controlador para \emph{n} switches}
 
