@@ -4,14 +4,89 @@
 
 \section{Motivação}
 
+Redes definidas por software (SDN) separam o plano de dados do plano 
+de controle \citep{guedes2012redes}.
+Os ambientes de programação projetados para prover aplicações em SDN são 
+chamados de controladores SDN.
+Eles são conhecidos também como sistemas operacionais de rede, pois criam uma
+camada que isola o controle do acesso físico dos elementos de rede através 
+de uma interface padronizada.
+
+Aplicações em rede executam algoritmos em grafos.
+Em muitos casos essa computação é feita em diferentes nós da rede de maneira 
+repetitiva.
+Em função da natureza logicamente centralizada do plano de controle é possível
+minimizar a quantidade de aplicações computando as mesmas informações.
 
 \section{Problema}
 
+Em sua maioria, as aplicações em Redes Definidas por \emph{Software} necessitam
+de uma visão topológica da rede.
+Uma visão global é um dos principais aspectos do paradígma 
+\citep{martin2010virtualizing}.
+Grafos são uma modelagem direta para representar de maneira natural e precisa 
+a topologia de uma rede.
+Em função disso, grafos deveriam ser um recurso básico, uma premissa em 
+controladores SDN para representar a rede.
+
+A representação em grafos pode ser útil para módulos internos de um controlador
+ou até para serviços/aplicações externos que dependam de informações 
+topológicas ou do estado da rede.
 
 \section{Proposta}
 
+O presente trabalho apresenta uma abstração da rede na forma de um grafo 
+para o gerenciamento de redes no plano controle possibilitando automatizar 
+detecção de falhas e provisionamento para um grafo dinamicamente atualizado.
+Uma implementação em um sistema utilizando OpenFlow \citep{nick2008openflow}
+e sua avaliação experimental são apresentados como prova de conceito.
+
+Um módulo dentro do controlador SDN armazena o grafo que representa diretamente
+a rede.
+Algoritmos em grafos podem ser computados uma única vez e seus resultados 
+armazenados para consultas posteriores por outros módulos.
+
+A interação de outros módulos com o grafo pode ser encapsulada e 
+semanticamente bem definida em uma interface padronizada.
+Essa implementação pode ser adaptada para diferentes sistemas, de maneira que
+o módulo pode utilizar de recursos como memória local, banco de dados remoto,
+ser distribuído, ter controle de concorrência, paralelismo e outras 
+características relevantes para um determinado cenário de utilização.
 
 \section{Soluções}
 
+A ideia de visão topológica da rede está presente em vários controladores SDN.
+O controlador NOX \citep{gude2008nox} trabalha a topologia da rede baseando-se
+em eventos.
+Um banco de dados distribuído é proposto no controlador Onix 
+\citep{teemu2010onix}.
+Em \citep{hinrichs2009pratical} um sistema com regras de predição 
+estabelecem essa abstração.
+Linguagens de domínio específico (DSL) como o Frenetic 
+\citep{foster2011frenetic} e o Pyretic \citep{monsanto2013composing} permitem
+a recuperação de informações topológicas da rede.
+Em \citep{ramya2012dynamic} uma API em grafos é apresentado dentro do contexto
+de computação na nuvem.
+Nossa proposta apresenta a avaliação da abordagem em grafos e sua implementação
+no controlador POX \citep{pox2015}, de código aberto e voltado para pesquisa.
 
 \section{Divisão do documento}
+
+O presente projeto de dissertação, primeiramente, apresenta uma fundamentação
+teórica sobre as Redes Definidas por \emph{Software}, o protocolo OpenFlow e
+as possíveis arquiteturas de implementação.
+Um capítulo sobre os trabalhos/pesquisas relacionados comparam e descrevem
+soluções em relação à abordagem em grafos.
+Em seguida, todo o projeto de implementação e como a solução foi planejada
+é apresentado. 
+Decisões de projeto como a adaptação do controlador e como o grafo foi 
+modelado.
+
+O ambiente de experimentos (\emph{testbed}) e simulação é apresentado no 
+capítulo \ref{cap:experiments}.
+Em seguida, são apresentados os resultados das análises executadas sobre os
+experimentos.
+Uma avaliação da solução como um todo.
+
+Ao final são descritos os trabalhos futuros do projeto de dissertação e uma
+conclusão sobre os resultados obtidos ao longo do trabalho.
