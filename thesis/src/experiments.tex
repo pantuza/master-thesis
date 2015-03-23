@@ -164,10 +164,48 @@ uma aresta entre eles e o \emph{switch} ao qual eles estão conectados.
 Dessa forma as entidades da rede são identificadas e computadas no grafo.
 
 
-
 \section{Remoção de entidades}
 
+Diversos computadores foram desligados de maneira aleatória.
+O \emph{host\_tracker}, após um tempo fixo (\emph{timerInterval}) 
+verifica via ARPPing se os \emph{hosts} conhecidos estão ativos.
+Para esse cenário da remoção de um computador (\emph{host}), 
+o \emph{host\_tracker} identifica a inatividade do \emph{host} e remove o 
+\emph{Host}.
+O evento de \emph{HostLeave} é disparado pelo \emph{topology}, 
+atualizando assim o grafo.
+
+Para o caso de comutadores (\emph{switch}), através do mininet, foram 
+desligados, aleatoriamente e repetidas vezes, os \emph{switches} e medido 
+o tempo de atualização do grafo.
+O controlador está ligado diretamente aos \emph{switch}. 
+Assim, ao ser desligado, o \emph{core} do POX dispara um evento 
+de \emph{SwitchLeave} ao qual o módulo \emph{graph} está inscrito. 
+Logo, o grafo é atualizado removendo o vértice do \emph{switch}. 
+Após algum tempo o \emph{host\_tracker} identifica se os computadores 
+associados ao switch removido estão ativos por outra rota. 
+Caso negativo, os computadores são removidos do grafo.
+
 \section{Visualização em tempo real}
+
+Em um intervalo predefinido, uma imagem representando o grafo atual da rede
+é gerada pelo módulo \emph{graph}.
+Um exemplo de grafo é apresentado na figura \ref{fig:full-graph}.
+Esse grafo representa uma rede simulada, dentro do ambiente do 
+\emph{Mininet}, com 8 comutadores (\emph{switches}), cada um com 30 
+computadores (\emph{hosts}) conectados totalizando 248 entidades na rede.
+
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{img/full-graph}
+    \caption{Grafo representando uma rede com 248 entidades}
+    \label{fig:full-graph}
+\end{figure}
+
+Atualizações na topologia como, remover e adicionar entidades na rede, foram
+executados.
+A visualização da rede atualiza junto com as alterações no grafo.
 
 \section{Identificação de tráfego}
 
