@@ -95,10 +95,75 @@ A tabela \ref{tbl:testbed-ipe-net} apresenta as subredes de cada unidade
 federativa (POP), qual servidor físico gerencia a máquina virtual referente
 ao POP e o número de clientes a ele associado.
 
-
 \input{tbl/testbed-ipe-net}
 
 \section{Detecção de entidades}
+
+Ao ser carregado, o módulo \emph{graph} inicia o grafo da rede vazio.
+Os \emph{switches} são os primeiros a serem identificados. 
+Como o controlador está ligado diretamente a eles pela interface
+\emph{OpenFlow}, um evento de \emph{ConnectionUp} é disparado 
+pelo núcleo do controlador.
+Esse evento dispara o evento \emph{SwitchJoin} através do módulo 
+\emph{topology} que faz com que o grafo adicione vértices.
+
+\begin{figure}[h!]
+    \centering
+    \begin{lstlisting}[ tabsize=4,  
+                        language=bash,
+                        basicstyle=\ttfamily\footnotesize,
+                        aboveskip={1.5\baselineskip},
+                        columns=fixed,
+                        showstringspaces=false,
+                        extendedchars=true,
+                        breaklines=true,
+                        frame=single,
+                        numbers=left,
+                        showtabs=false,
+                        showspaces=false,
+                        showstringspaces=false,
+                        identifierstyle=\ttfamily,
+                        ]
+INFO:topology.graph:SwitchJoin id: 2
+INFO:topology.graph:SwitchJoin id: 1
+INFO:topology.graph:1, 2
+DEBUG:openflow.discovery:Dropping LLDP packet 275
+INFO:topology.graph:LinkEvent fired
+INFO:host_tracker:Learned 1 1 7e:e6:9b:89:39:2e got IP 10.0.0.1
+INFO:topology.graph:HostJoin id: 7e:e6:9b:89:39:2e
+INFO:host_tracker:Learned 2 1 62:77:44:24:13:49 got IP 10.0.0.2
+INFO:topology.graph:HostJoin id: 62:77:44:24:13:49
+        \end{lstlisting}
+    \caption{Detecção de entidades}
+    \label{fig:detection}
+\end{figure}
+
+Nas duas primeiras linhas do \emph{log} mostrado na figura
+\ref{fig:detection}, o módulo \emph{graph} foi notificado
+da descoberta de dois \emph{switches} na rede.
+Na linha 5, nota-se a descoberta de um enlace (\emph{link}) entre dois
+comutadores (\emph{switches}).
+O módulo \emph{openflow.discovery}, através do protocolo LLDP identificou 
+o link entre \emph{switches}.
+O grafo foi notificado e estabeleceu uma aresta entre os 
+vértices (\emph{switches}).
+
+As linhas 7 e 9 mostram a descoberta de dois hosts.
+Esses hosts foram descobertos pelo módulo \emph{host\_tracker} via 
+escuta dos eventos de DHCP.
+É importante ressaltar que a descoberta de \emph{hosts} também ocorre 
+independente do DHCP.
+Um novo pacote que passa por um \emph{switch} e não possui regra
+instalada na tabela de fluxos é encaminhado ao controlador que 
+dispara um evento de \emph{PacketIn}. 
+Para tal, o \emph{host\_tracker} se encarrega de escutar esse evento 
+e notificar o grafo através do evento \emph{HostJoin} disparado pelo módulo
+\emph{topology} ao criar um novo \emph{Host}.
+O grafo, ao ser notificado, cria vértices para esses \emph{hosts} associando 
+uma aresta entre eles e o \emph{switch} ao qual eles estão conectados.
+Dessa forma as entidades da rede são identificadas e computadas no grafo.
+
+
 
 \section{Remoção de entidades}
 
