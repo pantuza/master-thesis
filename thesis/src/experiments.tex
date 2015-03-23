@@ -1,7 +1,56 @@
 \chapter{Experimentos}
 \label{cap:experiments}
 
-\section{Ambiente e \emph{testbed}}
+\section{Ambiente de simulação}
+
+Uma simulação da rede nacional de pesquisa, a rede Ipê \citep{ipe2015network} 
+foi criada em laboratório.
+Um comutador (\emph{switch}) OpenFlow e quatro servidores foram utilizados 
+para executar a simulação no laboratório WiNet \citep{winet22015lab}
+no departamento de Ciência da Computação (DCC) da Universidade Federal 
+de Minas Gerais (UFMG).
+
+\subsection{A rede Ipê}
+Operada pela Rede Nacioanal de Pesquisa (RNP), a rede Ipê é uma infraestrutura
+de rede Internet dedicada à comunidade de pesquisa brasileira.
+Inaugurada em 2005, foi a primeira rede óptica nacional acadêmica a entrar em
+operação na América Latina.
+
+A rede IPÊ implementa 27 Pontos de Presença (\emph{POPs}), um para cada unidade
+da federação.
+Em cada unidade existem diversos clientes que, para se comunicar com outras 
+máquinas em outros Pontos de Presença, transmitem seus pacotes através do 
+POP ao qual atuam como clientes.
+Essas ramificações constituem mais de 800 instituições de ensino, saúde e 
+pesquisa em todo o país, beneficiando mais de 3,5 milhões de usuários
+\citep{ipe2015network}.
+
+Através da rede RedCLARA \citep{redclara2015network}, a rede Ipê se conecta 
+à 2,5 Gb/s com, atualmente, 15 países da América Latina e à 5 Gb/s com a rede
+europeia Géant \citep{geant2015network}. 
+Além disso, por meio de quatro conexões de
+10 Gb/s, duas pelo Oceano Atlântico e duas pelo Oceano Pacífico, 
+operadas em parceria com a ANSP, totalizando 40 Gb/s, a rede Ipê se conecta 
+às redes acadêmicas norte-americanas, em especial, a  Internet2 
+\citep{internet22015network}, a outras redes acadêmicas internacionais e à 
+internet comercial mundial.
+
+Os Pontos de presença estão interconectados conforme mostrado na figura 
+
+\ref{fig:ipe-network-2015}.
+
+\begin{figure}[!h]
+    \centering
+    \label{fig:ipe-network-2015}
+    \includegraphics[width=\linewidth]{img/ipe-network-2015}
+    \caption{Rede Nacional de Pesquisa IPÊ \protect\footnotemark}
+\end{figure}
+
+\footnotetext{Imagem retirada de 
+\url{http://www.rnp.br/servicos/conectividade/rede-ipe}}
+
+\subsection{Arquitetura da simulação}
+
 
 \input{tbl/testbed-ipe-net}
 
