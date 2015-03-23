@@ -36,20 +36,64 @@ operadas em parceria com a ANSP, totalizando 40 Gb/s, a rede Ipê se conecta
 internet comercial mundial.
 
 Os Pontos de presença estão interconectados conforme mostrado na figura 
-
 \ref{fig:ipe-network-2015}.
 
-\begin{figure}[!h]
+\begin{figure}[!ht]
     \centering
     \label{fig:ipe-network-2015}
-    \includegraphics[width=\linewidth]{img/ipe-network-2015}
+    \includegraphics[width=\textwidth]{img/ipe-network-2015}
     \caption{Rede Nacional de Pesquisa IPÊ \protect\footnotemark}
+    \vspace*{3in}
 \end{figure}
 
 \footnotetext{Imagem retirada de 
 \url{http://www.rnp.br/servicos/conectividade/rede-ipe}}
 
 \subsection{Arquitetura da simulação}
+
+A ambiente de simulação é composto por um comutador HP com OpenFlow habilitado.
+Quatro servidores são responsáveis por gerenciar máquinas virtuais que 
+representam as unidades federativas e suas instituições clientes.
+
+Conforme pode ser visto na figura \ref{fig:physical-vs-virtual-network}, a
+rede física do esperimento é separada da rede virtual.
+O quinto computador é o controlador da rede. 
+Para o experimento, existem duas redes. 
+Uma rede de administração, com acesso aos servidores e a uma instância do 
+controlador, na porta 6633.
+A segunda rede é a rede virtual à qual todos os POPs simulados estão 
+conectados. 
+Para implementar essas duas redes, cada servidor e o controlador possuem duas
+interfaces de rede que isolam seus funcionamentos.
+Assim, a rede física/administrativa e a rede virtual/Ipê estão separadas
+em nosso experimento.
+
+
+\begin{figure}[!h]
+    \centering
+    \label{fig:physical-vs-virtual-network}
+    \includegraphics[width=\textwidth]{img/physical-vs-virtual-network-pt}
+    \caption{Arquitetura do ambiente de simulação}
+\end{figure}
+
+Para o ambiente virtualizado, o controlador está associado a porta 6653.
+Cada POP é um comutador (\emph{switch}) OpenFlow simulado via OpenVSwitch
+\citep{openvswitch2015switch}.
+As instituições clientes de cada POP são simuladas através do \emph{Mininet} 
+\citep{lantz2010network}.
+O número de instituições clientes foi coletado do sítio de cada Ponto de 
+Presença.
+
+Cada máquina virtual representa um POP.
+Cada POP possui uma subrede à qual uma instância do \emph{Mininet} simula 
+seus clientes. 
+Essa subrede está conectada através de um \emph{switch} virtual 
+\emph{OpenVSwitch} que é controlado pelo controlador da rede virtualizada.
+Assim, para cada POP, temos as decisões e atualizações da tabela de fluxos
+feita pelo controlador.
+A tabela \ref{tbl:testbed-ipe-net} apresenta as subredes de cada unidade
+federativa (POP), qual servidor físico gerencia a máquina virtual referente
+ao POP e o número de clientes a ele associado.
 
 
 \input{tbl/testbed-ipe-net}
