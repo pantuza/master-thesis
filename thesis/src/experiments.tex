@@ -209,4 +209,28 @@ A visualização da rede atualiza junto com as alterações no grafo.
 
 \section{Identificação de tráfego}
 
-\section{Rede Nacional de Pesquisa (RNP-IPÊ)}
+Para computar o tráfego (TCP) em uma rede simples foi executado o programa 
+\emph{iperf} como servidor no \emph{host} 'Host 0a'.
+A topologia dessa rede é composta por dois comutadores interligados.
+Cada comutador possui três computadores em cada subrede.
+O \emph{host} 'Host 1e' conecta-se como cliente. 
+
+Conformo pode ser notado na figura \ref{fig:iperf}, o tráfego 
+em bytes na arestas desses \emph{hosts} é superior ao demais \emph{hosts}.
+No momento em que foram lidos os contadores \emph{OpenFlow} e computados
+os pesos das arestas, obteve-se um tráfego de 55894 bytes através do caminho
+entre os dois \emph{hosts} citados.
+Os valores apresentados para os demais \emph{hosts} (41 bytes) são referentes
+ao tráfego ARP PING disseminado pelo módulo \emph{host\_tracker}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.8]{img/graph-iperf}
+    \caption{Tráfego TCP (em bytes) entre os hosts ’Host 1e’ e ’Host 0a’}
+    \label{fig:iperf}
+\end{figure}
+
+A variação na largura de banda e vazão da rede em função da sobrecarga de 
+pacotes geradas pelo \emph{host\_tracker} foi medido reduzindo o intervalo
+de sondagem de computadores e efetuando a medição com \emph{iperf}. 
+
