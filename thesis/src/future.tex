@@ -1,1 +1,18 @@
 \chapter{Trabalhos futuros}
+\label{chap:future-work}
+
+Como uma proposta futura, criar visualizador em tempo real do grafo que 
+interaja com o administrador da rede e mostre, de uma maneira simples, 
+toda a operação da rede.
+
+Assim como o controlador POX, o módulo proposto, ao ter seu processo terminado,
+não persiste as informações de estado da rede.
+Todo o grafo computado é perdido.
+Em função disso, um banco de dados em grafos, distribuído, poderia ser 
+utilizado para persistir o grafo, e as informações do estado da rede, de 
+maneira confiável e tolerante a falhas. 
+
+Algoritmos genéricos em grafos poderiam ser implementados como uma biblioteca
+para o módulo.
+Assim, estabelecida uma periodicidade, esses algoritmos poderiam ser computados
+no grafo e seus resultados publicados como extensão da API.
