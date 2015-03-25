@@ -1,4 +1,11 @@
-\chapter{Uma avaliação do OpenFlow através de um balanceador de carga}
+\chapter{Uma avaliação do OpenFlow}
+
+Esse capítulo avalia o protocolo OpenFlow através de um sistema de
+balanceamento de carga.
+Através dos recursos fornecidos pelo protocolo é possível maximizar a justiça
+no balanceamento de carga em um serviço HTTP.
+Detalhes sobre a implementação e os resultados desse experimentos são 
+apresentados nesse capítulo.
 
 \section{Proposta}
 
@@ -13,3 +20,70 @@ Os experimentos mostram que a abordagem em SDN permite um balancemanto de carga
 que reduz a carga dos servidores, aumenta a disponibilidade do serviço e 
 otimiza a instalação de fluxos no plano de dados.
 
+\section{Introdução}
+
+Os serviços modernos devem ser escaláveis para atender a milhões ou milhares
+de clientes.
+Para realizar essa tarefa, os serviços devem ser distribuídos em vários
+servidores. 
+Como consequência, para garantir a experiência do usuário/cliente, o volume
+de consultas em processamento por cada servidor deve ser compatível com 
+sua capacidade.
+
+Balancemento de carga é um requisito para sistemas distribuídos que se 
+escalam através de vários servidores.
+Conforme apresentado em \citep{hardeep2010openflow}, balanceamento de carga
+em Redes de computadores consiste em uma técnica usada para distribuir a 
+carga de trabalho entre vários enlaces ou computadores.
+Um balanceamento de carga deve ser transparente para o usuário final e 
+permitir que a aplicação seja escalável e flexível.
+
+As soluções atuais são muito caras. 
+Normalmente, dispositivos intermediários (\emph{middleboxes}) são utilizados,
+no entanto não são customizáveis \citep{richard2011openflow}.
+Balanceadores de carga são caros e, em muitos casos, tornam-se um ponto de 
+congestionamento da rede \citep{nikhil2010asterix}.
+Os dispositivos intermediários para balanceamento de carga não levam em conta
+a largura de banda ou a latência da rede.
+Contudo, alguns balanceadores não conseguem agrupar as requisições por 
+similaridade \citep{richard2011openflow}, nem avaliar diretamente a topologia
+da rede como em \citep{nikhil2009plugnserve}.
+
+
+Uma solução viável seria executar a tarefa de balanceamento de carga em 
+comutadores comerciais.
+O protocolo OpenFlow permite que, políticas de balanceamento de carga, sejam
+aplicadas a rede com baixo custo e que podem se adaptar à aplicação ou serviço.
+
+A solução proposta nessa avaliação, é aproveitar da flexibilidade do plano de
+controle separado do plano de dados.
+Como uma entidade logicamente centralizada, o controlador possui uma visão 
+topológica global da rede \citep{mckeown2008openflow}.
+Os experimentos mostram que a abordagem em SDN a perda de pacotes do serviço
+e seu atraso.
+A disponibilidade e a vazão da aplicação é maximizada.
+As políticas de balanceamento de carga propostos não distribuem igualmente as 
+requisições entre os servidores. 
+Ao invés disso, elas garantem que a carga de trabalho ao longo dos servidores
+da aplicação sejam mais justos e homogênea.
+
+Um sistema de balanceamento de carga corporativo utilizando OpenFlow é 
+apresentado em \citep{nikhil2009plugnserve}.
+Uma generalização do fluxo de pacotes através de \emph{wildcards} (fluxos
+curinga) foi feita em \citep{richard2011openflow}.
+Uma medição da latência e da largura de banda é descrita em 
+\citep{hardeep2010openflow}.
+Um modelo de protocolo para balanceamento de carga foi proposto por 
+\citep{charalampos2013modelling}.
+Esse trabalho apresenta uma proposta que verifica a carga de servidores de 
+aplicação, a fila de requisições (HTTP), a carga prevista e o número de 
+requisições respondidads.
+Esses parâmetros são a basa do balanceamento de carga. 
+Os fluxos de ida e de volta (fluxo reverso) são instalados nos comutadores a
+fim de reduzir o número de pacotes enviados ao controlador.
+
+
+Primeiramente apresentamos o projeto do sistema de balanceamento de carga.
+Em seguida, são discutidas as políticas de balanceamento de carga.
+Os experimentos e a avaliação dos resultados são apresentados.
+Ao final, são discutidos trabalhos futuros e uma conclusão.
