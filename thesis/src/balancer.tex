@@ -58,7 +58,7 @@ aplicadas a rede com baixo custo e que podem se adaptar à aplicação ou servi�
 A solução proposta nessa avaliação, é aproveitar da flexibilidade do plano de
 controle separado do plano de dados.
 Como uma entidade logicamente centralizada, o controlador possui uma visão 
-topológica global da rede \citep{mckeown2008openflow}.
+topológica global da rede \citep{nick2008openflow}.
 Os experimentos mostram que a abordagem em SDN a perda de pacotes do serviço
 e seu atraso.
 A disponibilidade e a vazão da aplicação é maximizada.
@@ -82,8 +82,38 @@ Esses parâmetros são a basa do balanceamento de carga.
 Os fluxos de ida e de volta (fluxo reverso) são instalados nos comutadores a
 fim de reduzir o número de pacotes enviados ao controlador.
 
-
 Primeiramente apresentamos o projeto do sistema de balanceamento de carga.
 Em seguida, são discutidas as políticas de balanceamento de carga.
 Os experimentos e a avaliação dos resultados são apresentados.
 Ao final, são discutidos trabalhos futuros e uma conclusão.
+
+\section{Trabalhos relacionados}
+
+Balancemento de carga é importante para serviços que exigem robustês ao dividir
+a carga de entrega de pacotes de modo agregado.
+O OpenFlow permite criar soluções de baixo custo.
+Considerar o balanceamento de carga uma primitiva em Redes de computadores é 
+apresentado em \cite{nikhil2010asterix}.
+
+Medições de latência e largura de banda foram feitos através do controlador
+NOX em \cite{hardeep2010openflow}.
+Abordagens utilizando regras genéricas (\emph{wildcards}) para evitar instalar
+separadamente fluxos é apresentado em \cite{richard2011openflow}. 
+Esses fluxos reduzem o volume de pacotes enviados para o controlador.
+
+Um balanceamento de carga dinâmico para \emph{cluster} de computadores em 
+ambientes virtualizados utilizando OpenFlow é mostrado em 
+\citep{chen2014design}.
+Um algoritmo de balanceamento de carga chamado \emph{Server-based} (SBLB) 
+é proposto. 
+Dinamicamente ele recupera dados da carga nos servidores para a tomada de 
+decisão do balanceamento de carga. 
+
+A proposta do presente trabalho é uma extensão do módulo de balanceamento
+de carga do controlador POX \citep{pox2015}.
+São reduzidos a perda de pacotes e o atraso na resposta através da instalação
+de fluxos reversos. 
+São aumentados a disponibilidade e a largura de banda da rede.
+Além disso, a distribuição de carga foi aplicada de maneira mais justa entre
+os servidores de aplicação.
+
