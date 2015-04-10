@@ -235,9 +235,36 @@ Logo, o grafo é atualizado removendo o vértice do \emph{switch}.
     (\emph{switch}) e a remoção do mesmo no grafo}
 \end{figure}
 
+Uma curva suavizada da interpolação dos pontos mostra que apesar dos valores
+de tempo mais elevados nos primeiros valores da amostra, ao final esses valores
+são praticamente constantes, em um valor de 30 a 35 segundos para cada 
+remoção.
+
 Após algum tempo o \emph{host\_tracker} identifica se os computadores 
 associados ao \emph{switch} removido estão ativos por outra rota. 
 Caso negativo, os computadores são removidos do grafo.
+Considerando o experimento da remoção dos comutadores (\emph{switches}),
+foi computado o tempo decorrido entre a remoção do \emph{switch} e a 
+remoção dos computadores na rede interna ao \emph{switch}. 
+
+\begin{figure}[h!]
+    \centering
+    \label{fig:hosts-behind-switch-time}
+    \includegraphics[width=\linewidth]{img/hosts-behind-switch-time}
+    \caption{Tempo decorrido entre a remoção dos comutadores 
+    (\emph{switches}) e a remoção dos computadores na rede interna ao 
+    \emph(switch)}
+\end{figure}
+
+A figura \ref{fig:hosts-behind-switch-time} mostra o resultado do experimento
+para o tempo de remoção de computadores em função da remoção do 
+\emph{switch}.
+Os resultados mostram uma média que varia entre 40 e 70 segundos para a 
+remoção dos computadores.
+No geral nota-se que computadores de uma mesma subrede foram removidos em 
+instantes próximos.
+Isso pode ser notado pelos pequenos grupos de pontos muito próximos na 
+figura.
 
 \section{Visualização em tempo real}
 
