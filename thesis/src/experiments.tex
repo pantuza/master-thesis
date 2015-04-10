@@ -1,4 +1,4 @@
-\chapter{Experimentos}
+\chapter{Experimentação e resultados}
 \label{cap:experiments}
 
 \section{Ambiente de simulação}
@@ -91,11 +91,26 @@ Essa subrede está conectada através de um \emph{switch} virtual
 \emph{OpenVSwitch} que é controlado pelo controlador da rede virtualizada.
 Assim, para cada POP, temos as decisões e atualizações da tabela de fluxos
 feita pelo controlador.
+Toda comunicação de saída das subredes utilizando \emph{mininet} passam pelo 
+\emph{OpenVSwitch} que funciona em modo \emph{bridge} (ponte) com a interface
+de rede virtual conforme pode ser visto na figura
+\ref{fig:mininet-vm-architecture}.
+
+
+\begin{figure}[h!]
+    \centering
+    \label{fig:mininet-vm-architecture}
+    \includegraphics{img/mininet-vm-architecture}
+    \caption{Arquitetura de cada máquina virtual}
+\end{figure}
+
+
 A tabela \ref{tbl:testbed-ipe-net} apresenta as subredes de cada unidade
 federativa (POP), qual servidor físico gerencia a máquina virtual referente
 ao POP e o número de clientes a ele associado.
 
 \input{tbl/testbed-ipe-net}
+
 
 \section{Detecção de entidades}
 
