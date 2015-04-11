@@ -181,6 +181,8 @@ Dessa forma as entidades da rede são identificadas e computadas no grafo.
 
 \section{Remoção de entidades}
 
+\subsection{Remoção de computadores}
+
 Diversos computadores foram desligados de maneira aleatória.
 O \emph{host\_tracker}, após um tempo fixo (\emph{timerInterval}) 
 verifica via ARPPing se os \emph{hosts} conhecidos estão ativos.
@@ -216,6 +218,8 @@ constante ao longo dos valores amostrados.
 Computadores cuja remoção ocorreram em um intervalo de tempo muito reduzido
 tiveram seu tempo de sondagem expirado muito próximos ao momento em que 
 o \emph{host\_tracker} executava sua sondagem. 
+
+\subsection{Remoção de comutadores}
 
 Para o caso de comutadores (\emph{switch}), foram desligados os 
 \emph{switches} e medido o tempo de atualização do grafo.
@@ -268,13 +272,23 @@ figura.
 
 \section{Visualização em tempo real}
 
-Em um intervalo predefinido, uma imagem representando o grafo atual da rede
-é gerada pelo módulo \emph{graph}.
+Uma imagem representando o grafo da rede é gerada pelo módulo \emph{graph}.
+Essa imagem consiste na representação da topologia da rede no instante 
+em que foi gerada. 
+Periodicamente uma nova imagem é criada.
 Um exemplo de grafo é apresentado na figura \ref{fig:full-graph}.
-Esse grafo representa uma rede simulada, dentro do ambiente do 
+Essa figura representa uma rede simulada, dentro do ambiente do 
 \emph{Mininet}, com 8 comutadores (\emph{switches}), cada um com 30 
-computadores (\emph{hosts}) conectados totalizando 248 entidades na rede.
+computadores (\emph{hosts}) conectados.
 
+Essa topologia totaliza 248 entidades na rede.
+Na figura, os vértices vermelhos representam os comutadores.
+Os vértices azuis, os computadores.
+Cada aresta é um enlace entre dois vértices.
+
+Atualizações na topologia como, remover e adicionar entidades na rede, foram
+executados.
+A visualização da rede atualiza junto com as alterações no grafo.
 
 \begin{figure}[h!]
     \centering
@@ -282,10 +296,41 @@ computadores (\emph{hosts}) conectados totalizando 248 entidades na rede.
     \caption{Grafo representando uma rede com 248 entidades}
     \label{fig:full-graph}
 \end{figure}
+\break
+Um experimento foi executado na rede Ipê para mostrar as alterações na 
+representação do grafo.
 
-Atualizações na topologia como, remover e adicionar entidades na rede, foram
-executados.
-A visualização da rede atualiza junto com as alterações no grafo.
+No instante inicial, o controlador é iniciado.
+Cada comutador estabelece uma conexão segura com o controlador.
+Nesse momento, todos os vértices comutadores são adicionados ao grafo.
+No segundo instante, para apenas uma subrede, representando uma unidade 
+federativa dentro da rede Ipê, foi simulado tráfego entre seus computadores.
+Para cada computador, uma sondagem de todos os outros computadores dessa
+subrede foi feita através do utilitário \emph{ping}.
+Assim, todas as máquinas dessa subrede foram identificadas pelo controlador
+e adicionadas ao grafo representando a rede.
+No terceiro instante, outra subrede foi escolhida e a mesma simulação de 
+tráfego foi executada.
+O mesmo procedimento foi repetido até que todas as 27 subredes da rede Ipê
+fossem computadas pelo grafo.
+
+A figura \ref{fig:full-graph-ipe} apresenta a execução desse experimento 
+cronologicamente.
+Cada número representa a quantidade de redes computadas pelo grafo no instante
+da execução do experimento. 
+Uma rede com 563 computadores e 27 comutadores (\emph{switches}) é mostrada
+na imagem Final da figura \ref{fig:full-graph-ipe} representando toda a rede
+Ipê.
+No total o grafo computou 590 vértices.
+
+\begin{figure}[htb!]
+    \centering
+    \label{fig:full-graph-ipe}
+    \includegraphics[scale=0.395]{img/full-graph-ipe}
+    \caption{Representação da rede Ipê à medida que os computadores de cada
+    subrede são identificados}
+\end{figure}
+
 
 \section{Identificação de tráfego}
 
