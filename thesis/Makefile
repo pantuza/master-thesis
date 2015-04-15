@@ -40,4 +40,4 @@ push:
 
 clean:
 	@rm -rvf *.aux *.pdf *.dvi *.log *.bbl *.blg *.lof *.lot *.out \
-		*.toc $(BIN)/*
+		*.toc $(BIN)/*.pdf
