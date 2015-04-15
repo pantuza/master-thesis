@@ -367,10 +367,17 @@ os dados do consumo de CPU.
 Coletou-se durante 30 segundos a utilização da CPU do processo para cada 
 execução do experimento.
 A cada iteração do experimento, 50 novos computadores foram adicionados a rede.
+Ou seja, o experimento começou com 50 computadores e terminou com 550.
 
 Conforme pode ser visto na figura \ref{fig:usr-cpu-growth}, considerando a 
 variação das medições feitas no experimento, o crescimento da curva de 
-utilização de CPU segue quase linearmente. 
+utilização de CPU mostra-se logarítmica.
+Apesar desse comportamento para o processo do controlador, nota-se que o 
+consumo, analisando todo o sistema, é linear.
+Esses resultados são apresentados na próxima seção. 
+O comportamento logarítmo mostra que, apesar do aumento do número de
+computadores na rede, o processo do controlador não gerou exaustão na CPU 
+alocada para o processo ao longo do experimento.
 À medida que a rede cresce, a utilização da CPU escalonada ao processo do 
 controlador, cresce na mesma proporção.
 
@@ -382,4 +389,23 @@ controlador, cresce na mesma proporção.
     medida que a rede cresce}
 \end{figure}
 
+Uma regressão linear foi computada em cima da amostra coletada da utilização 
+de CPU pelo processo do controlador.
+A figura \ref{fig:scatter-usr-cpu} apresenta os resultados dessa computação.
+É possível notar o crescimento da utilização de CPU à medida que a rede cresce.
+A dispersão dos valores no início da amostragem estão mais próximos de 0. 
+Ou seja, a rede com poucos computadores demandou baixo processamento. 
+Já nos instantes finais, há mais pontos amostrados próximos a 100\% da 
+utilização de CPU, o que mostra o estress do processador com uma rede maior.
 
+\begin{figure}[!htb]
+    \centering
+    \label{fig:scatter-usr-cpu}
+    \includegraphics[width=\linewidth]{img/scatter-usr-cpu}
+    \caption{Regressão linear da utilização de CPU do processo do controlador
+    em função do número de coletas de CPU realizadas à medida que a rede 
+    crescia}
+\end{figure}
+
+A reta representada pela regressão mostra o quão crescente é a utilização de 
+CPU pelo processo à medida que a rede cresce.
