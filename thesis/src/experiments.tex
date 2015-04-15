@@ -355,19 +355,23 @@ ao tráfego ARP PING disseminado pelo módulo \emph{host\_tracker}
     \label{fig:iperf}
 \end{figure}
 
+\section{Experimentos para avaliação do Controlador}
 
-\section{Consumo de processador no processo do controlador}
-
-O consumo da unidade central de processamento (CPU) no processo do controlador
-foi medido através da biblioteca utilitária \emph{sysstat} 
+O consumo da unidade central de processamento (CPU) no processo do controlador,
+no sistema operacional, assim como a utilização de memória e taxa de escrita 
+em disco foram medidos através da biblioteca utilitária \emph{sysstat} 
 \citep{sebastien2015sysstat}.
 
 Um experimento variando o número de computadores na rede permitiu coletar 
-os dados do consumo de CPU.
-Coletou-se durante 30 segundos a utilização da CPU do processo para cada 
-execução do experimento.
+as métricas citadas acima.
+Coletou-se durante 30 segundos a utilização da CPU do processo do controlador,
+do sistema operacional, a utilização de memória e a taxa de escrita em disco
+em cada interação da execuçao do experimento.
 A cada iteração do experimento, 50 novos computadores foram adicionados a rede.
 Ou seja, o experimento começou com 50 computadores e terminou com 550.
+
+\subsection{Consumo de processador no processo do controlador}
+
 
 Conforme pode ser visto na figura \ref{fig:usr-cpu-growth}, considerando a 
 variação das medições feitas no experimento, o crescimento da curva de 
@@ -409,3 +413,23 @@ utilização de CPU, o que mostra o estress do processador com uma rede maior.
 
 A reta representada pela regressão mostra o quão crescente é a utilização de 
 CPU pelo processo à medida que a rede cresce.
+
+
+\subsection{Consumo do controlador em relação ao sistema operacional}
+
+Para computar um rede com 550 computadores o controlador utilizou 10\% da 
+CPU do sistema operacional.
+Como pode ser visto na figura \ref{fig:sys-cpu-growth} o crescimento da 
+função de utilização de CPU do sistema é praticamente linear.
+À medida que a rede cresce, os processadores do computador do controlador 
+reduzem sua ociosidade.
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:sys-cpu-growth}
+    \includegraphics[width=\linewidth]{img/sys-cpu-growth}
+    \caption{Crescimento da função de utilização da CPU do sistema operacional
+    em função do crescimento de computadores na rede}
+\end{figure}
+
+
