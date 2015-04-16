@@ -441,10 +441,42 @@ O computador do controlador possui 8 \emph{Gigabytes} de memória RAN
 O consumo de memória pelo controlador durante o experimento variou de 2\% a 4\%
 da memória global do sistema operacional.
 
+O módulo \emph{Graph} adiciona vértices para cada computador e comutador 
+identificados na rede.
+Cada vértice é um objeto da classe \emph{Vertex}.
+Esse objeto contém a referência para objetos das classes \emph{Host} e 
+\emph{Switch} da entidade (computador ou comutador) que é representada pelo
+vértice.
+Assim, à medida que vértices são adicionados à rede, novos objetos são 
+criados.
+As arestas são objetos da classe \emph{Edge} e guardam referências para 
+os objetos dos vértices que compõem a aresta.
+
+Um objeto \emph{Vertex} ocupa na memória um espaço de endereçamento de 
+tamanho $x$. 
+Um objeto \emph{Edge} ocupa $y$.
+Considerando-se $n$ o número de vértices e $m$ o número de arestas do grafo,
+temos que a função que representa a utilização de memória (complexidade de 
+espaço) é $nx + my$.
+
 \begin{figure}[!htb]
     \centering
     \label{fig:memory-usage-growth}
     \includegraphics[width=\linewidth]{img/memory-usage-growth}
     \caption{Crescimento do percentual de utilização de memória pelo
     controlador à medida que o número de computadores na rede aumenta}
+\end{figure}
+
+A regressão linear computada mostra o crescimento na utilização de memória 
+pelo controlador à medida que mais computadores foram inseridos na rede ao 
+longo da amostragem.
+A figura \ref{fig:scatter-memory-usage} apresenta o resultado dessa 
+computação.
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:scatter-memory-usage}
+    \includegraphics[width=\linewidth]{img/scatter-memory-usage}
+    \caption{Regressão linear da amostra do consumo de memória do sistema
+    à medida que rede cresce}
 \end{figure}
