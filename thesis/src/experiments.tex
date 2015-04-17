@@ -452,12 +452,16 @@ criados.
 As arestas são objetos da classe \emph{Edge} e guardam referências para 
 os objetos dos vértices que compõem a aresta.
 
-Um objeto \emph{Vertex} ocupa na memória um espaço de endereçamento de 
-tamanho $x$. 
-Um objeto \emph{Edge} ocupa $y$.
+\break
+Em função disso, assumiu-se que: Um objeto \emph{Vertex} ocupa na memória um 
+espaço de endereçamento de tamanho $x$. 
+E um objeto \emph{Edge} ocupa $y$.
 Considerando-se $n$ o número de vértices e $m$ o número de arestas do grafo,
 temos que a função que representa a utilização de memória (complexidade de 
 espaço) é $nx + my$.
+Ou seja, o número de vértices no grafo multiplicado pelo tamanho de um 
+objeto de vértice na memória somado ao número de arestas do grafo 
+multiplicado pelo tamanho de um objeto de aresta na memória.
 
 \begin{figure}[!htb]
     \centering
@@ -467,6 +471,11 @@ espaço) é $nx + my$.
     controlador à medida que o número de computadores na rede aumenta}
 \end{figure}
 
+A função de complexidade de espaço $nx + my$ mostra que o crescimento de 
+utilização de memória do computador é dada em função do aumento de vértices
+e arestas na rede.
+No experimento executado, o número de vértices (coeficiente $n$) cresceu 
+linearmente.
 A regressão linear computada mostra o crescimento na utilização de memória 
 pelo controlador à medida que mais computadores foram inseridos na rede ao 
 longo da amostragem.
@@ -480,3 +489,5 @@ computação.
     \caption{Regressão linear da amostra do consumo de memória do sistema
     à medida que rede cresce}
 \end{figure}
+
+
