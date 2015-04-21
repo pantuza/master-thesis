@@ -520,3 +520,47 @@ computação.
 \end{figure}
 
 
+\subsection{Taxa de escrita em memória secundária}
+
+O módulo \emph{Graph} periodicamente salva uma imagem em memória secundária
+com a visualização do grafo.
+Durante o experimento de avaliação do controlador foi coletada a taxa de
+escrita em disco à medida que a rede crescia. 
+
+Em média, a taxa de escrita foi de 2 \emph{Megabytes} ao longo de cada 
+iteração do experimento.
+Para o experimento, uma imagem era gravada a cada 25 segundos.
+Em cada iteração, mais vértices haviam no grafo, logo, mais objetos a serem 
+mapeados na imagem. 
+
+\break
+
+Na figura \ref{fig:writing-rate-growth} é possível ver o crescimento na 
+taxa de escrita em memória secundária à medida que a rede crescia.
+Os pontos em vermelho representam os valores máximos de escrita coletados 
+em cada iteração do experimento.
+Uma interpolação passando por todos os pontos é dada pela curva de coloração
+verde.
+Uma suavização da curva de interpolação é traçada na cor azul mostrando 
+o crescimento da taxa de escrita à medida que novos vértices vão sendo criados
+durante as iterações do experimento.
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:writing-rate-growth}
+    \includegraphics[width=\linewidth]{img/writing-rate-growth}
+    \caption{Taxa de escrita em memória secundária à medida que a rede cresce}
+\end{figure}
+
+Uma regressão linear foi computada na amostra coletada das taxas de escrita
+em memória secundária ao longo do experimento.
+A figura \ref{fig:scatter-writing-rate} apresenta o resultado dessa regressão
+mostrando o crescimento e a correlação entre os valores amostrados.
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:scatter-writing-rate}
+    \includegraphics[width=\linewidth]{img/scatter-writing-rate}
+    \caption{Regressão linear dos valores coletados da taxa de escrita em 
+    memória secundária}
+\end{figure}
