@@ -422,7 +422,7 @@ CPU do sistema operacional.
 Como pode ser visto na figura \ref{fig:sys-cpu-growth} o crescimento da 
 função de utilização de CPU do sistema é praticamente linear.
 À medida que a rede cresce, os processadores do computador do controlador 
-reduzem sua ociosidade.
+aumentam sua carga.
 
 \begin{figure}[!htb]
     \centering
@@ -431,6 +431,34 @@ reduzem sua ociosidade.
     \caption{Crescimento da função de utilização da CPU do sistema operacional
     em função do crescimento de computadores na rede}
 \end{figure}
+
+O controlador POX é escrito na linguagem de programação \emph{Python}.
+Cada nova entidade (computador ou comutador) ao ser detectado pelo controlador
+recebe um identificador único.
+Essas entidades são armazenadas em um dicionário \emph{Python}.
+O dicionário é uma estrutura de dados primitiva da linguagem que implementa
+uma tabela \emph{hash} \citep{maurer1975hash}.
+Em função disso, para a computação do experimento temos que a complexidade 
+de tempo é na ordem de $O(n)$ conforme mostrado a seguir.
+
+As operações de adição, remoção e busca em tabelas \emph{hash} tem, no 
+caso médio, custo constante na ordem de $O(1)$.
+Assim, considerando-se $n$ o número de vértices, temos que para cada 
+vértice do grafo o custo para inserí-lo durante o experimento é $O(1)$.
+A complexidade de tempo do experimento, à medida que a rede cresce, é na 
+ordem de $O(n)$.
+
+Uma regressão linear foi computada da amostra coletada da carga de \emph{CPU}
+do sistema operacional durante o experimento. 
+A figura \ref{fig:scatter-sys-cpu} apresenta o resultado da regressão.
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:scatter-sys-cpu}
+    \includegraphics[width=\linewidth]{img/scatter-sys-cpu}
+    \caption{Regressão linear sobre a carga de CPU do sistema operacional}
+\end{figure}
+
 
 \subsection{Consumo de memória}
 
@@ -453,6 +481,14 @@ As arestas são objetos da classe \emph{Edge} e guardam referências para
 os objetos dos vértices que compõem a aresta.
 
 \break
+\begin{figure}[!htb]
+    \centering
+    \label{fig:memory-usage-growth}
+    \includegraphics[width=\linewidth]{img/memory-usage-growth}
+    \caption{Crescimento do percentual de utilização de memória pelo
+    controlador à medida que o número de computadores na rede aumenta}
+\end{figure}
+
 Em função disso, assumiu-se que: Um objeto \emph{Vertex} ocupa na memória um 
 espaço de endereçamento de tamanho $x$. 
 E um objeto \emph{Edge} ocupa $y$.
@@ -463,13 +499,6 @@ Ou seja, o número de vértices no grafo multiplicado pelo tamanho de um
 objeto de vértice na memória somado ao número de arestas do grafo 
 multiplicado pelo tamanho de um objeto de aresta na memória.
 
-\begin{figure}[!htb]
-    \centering
-    \label{fig:memory-usage-growth}
-    \includegraphics[width=\linewidth]{img/memory-usage-growth}
-    \caption{Crescimento do percentual de utilização de memória pelo
-    controlador à medida que o número de computadores na rede aumenta}
-\end{figure}
 
 A função de complexidade de espaço $nx + my$ mostra que o crescimento de 
 utilização de memória do computador é dada em função do aumento de vértices
