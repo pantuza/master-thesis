@@ -588,6 +588,8 @@ segundos.
 Cada par de cliente e servidor foi instanciado em máquinas virtuais 
 diferentes e físicamente separadas.
 
+\input{tbl/host_tracker-experiment}
+
 Foram executados 5 baterias de testes.
 Cada teste variou 3 parâmetro do módulo \emph{host\_tracker}.
 O parâmetro \emph{pingLim} representa a quantidade de pacotes de sondagem 
@@ -599,5 +601,34 @@ que uma nova tentativa de sondagem seja enviada.
 A tabela \ref{tbl:host_tracker-experiment} mostra de maneira resumida os 
 experimentos executados.
 
-\input{tbl/host_tracker-experiment}
+\begin{figure}[!htb]
+    \centering
+    \label{fig:host_tracker-bandwidth}
+    \includegraphics[width=\linewidth]{img/host_tracker-bandwidth}
+    \caption{Largura de banda mínima, média com intervalo de confiança e máxima
+    coletada da execução de cada teste do experimento}
+\end{figure}
+
+Para cada teste, durante 300 segundos, a cada 5 segundos a largura de banda
+foi coletada.
+A figura \ref{fig:host_tracker-bandwidth} mostra os valores mínimos, médio 
+com intervalo de confiança e máximo da largura de banda coletada nos testes.
+
+Como existiam 6 pares de clientes e servidores, a largura de banda é 
+dividida entre esses computadores.
+A média foi computada do somatório da largura de banda computada por cada 
+par de cliente e servidor.
+
+Conforme visto na tabela \ref{tbl:host_tracker-experiment} do Teste 0 ao 
+Teste 4 os parâmetros avaliados foram decrementados. 
+Em função disso, à medida que os testes foram executados nessa ordem, 
+o intervalo de sondagem, o tempo de expiração e o tempo de aguardo por 
+resposta reduziram. 
+Essa redução faz com que a cada iteração de testes mais pacotes de sondagem
+fossem disseminados na rede.
+A figura \ref{fig:host_tracker-bandwidth} mostra que, apesar do aumento de 
+pacotes de sondagem, a largura de banda da rede não sofreu impacto 
+considerável.
+O intervalo de confiança das médias amostradas mostra a confiabilidade dos 
+valores amostrados durante o experimento.
 
