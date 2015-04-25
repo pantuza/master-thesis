@@ -355,7 +355,7 @@ ao tráfego ARP PING disseminado pelo módulo \emph{host\_tracker}
     \label{fig:iperf}
 \end{figure}
 
-\section{Experimentos para avaliação do Controlador}
+\section{Avaliação do Controlador}
 
 O consumo da unidade central de processamento (CPU) no processo do controlador,
 no sistema operacional, assim como a utilização de memória e taxa de escrita 
@@ -564,3 +564,40 @@ mostrando o crescimento e a correlação entre os valores amostrados.
     \caption{Regressão linear dos valores coletados da taxa de escrita em 
     memória secundária}
 \end{figure}
+
+\break
+\section{Avaliação do módulo \emph{host\_tracker}}
+
+O módulo \emph{host\_tracker} periodicamente envia pacotes \emph{APPPings} de
+sondagem aos computadores da rede. 
+Esta seção avalia o impacto e comportamento desse módulo em relação a rede e 
+a solução.
+
+Primeiramente é avaliada a largura de banda da rede e o impacto da sondagem 
+de computadores nessa propriedade.
+Em seguida a proporção de pacotes manipulados pelo controlador é comparada
+em relação a quantidade de pacotes de sondagem.
+
+\subsection{Largura de banda}
+
+Para medir a largura de banda foi utilizada a ferramenta de linha comando
+\emph{iperf}.
+A rede Ipê foi simulada com o conjunto completo de computadores.
+6 pares de clientes e servidores \emph{iperf} foram executados durante 300 
+segundos.
+Cada par de cliente e servidor foi instanciado em máquinas virtuais 
+diferentes e físicamente separadas.
+
+Foram executados 5 baterias de testes.
+Cada teste variou 3 parâmetro do módulo \emph{host\_tracker}.
+O parâmetro \emph{pingLim} representa a quantidade de pacotes de sondagem 
+necessários para considerar que um computador está inativo.
+O parâmetro \emph{entryMove} é o tempo até que uma entrada do dicionário de 
+endereços MAC seja alterado.
+E o parâmetro \emph{arpReply} é o tempo a ser esperado pela resposta ARP até
+que uma nova tentativa de sondagem seja enviada.
+A tabela \ref{tbl:host_tracker-experiment} mostra de maneira resumida os 
+experimentos executados.
+
+\input{tbl/host_tracker-experiment}
+
