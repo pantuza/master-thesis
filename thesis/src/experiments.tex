@@ -578,7 +578,7 @@ de computadores nessa propriedade.
 Em seguida a proporção de pacotes manipulados pelo controlador é comparada
 em relação a quantidade de pacotes de sondagem.
 
-\subsection{Largura de banda}
+\subsection{Avaliação de largura de banda}
 
 Para medir a largura de banda foi utilizada a ferramenta de linha comando
 \emph{iperf}.
@@ -639,4 +639,46 @@ teste do experimento.
     \includegraphics[width=\linewidth]{img/host_tracker-bandwidth-growth}
     \caption{Curva de interpolação das médias das larguras de banda medidas 
     em teste do experimento}
+\end{figure}
+
+\subsection{Avaliação de volume de pacotes}
+
+Essa subseção avalia a quantidade de pacotes de sondagem disparadas pelo 
+módulo \emph{host\_tracker} à medida que mais computadores estão presentes
+na rede.
+São avaliados também, a quantidade de pacotes de entrada (\emph{PacketIn}) 
+que o controlador lida à medida de que a rede cresce.
+
+O experimento começou com 50 computadores na rede.
+Em cada iteração, novos 50 computadores foram adicionados à rede.
+Ao final, a rede Ipê simulada, possuía 550 computadores.
+Para computar o número de pacotes de sondagem foi adicionado um contador 
+na funçao que envia esses pacotes.
+A figura \ref{fig:npings} mostra o gráfico resultante dos valores computados
+dos número de pacotes de sondagem enviados à medida que mais computadores 
+estavam presentes na rede.
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:npings}
+    \includegraphics[width=\linewidth]{img/npings}
+    \caption{Crescimento do número de pacotes de sondagens encaminhados 
+        à medida que a rede crescia}
+\end{figure}
+
+Para esse experimento, foi calculada a diferença da quantidade de pacotes da
+iteração posterior com a iteração anterior.
+Assim, é possível saber quantos pacotes variaram a cada iteração do 
+experimento.
+Esse resultado é apresentado na figura \ref{fig:npings-stats}. 
+Nota-se que o baixo desvio padrão dessas diferenças mostra a confiabilidade 
+dos valores amostrados.
+Em média, 200 a 250 pacotes a mais foram disparados a cada iteração. 
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:npings-stats}
+    \includegraphics[width=\linewidth]{img/npings-stats}
+    \caption{Diferença da quantidade de pacotes de sondagem enviados entre 
+    cada par de iterações do experimento}
 \end{figure}
