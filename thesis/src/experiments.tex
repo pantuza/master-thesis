@@ -647,7 +647,7 @@ Essa subseção avalia a quantidade de pacotes de sondagem disparadas pelo
 módulo \emph{host\_tracker} à medida que mais computadores estão presentes
 na rede.
 São avaliados também, a quantidade de pacotes de entrada (\emph{PacketIn}) 
-que o controlador lida à medida de que a rede cresce.
+que o controlador lida à medida que a rede cresce.
 
 O experimento começou com 50 computadores na rede.
 Em cada iteração, novos 50 computadores foram adicionados à rede.
@@ -666,14 +666,24 @@ estavam presentes na rede.
         à medida que a rede crescia}
 \end{figure}
 
+O aumento do número de pacotes apresentou um crescimento linear.
+Ou seja, à medida que mais computadores entram na rede, o número de pacotes
+cresce na mesma proporção.
 Para esse experimento, foi calculada a diferença da quantidade de pacotes da
 iteração posterior com a iteração anterior.
 Assim, é possível saber quantos pacotes variaram a cada iteração do 
 experimento.
 Esse resultado é apresentado na figura \ref{fig:npings-stats}. 
-Nota-se que o baixo desvio padrão dessas diferenças mostra a confiabilidade 
-dos valores amostrados.
+
 Em média, 200 a 250 pacotes a mais foram disparados a cada iteração. 
+O experimento durou, para cada iteração, dois minutos. 
+Considerando esse intervalo de tempo e a média de pacotes enviados, pode-se 
+dizer que aproximadamente 5 pacotes foram enviados para cada computador 
+identificado pelo grafo.
+Levando em conta a média de 250 pacotes por iteração e que cada iteração 
+adiciona 50 novos computadores, temos que a razão desses valores mostra 
+que, para cada computador, durante dois minutos foram enviados 5 pacotes 
+de sondagem.
 
 \begin{figure}[!htb]
     \centering
@@ -681,4 +691,24 @@ Em média, 200 a 250 pacotes a mais foram disparados a cada iteração.
     \includegraphics[width=\linewidth]{img/npings-stats}
     \caption{Diferença da quantidade de pacotes de sondagem enviados entre 
     cada par de iterações do experimento}
+\end{figure}
+
+O número de pacotes de entrada foi contabilizado contando as chamadas do 
+evento \emph{PacketIn} no controlador.
+Foram medidos quantos pacotes de entrada o controlador manipulava a cada 
+iteração do experimento.
+
+A figura \ref{fig:packets-in} mostra o crescimento no número de pacotes ao 
+longo do experimento. 
+Assim como o número de pacotes de sondagem, o número de pacotes 
+(\emph{PacketIn}) cresce linearmente.
+Ou seja, à medida que mais computares estão na rede, o volume de pacotes de 
+entrada cresce proporcionalmente.
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:packets-in}
+    \includegraphics[width=\linewidth]{img/packets-in}
+    \caption{Número de pacotes de entrada (\emph{PacketIn}) manipuladas pelo
+    controlador em cada iteraçao do experimento}
 \end{figure}
