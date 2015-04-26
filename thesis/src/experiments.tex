@@ -712,3 +712,33 @@ entrada cresce proporcionalmente.
     \caption{Número de pacotes de entrada (\emph{PacketIn}) manipuladas pelo
     controlador em cada iteraçao do experimento}
 \end{figure}
+
+
+Para o experimento da contagem do número de pacotes de entrada no controlador
+foram computadas as diferenças entre os experimentos posteriores e os
+anteriores.
+Em média doze mil pacotes de entrada foram manipulados a mais em cada 
+iteração do experimento.
+
+A figura \ref{fig:packets-in-stats} mostra os resultados desse experimento.
+A linhas verticais vermelhas apresentam o intervalo de confiança dos valores
+amostrados das diferenças. 
+O erro padrão baixo prova o comportamento mostrado na figura 
+\ref{fig:packets-in} sobre o crescimento linear no número de pacotes de 
+entrada.
+
+Considerando o intervalo de tempo de dois minutos de execução do experimento e 
+que, a cada iteração cinquenta novos computadores foram adicionados, 
+tem-se que a razão da média pelo número de computadores por iteração é igual 
+a 250 pacotes. 
+O controlador lida com pacotes que nem sempre são originados de computadores.
+Assim, esse valor calculado é apenas uma aproximação do número de pacotes 
+que o controlador manipula em função do número de computadores.
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:packets-in-stats}
+    \includegraphics[width=\linewidth]{img/packets-in-stats}
+    \caption{Diferença da quantidade de pacotes de entrada (\emph{PacketIn})
+    manipuladas no controlador entre cada par de iterações do experimento}
+\end{figure}
