@@ -815,6 +815,22 @@ Ou seja, entre servidor físicos diferentes, fazendo com que os pacotes
 passem por toda a infraestrutura física do ambiente de simulação.
 Para cada caso, foram medidos a latência com e sem o controlador em grafos.
 
+Com a rede Ipê simulada completa foram executados, simultaneamente, 
+6 pares de computadores enviando pacotes de ICMP PING. 
+As medições da latência foram coletadas a cada segundo da execução do 
+experimento. 
+A latência em cada instante é a média de todos os 6 pares de computadores
+a cada iteração de coleta.
+
+A figura \ref{fig:local-latency} mostra a latência medida ao longo do 
+experimento para as redes locais.
+É possível notar que a latência da solução com controlador, no início do 
+experimento, está em torno de 4 milisegundos.
+Esse valor ocorre em função do encaminhamento, pelo comutador, do primeiro 
+pacote para o controlador. 
+Os valores subsequentes são próximos ao valor da latência medido na solução 
+sem controlador.
+
 \begin{figure}[!htb]
     \centering
     \label{fig:local-latency}
@@ -822,6 +838,26 @@ Para cada caso, foram medidos a latência com e sem o controlador em grafos.
     \caption{Latência média das redes locais com e sem o controlador com a 
     solução em grafos}
 \end{figure}
+
+Uma avaliação dos dados coletados da largura de banda no ambiente das 
+redes locais foi realizada.
+Os valores de latência mínima, máxima e média com intervalo de confiança 
+são apresentados na figura \ref{fig:local-latency-stats}.
+No geral, as latências da rede com a solução do controlador em grafos e 
+sem controlador se mantiveram parecidas. 
+Em média, a latência no experimento das redes locais foi de 
+$0,13$ milisegundos.
+É possível notar através do intervalo de confiança que a latência na rede 
+com o controlador se manteve mais constante ao longo do experimento.
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:local-latency-stats}
+    \includegraphics[width=\linewidth]{img/local-latency-stats}
+    \caption{Latência mínima, máxima e média das redes locais}
+\end{figure}
+
+
 
 \subsection{Avaliação de largura de banda}
 
