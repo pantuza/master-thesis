@@ -759,11 +759,38 @@ facilita a visualização da diferença entre o número de pacotes de entrada
 Com a rede Ipê simulada completa foram enviados, no máximo, quase $3$ mil 
 pacotes de sondagem e quase $150.000$ pacotes de entrada manipulados pelo 
 controlador.
-
+\break
 \begin{figure}[!htb]
     \centering
     \label{fig:npings-x-packets-in}
     \includegraphics[width=\linewidth]{img/npings-x-packets-in}
     \caption{Comparação do número de pacotes de sondagem e de entrada 
     manipulados pelo controlador}
+\end{figure}
+
+O total de pacotes manipulados pelo controlador é representado pela soma 
+do número total de pacotes de sondagem com o número total de pacotes de 
+entrada (\emph{PacketIn}).
+Em função disso a figura \ref{fig:npings-x-packets-in-stacked} apresenta 
+as proporções em percentuais dos dois tipos de pacotes.
+
+Nas abscissas tem-se o número de computadores na rede a cada iteração do 
+experimento.
+Nas ordenadas tem-se os percentuais do número total de pacotes manipulados 
+pelo controlador.
+É possível notar que os pacotes de sondagem representam um percentual muito 
+baixo em relação ao total de pacotes.
+
+Como apresentado na subseção de avaliação da largura de banda em função do 
+módulo \emph{host\_tracker}, os pacotes de sondagem não causam muito impacto 
+no funcionamento da rede e não representam um grande volume de pacotes.
+Para o presente experimento esses pacotes, em seu pior caso, representaram
+$2\%$ do total de pacotes manipulados pelo controlador.
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:npings-x-packets-in-stacked}
+    \includegraphics[width=\linewidth]{img/npings-x-packets-in-stacked}
+    \caption{Valores percentuais do número de pacotes de sondagem e de 
+        entrada manipulados pelo controlador}
 \end{figure}
