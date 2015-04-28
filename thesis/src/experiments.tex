@@ -794,3 +794,43 @@ $2\%$ do total de pacotes manipulados pelo controlador.
     \caption{Valores percentuais do número de pacotes de sondagem e de 
         entrada manipulados pelo controlador}
 \end{figure}
+
+\section{Avaliação da rede}
+
+Nesta seção são avaliados latência, largura de banda e \emph{jitter} da 
+rede Ipê simulada.
+Para cada cenário avaliado foram feitas comparações com e sem a presença 
+do controlador com a solução em grafos. 
+É avaliado o impacto da solução em grafos na rede.
+
+\subsection{Avaliação de latência}
+
+Em função do ambiente virtualizado, o experimento de latência foi dividido em 
+duas partes.
+A primeira avaliou a latência das redes locais.
+Ou seja, a latência entre computadores de uma mesma subrede dentro de uma 
+máquina virtual.
+A segunda parte, avaliou a latência da rede global.
+Ou seja, entre servidor físicos diferentes, fazendo com que os pacotes 
+passem por toda a infraestrutura física do ambiente de simulação.
+Para cada caso, foram medidos a latência com e sem o controlador em grafos.
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:local-latency}
+    \includegraphics[width=\linewidth]{img/local-latency}
+    \caption{Latência média das redes locais com e sem o controlador com a 
+    solução em grafos}
+\end{figure}
+
+\subsection{Avaliação de largura de banda}
+
+
+\subsection{Avaliação de \emph{jitter}}
+
+
+\subsection{Avaliação de percentual de erros}
+
+
+
+
