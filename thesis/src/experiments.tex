@@ -641,7 +641,7 @@ teste do experimento.
     em teste do experimento}
 \end{figure}
 
-\subsection{Avaliação de volume de pacotes}
+\subsection{Avaliação do número de pacotes}
 
 Essa subseção avalia a quantidade de pacotes de sondagem disparadas pelo 
 módulo \emph{host\_tracker} à medida que mais computadores estão presentes
@@ -741,4 +741,29 @@ que o controlador manipula em função do número de computadores.
     \includegraphics[width=\linewidth]{img/packets-in-stats}
     \caption{Diferença da quantidade de pacotes de entrada (\emph{PacketIn})
     manipuladas no controlador entre cada par de iterações do experimento}
+\end{figure}
+
+\subsection{Comparação dos números de pacotes}
+
+Essa subseção compara o número de pacotes de sondagem com o número de pacotes
+de entrada que o controlador lida.
+A comparação é feita em quantidade e em percentual.
+A seguir serão apresentados os resultados dessa avaliação.
+
+A comparação do número de pacotes é mostrada na figura
+\ref{fig:npings-x-packets-in}.
+Os valores nas coordenadas $y$ (ordenadas) estão em escala exponencial, o que 
+facilita a visualização da diferença entre o número de pacotes de entrada
+(\emph{PacketIn}) e pacotes de sondagem.
+
+Com a rede Ipê simulada completa foram enviados, no máximo, quase $3$ mil 
+pacotes de sondagem e quase $150.000$ pacotes de entrada manipulados pelo 
+controlador.
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:npings-x-packets-in}
+    \includegraphics[width=\linewidth]{img/npings-x-packets-in}
+    \caption{Comparação do número de pacotes de sondagem e de entrada 
+    manipulados pelo controlador}
 \end{figure}
