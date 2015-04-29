@@ -849,12 +849,37 @@ Em média, a latência no experimento das redes locais foi de
 $0,13$ milisegundos.
 É possível notar através do intervalo de confiança que a latência na rede 
 com o controlador se manteve mais constante ao longo do experimento.
+Ou seja, mais confiável, com baixa variancia.
 
 \begin{figure}[!htb]
     \centering
     \label{fig:local-latency-stats}
     \includegraphics[width=\linewidth]{img/local-latency-stats}
     \caption{Latência mínima, máxima e média das redes locais}
+\end{figure}
+
+O mesmo perfil de experimento foi executado para o cenário da rede global.
+6 pares de computadores executaram PINGs coletando os valores da latência
+a cada segundo.
+Para esse experimento, foram separados os pares em computadores diferentes 
+para garantir que cada pacote trafegasse por toda infraestrutura física da 
+rede simulada. 
+
+A figura \ref{fig:ipe-latency} apresenta os resultados dessa avaliação.
+Como pode ser visto, a latência inicial coletada na rede com a solução do 
+controlador com o módulo grafo chegou a 400 milisegundos.
+Esse valor ocorre em função do primeiro pacotes que é encaminhado para o 
+controlador.
+No geral, a latência da rede sem controlador sofreu uma variação mais alta.
+Em contraponto a curva da latência com o controlador demonstra-se mais 
+constante.
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:ipe-latency}
+    \includegraphics[width=\linewidth]{img/ipe-latency}
+    \caption{Latência da rede Ipê com e sem o controlador com a solução em 
+    grafos}
 \end{figure}
 
 
