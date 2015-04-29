@@ -911,6 +911,32 @@ controlador se mostrou mais estável do que sem.
 
 \subsection{Avaliação de largura de banda}
 
+A avaliação da largura de banda foi feita utilizando 4 pares de computadores
+em subredes e serivodores da rede física diferentes.
+Para cada par de computadores, foi utilizada a ferramenta de linha comando
+\emph{iperf}.
+O experimento consistiu em medir, com intervalos de 5 segundos, durante 
+5 minutos, a largura de banda através de conexões TCP.
+A largura de banda medida é representada pela média das quatro medições a
+cada iteração de coleta durante o experimento.
+
+A largura de banda da rede sem controlador medida durante o experimento foi, 
+em média, $18$ \emph{Megabytes}.
+Na figura \ref{fig:bandwidth-no-ctrl} são apresentados os resultados do 
+experimento. 
+Conforme pode ser visto nesta figura, os pontos representam os valores 
+médios amostrados em todos os pares de computadores que estavam coletando 
+a largura de banda.
+Uma interpolação suavizada e uma passando por todos os pontos médios mostram
+a largura de banda média computada nesse experimento.
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:bandwidth-no-ctrl}
+    \includegraphics[width=\linewidth]{img/bandwidth-no-ctrl}
+    \caption{Largura de banda média da rede sem controlador}
+\end{figure}
+
 
 \subsection{Avaliação de \emph{jitter}}
 
