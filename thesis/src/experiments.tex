@@ -822,6 +822,8 @@ experimento.
 A latência em cada instante é a média de todos os 6 pares de computadores
 a cada iteração de coleta.
 
+\subsubsection{Latência da rede local}
+
 A figura \ref{fig:local-latency} mostra a latência medida ao longo do 
 experimento para as redes locais.
 É possível notar que a latência da solução com controlador, no início do 
@@ -858,6 +860,9 @@ Ou seja, mais confiável, com baixa variancia.
     \caption{Latência mínima, máxima e média das redes locais}
 \end{figure}
 
+
+\subsubsection{Latência da rede global Ipê}
+
 O mesmo perfil de experimento foi executado para o cenário da rede global.
 6 pares de computadores executaram PINGs coletando os valores da latência
 a cada segundo.
@@ -882,7 +887,27 @@ constante.
     grafos}
 \end{figure}
 
+Em média, a latência da rede Ipê simulada foi $13$ milisegundos.
+Na rede global, o experimento sem controlador teve oscilações bem altas que
+chegaram a valores de $100$ milisegundos de latência.
+É possível notar novamente a estabilidade da rede com controlador observando
+o desvio padrão mais baixo. 
+A figura \ref{fig:ipe-latency-stats} apresenta os resultados da avaliação dos
+valores mínimos, máximos e médios com desvio padrão da rede Ipê simulada.
 
+Através dos experimento de latência realizados tanto nas redes locais quanto 
+na rede Ipê global, pode-se notar que o controlador com a solução do módulo 
+em grafos não gerou grande impacto na rede.
+Com exceção dos primeiros pacotes, com uma latência alta, a rede com o 
+controlador se mostrou mais estável do que sem. 
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:ipe-latency-stats}
+    \includegraphics[width=\linewidth]{img/ipe-latency-stats}
+    \caption{Avaliação da latência da rede Ipê considerando os valores mínimos,
+    máximos e médios analisados}
+\end{figure}
 
 \subsection{Avaliação de largura de banda}
 
