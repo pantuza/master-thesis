@@ -912,7 +912,7 @@ controlador se mostrou mais estável do que sem.
 \subsection{Avaliação de largura de banda}
 
 A avaliação da largura de banda foi feita utilizando 4 pares de computadores
-em subredes e serivodores da rede física diferentes.
+em subredes e servidores da rede física diferentes.
 Para cada par de computadores, foi utilizada a ferramenta de linha comando
 \emph{iperf}.
 O experimento consistiu em medir, com intervalos de 5 segundos, durante 
@@ -927,6 +927,9 @@ experimento.
 Conforme pode ser visto nesta figura, os pontos representam os valores 
 médios amostrados em todos os pares de computadores que estavam coletando 
 a largura de banda.
+
+\break
+
 Uma interpolação suavizada e uma passando por todos os pontos médios mostram
 a largura de banda média computada nesse experimento.
 
@@ -934,8 +937,63 @@ a largura de banda média computada nesse experimento.
     \centering
     \label{fig:bandwidth-no-ctrl}
     \includegraphics[width=\linewidth]{img/bandwidth-no-ctrl}
-    \caption{Largura de banda média da rede sem controlador}
+    \caption{Largura de banda média em \emph{Megabytes} da rede sem 
+    controlador ao longo de 60 coletas}
 \end{figure}
+
+O mesmo experimento foi executado para a rede com o controlador utilizando 
+a solução do módulo em grafos.
+Para esse cenário, notou-se uma redução na largura de banda em função da 
+utilização do \emph{OpenFlow} e o módulo em grafos.
+
+A figura \ref{fig:bandwidth-ctrl} apresenta os resultados da largura de banda
+média para o experimento com a solução em grafos.
+A cada 5 segundos, uma nova conexão foi estabelecida entre cada par de 
+computadores.
+
+O primeiro pacote de cada conexão gerou um pacote de entrada \emph{PacketIn}.
+Ao ser tratado pelo controlador, esses pacotes reduzem a fluidez da rede, pois
+ocupam a CPU do controlador.
+Pacotes na rede sem controlador não precisam ser processados por um computador
+externo, logo não consomem da mesma forma a largura de banda.
+
+\break
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:bandwidth-ctrl}
+    \includegraphics[width=\linewidth]{img/bandwidth-ctrl}
+    \caption{Largura de banda média em \emph{Megabytes} da rede com o 
+        controlador com a solução em grafos ao longo de 60 coletas}
+\end{figure}
+
+Como o tempo para processar os pacotes de entrada é sempre o mesmo, pode-se 
+inferir que a redução da largura de banda se manteria a mesma em qualquer 
+cenário.
+Ou seja, em uma rede \emph{Gigabit} a diferença entre a largura de banda 
+média com e sem controlador seria a mesma.
+
+A figura \ref{fig:bandwidth-diff} apresenta a diferença entre as larguras de
+banda média nos experimentos sem controlador e com o  módulo em grafos 
+utilizando \emph{OpenFlow}.
+A curva em vermelho representa a largura de banda média da rede sem 
+controlador.
+A curva em verde, a largura de banda da rede com controlador utilizando a 
+solução em grafos.
+As curvas representam a interpolação suavizada dos pontos médios computados
+durante as 60 coletas realizadas durante o experimento.
+
+Uma redução média de $2,5$ \emph{Megabytes} foi registrada durante o 
+experimento da a rede sem controlador para a rede com controlador.
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:bandwidth-diff}
+    \includegraphics[width=\linewidth]{img/bandwidth-diff}
+    \caption{Diferença da largura de banda dos experimento com e sem
+    controlador}
+\end{figure}
+
 
 
 \subsection{Avaliação de \emph{jitter}}
