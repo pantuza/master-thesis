@@ -998,6 +998,30 @@ experimento da a rede sem controlador para a rede com controlador.
 
 \subsection{Avaliação de \emph{jitter}}
 
+O experimento para medir o \emph{Jitter} foi feito utilizando a ferramenta 
+de linha de comandos \emph{iperf}.
+6 pares de computadores executaram a ferramenta transmitindo pacotes 
+UDP durante 5 minutos.
+A cada 5 segundos foram coletados os valores do \emph{jitter} da rede.
+
+O experimento descrito acima foi executado na rede sem controlador e na rede
+com controlador utilizando a solução do módulo em grafos.
+A rede Ipê simulada foi executada por completo.
+Ou seja, 27 comutadores e 550 computadores sendo simulados durante o
+experimento.
+
+A figura \ref{fig:jitter-no-ctrl} apresenta o resultado da coleta de amostras 
+com o valor médio do \emph{jitter} em cada instante de execução.
+É possível notar que a variação média na transmissão de pacotes está entre
+1 e 2 milisegundos.
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:jitter-no-ctrl}
+    \includegraphics[width=\linewidth]{img/jitter-no-ctrl}
+    \caption{Valor médio do \emph{jitter} da rede sem controlador coletada com
+    intervalo de 5 segundos durante 5 minutos em 6 pares de computadores}
+\end{figure}
 
 \subsection{Avaliação de percentual de erros}
 
