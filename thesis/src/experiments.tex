@@ -1023,6 +1023,39 @@ com o valor médio do \emph{jitter} em cada instante de execução.
     intervalo de 5 segundos durante 5 minutos em 6 pares de computadores}
 \end{figure}
 
+O mesmo experimento foi executado para a rede com controlador utilizando a 
+solução do módulo em grafos.
+Para esse cenário é possível notar o valor médio do \emph{jitter} bem alto
+no início de cada experimento.
+Esse valor representa os primeiros pacotes que necessitam ser avaliados pelo
+controlador. 
+Logo, a variação da latência (\emph{jitter}) é mais alta para esses casos.
+
+É possível notar que, em média, o \emph{jitter} está entre 1 e 2 milisegundos.
+Observando a sequência das amostras e o valor do coletado em cada período é 
+possível notar que a variação média é baixa, o que demonstra estabilidade na
+rede do experimento.
+
+A figura \ref{fig:jitter-ctrl} mostra os resultados da coleta das amostras 
+de \emph{jitter} médio para a rede com controlador utilizando a solução com 
+módulo em grafos.
+Os pontos em vermelho representam o valor médio coletado dos 6 pares de 
+computadores para o instante do experimento.
+A curva em cor verde representa a interpolação dos pontos médios.
+A curva em azul é a interpolação suavizada que apresenta os resultados do 
+experimento. 
+
+\break
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:jitter-ctrl}
+    \includegraphics[width=\linewidth]{img/jitter-ctrl}
+    \caption{Valor médio do \emph{jitter} da rede com controlador utilizando a
+    solução com módulo em grafos coletada com intervalo de 5 segundos durante 5
+    minutos em 6 pares de computadores}
+\end{figure}
+
 \subsection{Avaliação de percentual de erros}
 
 
