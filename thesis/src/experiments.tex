@@ -1056,6 +1056,31 @@ experimento.
     minutos em 6 pares de computadores}
 \end{figure}
 
+Comparando-se a variação da latência da rede sem controlador e com controlador,
+nota-se que elas não se diferem muito.
+A rede com controlador possui um \emph{jitter} alto no início do experimento
+em função dos primeiros pacotes, que geram \emph{PacketIn}.
+A rede sem controlador teve uma variação maior, observando-se as iterações 
+do experimento.
+Apesar das diferenças, o \emph{jitter} médio, nos dois cenários de teste, 
+foi aproximadamente o mesmo; entre 1 e 2 milisegundos.
+
+A figura \ref{fig:jitter-stats} apresenta um gráfico comparando a variação da 
+latência \emph{jitter} nos dois cenários de experimento.
+A curva em vermelho representa os valores coletados para a rede com controlador
+utilizando a solução em grafos.
+A curva em verde representa os valores coletados para a rede sem controlador.
+
+\break
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:jitter-stats}
+    \includegraphics[width=\linewidth]{img/jitter-stats}
+    \caption{Comparação do \emph{jitter} das redes com e sem controlador}
+\end{figure}
+
+
 \subsection{Avaliação de percentual de erros}
 
 
