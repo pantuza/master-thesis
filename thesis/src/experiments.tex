@@ -1083,6 +1083,40 @@ A curva em verde representa os valores coletados para a rede sem controlador.
 
 \subsection{Avaliação de percentual de erros}
 
+O experimento foi feito no ambiente simulado da rede Ipê. 
+6 pares de computadores, utilizando o utilitário de linha de comandos 
+\emph{iperf} com o protocolo UDP, coletaram o número de perdas de pacotes 
+durante cada iteração do experimento.
+Cada iteração representa um intervalo de tempo de 5 segundos.
+Os experimentos foram executados durante 300 segundos (5 minutos) em dois
+cenários: um com a rede sem controlador e a outro com a rede com controlador 
+utilizando a solução em grafos.
 
+A figura \ref{fig:error-stats} Apresenta os resultados da computação dos 
+valores coletados nos experimentos.
+As colunas em vermelho representam a rede com controlador.
+As em verde a rede sem controlador.
+Cada iteração do experimento transmitiu, aproximadamente, 1000 pacotes.
+O eixo $y$ do lado esquerdo representa o número de pacotes em escala 
+exponencial.
+O eixo $y$ do lado direito representa o percentual de perda de pacotes 
+em relação ao total.
 
+Em média, o número de pacotes perdidos para a rede sem controlador foi de
+1 pacote de 1000. 
+Para a rede com controlador foram 2 pacotes.
+Em ambos os casos, considera-se que perda de pacotes tem baixo impacto.
+Em percentuais, a rede com controlador obteve uma perda de $0.5 \%$.
+A rede sem controlador, $0.1 \%$. 
+Nos dois casos, menos de $1 \%$ de perda do total de pacotes transmitidos.
+
+\begin{figure}[!htb]
+    \centering
+    \label{fig:error-stats}
+    \includegraphics[width=\linewidth]{img/error-stats}
+    \caption{Número de perdas de pacotes, total de pacotes transmitidos por
+    iteração e percentual de perda coletados em dois experimentos. Um com a
+    rede sem controlador e outro com a rede com controlador utilizando a 
+    solução em grafos}
+\end{figure}
 
