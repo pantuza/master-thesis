@@ -117,3 +117,103 @@ São aumentados a disponibilidade e a largura de banda da rede.
 Além disso, a distribuição de carga foi aplicada de maneira mais justa entre
 os servidores de aplicação.
 
+
+\section{Projeto de implementação}
+
+A solução resume-se em um balanceador de carga TCP.
+A implementação não lida com DNS (\emph{domain name service}).
+O balanceador de carga toma decisões avaliando a carga dos servidores
+(\emph{load avarage}), o número de pendências na fila de requisições do 
+servidor HTTP e o número requisições já respondidas.
+Os dados monitorados pelas políticas de balanceamento de carga foram coletados
+através de um comutador \emph{OpenFlow} e através do sistema de arquivos 
+distribuído NFS (\emph{Network File Syste}).
+
+O controlador POX \citep{pox2015} foi adotado como base da solução proposta.
+A arquitetura baseada em eventos permite que módulos atuem como produtores
+e consumidores de eventos.
+O módulo \emph{core} encapsula o controle de eventos.
+Novos eventos podem ser registrados por outros módulos.
+
+\subsection{Balanceador de carga}
+
+O módulo \emph{load\_balancer} foi implementado como uma classe.
+Esse módulo se registra no \emph{core} no momento em que o controlador é 
+executado.
+Para inicialiar o módulo é necessário informar uma lista de endereços IPs
+que representam a lista de servidores a serem balanceados.
+Um IP lógico deve ser informado ao módulo ao qual todas as requisições durante
+os experimentos serão direcionadas.
+Cada requisição direcionada ao IP lógico é direcionada a um dos servidores 
+cuja carga, no momento, seja a menor.
+
+\subsection{Fluxo de trabalho do controlador}
+
+Novos pacotes na rede geram pacotes de entrada \emph{PacketIn} no controlador.
+O balancedor de carga avalia o novo fluxo e instala uma regra no 
+comutador baseado em uma política de balanceamento de carga.
+Os demais pacotes similares a esse fluxo são encaminhados para o mesmo 
+servidor.
+Após algum tempo, os fluxos expiram no comutador, permitindo maior 
+dinamismo na rede.
+
+A decisão de qual servidor escolher para encaminhar os pacotes depende 
+diretamente da política de balancemanto de carga. 
+Através do sistema de arquivos remoto a carga dos servidores foi monitorada.
+A tabela \ref{tab:monitor} apresenta os valores coletados de cada servidor.
+
+\input{tbl/monitor}
+
+O fluxo da execução das requisições feitas ao serviço é mostrado na figura
+\ref{fig:balancer-workflow}
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=\linewidth]{img/balancer-workflow}
+    \caption{Fluxo de execução das requisições ao serviço de balanceamento 
+    de carga}
+    \label{fig:balancer-workflow}
+\end{figure}
+
+\textcolor{red}{Trocar essa imagem dos workflow de balanceamento de carga. 
+Fazer no formato de diagrama de sequência.}
+
+\subsection{}
+
+Cinco políticas de balanceamento de carga foram utilizadas pelo módulo para 
+distribuir a carga de trabalho entre os servidores.
+
+\begin{enumerate}
+    \item Round-robin
+    \item Aleatória
+    \item Carga
+    \item Fila 
+    \item Mistura
+\end{enumerate}
+
+\emph{Round Robin} é uma política que divide de maneira idêntica o volume de
+requisições entre os servidores.
+
+A política de balanceamento Aleatória escolhe a cada nova requisição, 
+aleatoriamente, o servidor a responder pela requisição.
+
+A política de balanceamento Carga é baseada em avaliar a carga de CPU 
+de cada servidor e encaminhar a requisição para o servidor com a menor 
+carga do momento.
+    
+Fila é uma política de balanceamento que avalia a quantidade de requisições
+pendentes na fila de requisições do servidor HTTP.
+    
+A política de balanceamento Mistura combina as políticas Carga e Fila 
+e escolhe o servidor com a menor valor da combinação.
+
+\subsection{Servidor HTTP}
+
+O servidor responsável por responder as requisições HTTP foi o 
+\emph{Tornado} \citep{tornado}.
+O \emph{Tornado} é um arcabouço e uma biblioteca HTTP assíncrona.
+Nos experimentos, o \emph{Tornado} escreve, periodicamente, em um arquivo 
+no sistema de arquivos os dados da sua fila de requisições pendentes,
+a carga do servidor e o número de requsições já respondidas.
+O balanceador de carga lê remotamente esses dados para compor os 
+dados avaliados pelas políticas de balancemento de carga.
