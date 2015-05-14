@@ -217,3 +217,17 @@ no sistema de arquivos os dados da sua fila de requisições pendentes,
 a carga do servidor e o número de requsições já respondidas.
 O balanceador de carga lê remotamente esses dados para compor os 
 dados avaliados pelas políticas de balancemento de carga.
+
+\subsection{Ambiente de simulação}
+
+O ambiente de simulação é composto por 6 dispositivos.
+Um controlador \emph{OpenFlow}, um \emph{switch OpenFlow}, um 
+cliente e quatro servidores.
+Cada computador está conectado diretamente a uma porta do \emph{switch}.
+
+Os servidores são heterogêneos.
+Cada computador executa um sistema operacional \emph{Linux} diferente.
+Eles possuem arquiteturas, adaptadores de rede, mémórias primárias
+e discos rígidos diferentes.
+Essa característica é importante para avaliar o quão justo o balanceador 
+de carga é um ambiente heterogêneo.
