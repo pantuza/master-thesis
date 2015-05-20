@@ -231,3 +231,35 @@ Eles possuem arquiteturas, adaptadores de rede, mémórias primárias
 e discos rígidos diferentes.
 Essa característica é importante para avaliar o quão justo o balanceador 
 de carga é um ambiente heterogêneo.
+
+\section{Experimentos}
+
+Essa seção apresenta os experimentos executados com requisições TCP e HTTP
+dentro da rede.
+Foram medidos largura de banda e latência.
+Foram avaliados também, o tempo de resposta e a disponibilidade do serviço.
+
+\subsection{Ambiente e testes}
+
+Todas as requisições dos testes foram direcionadas ao IP lógico do 
+serviço.
+No cenário dos experimentos o 4 servidores possuíam IP do seguinte faixa de 
+endereços: 192.168.1.100 até 192.168.1.103.
+O endereço IP do serviço é 192.168.1.111.
+Toda requisição para esse endereço IP deve ser balanceado.
+O computador cliente possui o endereço IP 192.168.1.50.
+
+O experimento TCP foi feito através do utilitário de linha de comandos 
+\emph{iperf} através do computador cliente.
+Cada conexão com 30 segundos de duração com medições feitas a cada 5 segundos.
+
+O experimento com requisições HTTP possui duas abordagens.
+Uma sequencial e outra paralela.
+A abordagem sequencial utiliza a feramenta de linha de comandos \emph{curl}.
+A em paralelo utiliza o utilitário \emph{httperf}.
+Para cada caso de experimento, foram criadas 500 novas conexões.
+Cada conexão com 50 requisições ao endereço IP do serviço.
+No caso do experimento em paralelo, foram executadas 4 \emph{threads} para 
+enviar as requisições.
+Todas as requisiões foram feitas para a mesma URI (\emph{Uniform Resource
+Identifier}).
