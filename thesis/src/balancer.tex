@@ -263,3 +263,19 @@ No caso do experimento em paralelo, foram executadas 4 \emph{threads} para
 enviar as requisições.
 Todas as requisiões foram feitas para a mesma URI (\emph{Uniform Resource
 Identifier}).
+
+A figura \ref{fig:testbed} mostra o ambiente dos experimentos.
+O controlador lê os dados dos servidores monitorados a cada segundo.
+Baseado nos dados lidos, as políticas de balanceamento de carga são aplicadas.
+
+% Distribution figure
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=\linewidth]{img/balancer-testbed-img}
+    \caption{Ambientes dos experimentos do balanceador de carga}
+    \label{fig:testbed}
+\end{figure}
+
+Todos os servidores rodam o servidor web \emph{Tornado}\citep{tornado}. 
+Esse servidor grava o tamanho da fila de requisições pendentes e o número de 
+requisições já respondidas.
