@@ -12,7 +12,7 @@ src/bin
 *.aux
 *.bbl
 *.blg
-*.pdf
+thesis/bin/thesis.pdf
 *.out
 *.lof
 *.lot
