@@ -279,3 +279,28 @@ Baseado nos dados lidos, as políticas de balanceamento de carga são aplicadas.
 Todos os servidores rodam o servidor web \emph{Tornado}\citep{tornado}. 
 Esse servidor grava o tamanho da fila de requisições pendentes e o número de 
 requisições já respondidas.
+
+
+\subsection{Distribuição de carga}
+
+Através de políticas como \emph{RoundRobin} e Aleatória, o balanceamento de 
+carga distribui praticamente o mesmo número de requisições entre
+os servidores.
+Em políticas como Carga, Fila e Mistura a distribuição de carga é mais justa
+em relação à capacidade em responder requisições por parte dos servidores.
+Em um cenário heterogênio, como o presente, isso garante que a carga interna
+de cada servidor seja parecida.
+Por outro lado, a quantidade de requisições respondidas é diferente.
+Ou seja, a distribuição é justa com o esforço nos servidores.
+A figura \ref{fig:balancer-distribution} apresenta uma comparação entre as 
+políticas de balanceamento de carga em um cenário com 200 conexões.
+
+% Distribution figure
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=\linewidth]{img/balancer-distribution.png}
+    \caption{Server choices - 200 connections with 10 requests each}
+    \label{fig:balancer-distribution}
+\end{figure}
+
+
