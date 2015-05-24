@@ -295,12 +295,205 @@ Ou seja, a distribuição é justa com o esforço nos servidores.
 A figura \ref{fig:balancer-distribution} apresenta uma comparação entre as 
 políticas de balanceamento de carga em um cenário com 200 conexões.
 
-% Distribution figure
 \begin{figure}[htb!]
     \centering
     \includegraphics[width=\linewidth]{img/balancer-distribution.png}
-    \caption{Server choices - 200 connections with 10 requests each}
+    \caption{Distribuição do número de requisições por servidor. O experimento
+    gerou 200 conexões com 20 requisições cada}
     \label{fig:balancer-distribution}
 \end{figure}
 
+\subsection{Justiça em relação à carga dos servidores}
 
+A figura \ref{fig:balancer-serial-rr} apresenta o crescimento da carga nos 
+servidores utilizando a política de balanceamento de carga \emph{Round Robin}.
+O servidor \emph{srv102} apresenta a maior carga individual, pois respondeu
+a mesma quantidade de requisições que os demais servidores.
+Como pode ser visto, em um cenário onde os servidores não são iguais, existe
+uma diferença considerável de carga entre os servidores.
+
+A política \emph{RoundRobin} não é justa.
+Se um servidor se sobrecarregar, ele continuará recebendo o mesmo volume de 
+requisições que os demais servidores.
+Esse comportamento pode gerar um aumento da taxa de perda de pacotes e uma 
+redução na disponibilidade do serviço.
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=\linewidth]{img/balancer-serial-rr}
+\caption{Crescimento da carga dos servidores com o balanceador de carga 
+    utilizando a política \emph{RoundRobin}. O experimento gerou 500 conexões 
+        com 50 requisições cada}
+    \label{fig:balancer-serial-rr}
+\end{figure}
+
+A política Carga reduz a diferença entre os servidores.
+Em cada servidor a carga tende a ser mesma.
+Se um servidor começar a sobrecarregar ele não será balanceado até que a 
+carga reduza. 
+Essa abordagem torna a distribuição de carga mais justa.
+Se um servidor consegue responder mais requisições, ele 
+deve receber mais requisições.
+A figura \ref{fig:balancer-serial-load} mostra a distribuição mais justa 
+através da política Carga.
+ 
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=\linewidth]{img/balancer-serial-load}
+    \caption{Crescimento da carga dos servidores com o balanceador de carga
+    utilizando a política \emph{Carga}. O experimento gerou 500 conexões com 
+    50 requisições cada}
+    \label{fig:serial-l}
+\end{figure}
+
+Esse comportamento se manteve quando os experimentos foram executados em 
+paralelo utilizando \emph{httperf}.
+A figura \ref{fig:balancer-parallel-rr} e \ref{fig:balancer-parallel-load}
+apresentam o resultado desses experimentos.
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/balancer-parallel-rr}
+    \caption{Crescimento da carga dos servidores utilizando a política 
+    \emph{RoundRobin} com as requisições feitas em paralelo. O experimento
+    gerou 500 conexões com 50 requisições em paralelo cada.}
+    \label{fig:parallel-rr}
+\end{figure}
+
+A política Carga distribui a carga de maneira mais justa entre os servidores.
+Isso é importante em um cenário onde os servidores são heterogênios.
+Toda a carga de trabalho deve ser disseminada com justiça entre os servidores.
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=\linewidth]{img/balancer-parallel-load}
+    \caption{Crescimento da carga dos servidores utilizando a política Carga
+    com as requisições feitas em paralelo. O experimento gerou 500 conexões
+    com 50 requisições em paralelo cada.}
+    \label{fig:balancer-parallel-load}
+\end{figure}
+
+A medição de justiça é utilizada em engenharia de redes para mostrar como 
+recursos são divididos.
+\emph{Jain} definiu em \citep{jain} um índice de justiça em função da 
+largura de banda.
+Foi adaptado o conceito do índice de justiça para considerar a carga dos 
+servidores e mostrar o quão justo seria o balanceamento de carga.
+A adaptação foi definida como:
+
+
+\[\jmath \left ( x_1, x_2,..., x_n \right ) = \frac{\left ( \sum_{i=1}^{n} x_i\right )^2}{n \cdot \sum_{i=1}^{n} x_i^2}\]
+
+Na avaliação de equidade/justiça de um conjunto de cargas, existem $n$
+servidores e $x_i$ é a carga da amostragem.
+O resultado varia de $\frac{1}{n}$ (pior caso) até $1$ (melhor caso).
+O valor é máximo quando o todos os servidores recebem o mesmo número de 
+alocações.
+O índice é $\frac{k}{n}$ quando $k$ servidores tiveram o mesmo esforço e 
+os demais $n-k$ servidores não foram escolhidos nenhuma vez. 
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/balancer-fairness}
+    \caption{Comparação da justiça calculada para cada política de
+    balanceamento de carga}
+    \label{fig:fainess}
+\end{figure}
+
+
+\subsection{Experimento com TCP}
+A largura de banda foi medida executando 15 conexões TCP de 20 segundos cada.
+Todas as requisições passaram pelo balanceador de carga no controlador 
+\emph{OpenFlow}.
+A largura de banda foi medida a cada 5 segundos de execução do experimento.
+Conforme apresentado na figura \ref{fig:balancer-tcp-bandwidth}, nota-se o 
+impacto do controlador na largura de banda da rede.
+A política Carga reduz a largura de banda global da rede, pois sua 
+implementação demora mais para ser executada do que um simples algorítmo 
+de \emph{RoundRobin}.
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=\linewidth]{img/balancer-tcp-bandwidth}
+    \caption{Largura de banda TCP medida em 50 conexões utilizando o 
+    \emph{iperf}}
+    \label{fig:balancer-tcp-bandwidth}
+\end{figure}
+
+\subsection{Experimento HTTP}
+
+A figura \ref{fig:balancer-http-full} mostra o resultado do experimento com 
+5000 conexões.
+O primeiro pacote de cada conexão é encaminhado para o controlador.
+O controlador instala, no comutador \emph{OpenFlow}, as regras para todas 
+as requisições dentro de cada conexão.
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=\linewidth]{img/balancer-http-full}
+    \caption{Experimento com 5000 conexões com 50 requisições cada}
+    \label{fig:balancer-http-full}
+\end{figure}
+
+Os valores mais altos representam o atraso decorrido em função do controlador
+processar os primeiros pacotes de cada conexão.
+Os fluxos, para esse experimento, possuem tempo de vida (\emph{timeout}).
+É importante manter a tabela de fluxos pequena e o balanceamento de carga
+flexível e dinâmico.
+
+Para compreender melhor os primeiros pacotes de cada conexão enviados para 
+o controlador, a figura \ref{fig:balancer=http-zoom} mostra o experimento 
+HTTP da requisição 0 até a 150.
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=\linewidth]{img/balancer-http-zoom}
+    \caption{Tempo de resposta das requisições 0 até 150}
+    \label{fig:balancer-http-zoom}
+\end{figure}
+
+O primeiro pacote de cada conexão é encaminhado para o controlador.
+O controlador instala um fluxo para os pacotes daquela conexão.
+No controlador, para todos novoso fluxos, é instalado um fluxo reverso.
+Esse fluxo representa o caminho de volta da requisição, que vai do servidor
+escalonado para o cliente requisitante.
+Instalar esse fluxo no comutador é importante para reduzir o número de 
+pacotes entrantes (\emph{PacketIn}) que o controlador precisa lidar.
+
+A figura \ref{fig:balancer-times} apresenta o tempo de resposta em segundos
+de cada política de balanceamento de carga.
+São apresentados os valores mínimos, máximos, médio e o desvio padrão do 
+tempo de resposta das políticas.
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[width=\linewidth]{img/balancer-http-times}
+    \caption{Tempo de resposta de cada política de balanceamento de carga}
+    \label{fig:balancer-http-times}
+\end{figure}
+
+A política Sem Política representa requisições feitas diretamente ao servidor, 
+sem passar pelo balanceador de carga.
+Como pode ser visto, a média e o desvio padrão mostram que o tempo de resposta
+em políticas com monitoramento é menor do que o tempo de resposta das demais
+políticas.
+Apesar de o controlador reduzir a largura de banda da rede, o balanceador 
+de carga reduz o tempo de resposta do serviço.
+
+\subsection{Avaliação}
+
+O balanceador de carga não distribui o mesmo número de requisições para 
+os servidores.
+Fazer isso, não torna a carga bem distribuída para os servidores em um 
+cenário heterogêneo. 
+Considerando o esforço de cada servidor como o parâmetro de justiça, a solução
+de balanceamento de carga proposto distribui de maneira mais justa a carga 
+entre os servidores de aplicação.
+A carga dos servidores cresce de maneira homogênea.
+
+Como pode ser visto na figura \ref{fig:balancer-tcp-bandwidth}, pacotes 
+encaminhados para o controlador impactam a largura de banda da rede.
+No entanto, a solução de balanceamento de carga reduz o tempo de resposta 
+do serviço. 
+Os fluxos reversos são uma estratégia inteligente que instala fluxos no 
+comutador antes de eles saírem do servidor.
