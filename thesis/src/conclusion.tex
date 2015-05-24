@@ -1,3 +1,42 @@
-\chapter{Conclusão}
+\chapter{Conclusão e trabalhos futuros}
 
+O presente trabalho apresentou o uso de grafos no contexto de SDN.
+Um grafo da rede em tempo real vai de encontro com uma das principais 
+vantagens em se desacoplar o plano de controle do plano de dados que é obter 
+uma visão global da rede.
+O sistema proposto mantém um estado fiel, consistente e dinâmico da rede real, 
+facilitando a tarefa de gerenciamento de um rede definida por software e 
+reduzindo o volume de computação nos nós da rede.
+Grafos são uma modelagem direta e precisa da topologia de uma rede. 
+Eles deveriam ser um recurso básico, uma premissa em controladores SDN para 
+representar a rede.
 
+A abstração em grafos foi identificada em outros cenários de rede como 
+\emph{cloud computing}. 
+\emph{OpenStack}, um dos mais populares sistemas para gerenciamento de 
+ambientes virtualizados, possui uma visualização da topologia da rede
+em um de seus módulos Neutron~\citep{openstacksite}.
+Essa abstração foi combinada em uma solução SDN para implementar ambientes 
+isolados com redes \emph{multi-tenant} \citep{lcn2013}.
+Seria interessante avaliar uma possível combinação unificada com uma visão
+compartilhada da rede.
+
+Como uma proposta futura, pode-se criar um visualizador em tempo real do grafo 
+que interaja com o administrador da rede e mostre, de uma maneira simples, 
+toda a operação da rede.
+
+Assim como o controlador POX, o módulo proposto, ao ter seu processo terminado,
+não persiste as informações de estado da rede.
+Todo o grafo computado é perdido.
+Em função disso, um banco de dados em grafos, distribuído, poderia ser 
+utilizado para persistir o grafo, e as informações do estado da rede, de 
+maneira confiável e tolerante a falhas. 
+
+Algoritmos genéricos em grafos poderiam ser implementados como uma biblioteca
+para o módulo.
+Assim, estabelecida uma periodicidade, esses algoritmos poderiam ser computados
+no grafo e seus resultados publicados como extensão da API.
+
+Uma avaliação comparando algoritmos de roteamento como OSPF e BGP com uma 
+solução que faz utilização do grafo seria interessante a fim de mostrar a 
+redução na computação dos nós da rede.
