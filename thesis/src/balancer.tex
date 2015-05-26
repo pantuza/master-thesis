@@ -175,10 +175,6 @@ O fluxo da execução das requisições feitas ao serviço é mostrado na figura
     \label{fig:balancer-workflow}
 \end{figure}
 
-\textcolor{red}{Trocar essa imagem dos workflow de balanceamento de carga. 
-Fazer no formato de diagrama de sequência.}
-
-\subsection{}
 
 Cinco políticas de balanceamento de carga foram utilizadas pelo módulo para 
 distribuir a carga de trabalho entre os servidores.
@@ -297,7 +293,7 @@ políticas de balanceamento de carga em um cenário com 200 conexões.
 
 \begin{figure}[htb!]
     \centering
-    \includegraphics[width=\linewidth]{img/balancer-distribution.png}
+    \includegraphics[scale=0.7]{img/balancer-distribution.png}
     \caption{Distribuição do número de requisições por servidor. O experimento
     gerou 200 conexões com 20 requisições cada}
     \label{fig:balancer-distribution}
@@ -320,11 +316,21 @@ redução na disponibilidade do serviço.
 
 \begin{figure}[htb!]
     \centering
-    \includegraphics[width=\linewidth]{img/balancer-serial-rr}
+    \includegraphics[scale=0.5]{img/balancer-serial-rr}
 \caption{Crescimento da carga dos servidores com o balanceador de carga 
     utilizando a política \emph{RoundRobin}. O experimento gerou 500 conexões 
         com 50 requisições cada}
     \label{fig:balancer-serial-rr}
+\end{figure}
+
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[scale=0.5]{img/balancer-serial-load}
+    \caption{Crescimento da carga dos servidores com o balanceador de carga
+    utilizando a política \emph{Carga}. O experimento gerou 500 conexões com 
+    50 requisições cada}
+    \label{fig:balancer-serial-load}
 \end{figure}
 
 A política Carga reduz a diferença entre os servidores.
@@ -336,42 +342,33 @@ Se um servidor consegue responder mais requisições, ele
 deve receber mais requisições.
 A figura \ref{fig:balancer-serial-load} mostra a distribuição mais justa 
 através da política Carga.
- 
+
 \begin{figure}[htb!]
     \centering
-    \includegraphics[width=\linewidth]{img/balancer-serial-load}
-    \caption{Crescimento da carga dos servidores com o balanceador de carga
-    utilizando a política \emph{Carga}. O experimento gerou 500 conexões com 
-    50 requisições cada}
-    \label{fig:serial-l}
+    \includegraphics[scale=0.5]{img/balancer-parallel-rr}
+    \caption{Crescimento da carga dos servidores utilizando a política 
+    \emph{RoundRobin} com as requisições feitas em paralelo. O experimento
+    gerou 500 conexões com 50 requisições em paralelo cada.}
+    \label{fig:balancer-parallel-rr}
+\end{figure}
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[scale=0.5]{img/balancer-parallel-load}
+    \caption{Crescimento da carga dos servidores utilizando a política Carga
+    com as requisições feitas em paralelo. Mesmo cenário do experimento serial}
+    \label{fig:balancer-parallel-load}
 \end{figure}
 
 Esse comportamento se manteve quando os experimentos foram executados em 
 paralelo utilizando \emph{httperf}.
-A figura \ref{fig:balancer-parallel-rr} e \ref{fig:balancer-parallel-load}
-apresentam o resultado desses experimentos.
 
-\begin{figure}[htb!]
-    \centering
-    \includegraphics[width=0.9\linewidth]{img/balancer-parallel-rr}
-    \caption{Crescimento da carga dos servidores utilizando a política 
-    \emph{RoundRobin} com as requisições feitas em paralelo. O experimento
-    gerou 500 conexões com 50 requisições em paralelo cada.}
-    \label{fig:parallel-rr}
-\end{figure}
+As figuras \ref{fig:balancer-parallel-rr} e \ref{fig:balancer-parallel-load}
+apresentam o resultado desses experimentos.
 
 A política Carga distribui a carga de maneira mais justa entre os servidores.
 Isso é importante em um cenário onde os servidores são heterogênios.
 Toda a carga de trabalho deve ser disseminada com justiça entre os servidores.
-
-\begin{figure}[htb!]
-    \centering
-    \includegraphics[width=\linewidth]{img/balancer-parallel-load}
-    \caption{Crescimento da carga dos servidores utilizando a política Carga
-    com as requisições feitas em paralelo. O experimento gerou 500 conexões
-    com 50 requisições em paralelo cada.}
-    \label{fig:balancer-parallel-load}
-\end{figure}
 
 A medição de justiça é utilizada em engenharia de redes para mostrar como 
 recursos são divididos.
@@ -430,7 +427,7 @@ as requisições dentro de cada conexão.
 
 \begin{figure}[htb!]
     \centering
-    \includegraphics[width=\linewidth]{img/balancer-http-full}
+    \includegraphics[scale=0.5]{img/balancer-http-full}
     \caption{Experimento com 5000 conexões com 50 requisições cada}
     \label{fig:balancer-http-full}
 \end{figure}
@@ -442,12 +439,12 @@ Os fluxos, para esse experimento, possuem tempo de vida (\emph{timeout}).
 flexível e dinâmico.
 
 Para compreender melhor os primeiros pacotes de cada conexão enviados para 
-o controlador, a figura \ref{fig:balancer=http-zoom} mostra o experimento 
+o controlador, a figura \ref{fig:balancer-http-zoom} mostra o experimento 
 HTTP da requisição 0 até a 150.
 
 \begin{figure}[htb!]
     \centering
-    \includegraphics[width=\linewidth]{img/balancer-http-zoom}
+    \includegraphics[scale=0.4]{img/balancer-http-zoom}
     \caption{Tempo de resposta das requisições 0 até 150}
     \label{fig:balancer-http-zoom}
 \end{figure}
@@ -460,7 +457,7 @@ escalonado para o cliente requisitante.
 Instalar esse fluxo no comutador é importante para reduzir o número de 
 pacotes entrantes (\emph{PacketIn}) que o controlador precisa lidar.
 
-A figura \ref{fig:balancer-times} apresenta o tempo de resposta em segundos
+A figura \ref{fig:balancer-http-times} apresenta o tempo de resposta em segundos
 de cada política de balanceamento de carga.
 São apresentados os valores mínimos, máximos, médio e o desvio padrão do 
 tempo de resposta das políticas.
@@ -497,3 +494,8 @@ No entanto, a solução de balanceamento de carga reduz o tempo de resposta
 do serviço. 
 Os fluxos reversos são uma estratégia inteligente que instala fluxos no 
 comutador antes de eles saírem do servidor.
+
+Esse capítulo apresentou uma breve avaliação do \emph{OpenFlow} aplicado 
+a um sistema de balanceamento de carga.
+Os próximos capítulos irão abordar a solução e os resultados obtidos para
+a proposta de um módulo em grafos para o controlador.
