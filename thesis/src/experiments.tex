@@ -5,13 +5,13 @@
 
 Uma simulação da rede nacional de pesquisa, a rede Ipê \citep{ipe2015network} 
 foi criada em laboratório.
-Um comutador (\emph{switch}) OpenFlow e quatro servidores foram utilizados 
+Um comutador (\emph{Switch}) OpenFlow e quatro servidores foram utilizados 
 para executar a simulação no laboratório WiNet \citep{winet22015lab}
 no departamento de Ciência da Computação (DCC) da Universidade Federal 
 de Minas Gerais (UFMG).
 
 \subsection{A rede Ipê}
-Operada pela Rede Nacioanal de Pesquisa (RNP), a rede Ipê é uma infraestrutura
+Operada pela Rede Nacional de Pesquisa (RNP), a rede Ipê é uma infraestrutura
 de rede Internet dedicada à comunidade de pesquisa brasileira.
 Inaugurada em 2005, foi a primeira rede óptica nacional acadêmica a entrar em
 operação na América Latina.
@@ -56,7 +56,7 @@ Quatro servidores são responsáveis por gerenciar máquinas virtuais que
 representam as unidades federativas e suas instituições clientes.
 
 Conforme pode ser visto na figura \ref{fig:physical-vs-virtual-network}, a
-rede física do esperimento é separada da rede virtual.
+rede física do experimento é separada da rede virtual.
 O quinto computador é o controlador da rede. 
 Para o experimento, existem duas redes. 
 Uma rede de administração, com acesso aos servidores e a uma instância do 
@@ -78,20 +78,20 @@ em nosso experimento.
 
 Para o ambiente virtualizado, o controlador está associado a porta 6653.
 Cada POP é um comutador (\emph{switch}) OpenFlow simulado via OpenVSwitch
-\citep{openvswitch2015switch}.
+\citep{openvswitch2015comutador}.
 As instituições clientes de cada POP são simuladas através do \emph{Mininet} 
 \citep{lantz2010network}.
 O número de instituições clientes foi coletado do sítio de cada Ponto de 
 Presença.
 
 Cada máquina virtual representa um POP.
-Cada POP possui uma subrede à qual uma instância do \emph{Mininet} simula 
+Cada POP possui uma sub-rede à qual uma instância do \emph{Mininet} simula 
 seus clientes. 
-Essa subrede está conectada através de um \emph{switch} virtual 
+Essa sub rede está conectada através de um \emph{switch} virtual 
 \emph{OpenVSwitch} que é controlado pelo controlador da rede virtualizada.
 Assim, para cada POP, temos as decisões e atualizações da tabela de fluxos
 feita pelo controlador.
-Toda comunicação de saída das subredes utilizando \emph{mininet} passam pelo 
+Toda comunicação de saída das sub-rede utilizando \emph{mininet} passam pelo 
 \emph{OpenVSwitch} que funciona em modo \emph{bridge} (ponte) com a interface
 de rede virtual conforme pode ser visto na figura
 \ref{fig:mininet-vm-architecture}.
@@ -105,7 +105,7 @@ de rede virtual conforme pode ser visto na figura
 \end{figure}
 
 
-A tabela \ref{tbl:testbed-ipe-net} apresenta as subredes de cada unidade
+A tabela \ref{tbl:testbed-ipe-net} apresenta as sub-redes de cada unidade
 federativa (POP), qual servidor físico gerencia a máquina virtual referente
 ao POP e o número de clientes a ele associado.
 
@@ -164,7 +164,7 @@ O grafo foi notificado e estabeleceu uma aresta entre os
 vértices (\emph{switches}).
 
 As linhas 7 e 9 mostram a descoberta de dois hosts.
-Esses hosts foram descobertos pelo módulo \emph{host\_tracker} via 
+Esses \emph{hosts} foram descobertos pelo módulo \emph{host\_tracker} via 
 escuta dos eventos de DHCP.
 É importante ressaltar que a descoberta de \emph{hosts} também ocorre 
 independente do DHCP.
@@ -192,7 +192,7 @@ o \emph{host\_tracker} identifica a inatividade do \emph{host} e remove o
 O evento de \emph{HostLeave} é disparado pelo \emph{topology}, 
 atualizando assim o grafo.
 
-Nesse cenário de experimento, cinco computadores de cada subrede foi desligado.
+Nesse cenário de experimento, cinco computadores de cada sub-rede foi desligado.
 Para cada computador foi coletado o tempo em que ele foi desligado.
 Quando o controlador, através do \emph{host\_tracker}, identifica a saída 
 desse computador o tempo é novamente coletado.
@@ -229,7 +229,7 @@ A figura \ref{fig:switch-leave-time} apresenta os resultados da
 computação da amostra de \emph{switches} removidos.
 Assim, ao ser desligado, o \emph{core} do POX dispara um evento 
 de \emph{SwitchLeave} ao qual o módulo \emph{graph} está inscrito. 
-Logo, o grafo é atualizado removendo o vértice do \emph{switch}.
+Logo, o grafo é atualizado removendo o vértice do \emph{comutador}.
 
 \begin{figure}[h!]
     \centering
@@ -245,11 +245,11 @@ são praticamente constantes, em um valor de 30 a 35 segundos para cada
 remoção.
 
 Após algum tempo o \emph{host\_tracker} identifica se os computadores 
-associados ao \emph{switch} removido estão ativos por outra rota. 
+associados ao \emph{comutador} removido estão ativos por outra rota. 
 Caso negativo, os computadores são removidos do grafo.
 Considerando o experimento da remoção dos comutadores (\emph{switches}),
-foi computado o tempo decorrido entre a remoção do \emph{switch} e a 
-remoção dos computadores na rede interna ao \emph{switch}. 
+foi computado o tempo decorrido entre a remoção do \emph{comutador} e a 
+remoção dos computadores na rede interna ao \emph{comutador}. 
 
 \begin{figure}[h!]
     \centering
@@ -262,10 +262,10 @@ remoção dos computadores na rede interna ao \emph{switch}.
 
 A figura \ref{fig:hosts-behind-switch-time} mostra o resultado do experimento
 para o tempo de remoção de computadores em função da remoção do 
-\emph{switch}.
+\emph{comutador}.
 Os resultados mostram uma média que varia entre 40 e 70 segundos para a 
 remoção dos computadores.
-No geral nota-se que computadores de uma mesma subrede foram removidos em 
+No geral nota-se que computadores de uma mesma sub-rede foram removidos em 
 instantes próximos.
 Isso pode ser notado pelos pequenos grupos de pontos muito próximos na 
 figura.
@@ -303,15 +303,15 @@ representação do grafo.
 No instante inicial, o controlador é iniciado.
 Cada comutador estabelece uma conexão segura com o controlador.
 Nesse momento, todos os vértices comutadores são adicionados ao grafo.
-No segundo instante, para apenas uma subrede, representando uma unidade 
+No segundo instante, para apenas uma sub-rede, representando uma unidade 
 federativa dentro da rede Ipê, foi simulado tráfego entre seus computadores.
 Para cada computador, uma sondagem de todos os outros computadores dessa
-subrede foi feita através do utilitário \emph{ping}.
-Assim, todas as máquinas dessa subrede foram identificadas pelo controlador
+sub-rede foi feita através do utilitário \emph{ping}.
+Assim, todas as máquinas dessa sub-rede foram identificadas pelo controlador
 e adicionadas ao grafo representando a rede.
-No terceiro instante, outra subrede foi escolhida e a mesma simulação de 
+No terceiro instante, outra sub-rede foi escolhida e a mesma simulação de 
 tráfego foi executada.
-O mesmo procedimento foi repetido até que todas as 27 subredes da rede Ipê
+O mesmo procedimento foi repetido até que todas as 27 sub-redes da rede Ipê
 fossem computadas pelo grafo.
 
 A figura \ref{fig:full-graph-ipe} apresenta a execução desse experimento 
@@ -328,7 +328,7 @@ No total o grafo computou 590 vértices.
     \label{fig:full-graph-ipe}
     \includegraphics[scale=0.395]{img/full-graph-ipe}
     \caption{Representação da rede Ipê à medida que os computadores de cada
-    subrede são identificados}
+    sub-rede são identificados}
 \end{figure}
 
 
@@ -337,7 +337,7 @@ No total o grafo computou 590 vértices.
 Para computar o tráfego (TCP) em uma rede simples foi executado o programa 
 \emph{iperf} como servidor no \emph{host} 'Host 0a'.
 A topologia dessa rede é composta por dois comutadores interligados.
-Cada comutador possui três computadores em cada subrede.
+Cada comutador possui três computadores em cada sub-rede.
 O \emph{host} 'Host 1e' conecta-se como cliente. 
 
 Conformo pode ser notado na figura \ref{fig:iperf}, o tráfego 
@@ -351,7 +351,8 @@ ao tráfego ARP PING disseminado pelo módulo \emph{host\_tracker}
 \begin{figure}[h!]
     \centering
     \includegraphics[scale=0.8]{img/graph-iperf}
-    \caption{Tráfego TCP (em bytes) entre os hosts ’Host 1e’ e ’Host 0a’}
+    \caption{Tráfego TCP (em bytes) entre os \emph{hosts} ’Host 1e’ e 
+    ’Host 0a’}
     \label{fig:iperf}
 \end{figure}
 
@@ -366,7 +367,7 @@ Um experimento variando o número de computadores na rede permitiu coletar
 as métricas citadas acima.
 Coletou-se durante 30 segundos a utilização da CPU do processo do controlador,
 do sistema operacional, a utilização de memória e a taxa de escrita em disco
-em cada interação da execuçao do experimento.
+em cada interação da execução do experimento.
 A cada iteração do experimento, 50 novos computadores foram adicionados a rede.
 Ou seja, o experimento começou com 50 computadores e terminou com 550.
 
@@ -379,7 +380,7 @@ utilização de CPU mostra-se logarítmica.
 Apesar desse comportamento para o processo do controlador, nota-se que o 
 consumo, analisando todo o sistema, é linear.
 Esses resultados são apresentados na próxima seção. 
-O comportamento logarítmo mostra que, apesar do aumento do número de
+O comportamento logaritmo mostra que, apesar do aumento do número de
 computadores na rede, o processo do controlador não gerou exaustão na CPU 
 alocada para o processo ao longo do experimento.
 À medida que a rede cresce, a utilização da CPU escalonada ao processo do 
@@ -400,7 +401,7 @@ A figura \ref{fig:scatter-usr-cpu} apresenta os resultados dessa computação.
 A dispersão dos valores no início da amostragem estão mais próximos de 0. 
 Ou seja, a rede com poucos computadores demandou baixo processamento. 
 Já nos instantes finais, há mais pontos amostrados próximos a 100\% da 
-utilização de CPU, o que mostra o estress do processador com uma rede maior.
+utilização de CPU, o que mostra o estresse do processador com uma rede maior.
 
 \begin{figure}[!htb]
     \centering
@@ -444,7 +445,7 @@ de tempo é na ordem de $O(n)$ conforme mostrado a seguir.
 As operações de adição, remoção e busca em tabelas \emph{hash} tem, no 
 caso médio, custo constante na ordem de $O(1)$.
 Assim, considerando-se $n$ o número de vértices, temos que para cada 
-vértice do grafo o custo para inserí-lo durante o experimento é $O(1)$.
+vértice do grafo o custo para inseri-lo durante o experimento é $O(1)$.
 A complexidade de tempo do experimento, à medida que a rede cresce, é na 
 ordem de $O(n)$.
 
@@ -586,7 +587,7 @@ A rede Ipê foi simulada com o conjunto completo de computadores.
 6 pares de clientes e servidores \emph{iperf} foram executados durante 300 
 segundos.
 Cada par de cliente e servidor foi instanciado em máquinas virtuais 
-diferentes e físicamente separadas.
+diferentes e fisicamente separadas.
 
 \input{tbl/host_tracker-experiment}
 
@@ -653,7 +654,7 @@ O experimento começou com 50 computadores na rede.
 Em cada iteração, novos 50 computadores foram adicionados à rede.
 Ao final, a rede Ipê simulada, possuía 550 computadores.
 Para computar o número de pacotes de sondagem foi adicionado um contador 
-na funçao que envia esses pacotes.
+na função que envia esses pacotes.
 A figura \ref{fig:npings} mostra o gráfico resultante dos valores computados
 dos número de pacotes de sondagem enviados à medida que mais computadores 
 estavam presentes na rede.
@@ -710,7 +711,7 @@ entrada cresce proporcionalmente.
     \label{fig:packets-in}
     \includegraphics[width=\linewidth]{img/packets-in}
     \caption{Número de pacotes de entrada (\emph{PacketIn}) manipuladas pelo
-    controlador em cada iteraçao do experimento}
+    controlador em cada iteração do experimento}
 \end{figure}
 
 
@@ -808,7 +809,7 @@ do controlador com a solução em grafos.
 Em função do ambiente virtualizado, o experimento de latência foi dividido em 
 duas partes.
 A primeira avaliou a latência das redes locais.
-Ou seja, a latência entre computadores de uma mesma subrede dentro de uma 
+Ou seja, a latência entre computadores de uma mesma sub-rede dentro de uma 
 máquina virtual.
 A segunda parte, avaliou a latência da rede global.
 Ou seja, entre servidor físicos diferentes, fazendo com que os pacotes 
@@ -827,7 +828,7 @@ a cada iteração de coleta.
 A figura \ref{fig:local-latency} mostra a latência medida ao longo do 
 experimento para as redes locais.
 É possível notar que a latência da solução com controlador, no início do 
-experimento, está em torno de 4 milisegundos.
+experimento, está em torno de 4 milissegundos.
 Esse valor ocorre em função do encaminhamento, pelo comutador, do primeiro 
 pacote para o controlador. 
 Os valores subsequentes são próximos ao valor da latência medido na solução 
@@ -848,10 +849,10 @@ são apresentados na figura \ref{fig:local-latency-stats}.
 No geral, as latências da rede com a solução do controlador em grafos e 
 sem controlador se mantiveram parecidas. 
 Em média, a latência no experimento das redes locais foi de 
-$0,13$ milisegundos.
+$0,13$ milissegundos.
 É possível notar através do intervalo de confiança que a latência na rede 
 com o controlador se manteve mais constante ao longo do experimento.
-Ou seja, mais confiável, com baixa variancia.
+Ou seja, mais confiável, com baixa variância.
 
 \begin{figure}[!htb]
     \centering
@@ -872,7 +873,7 @@ rede simulada.
 
 A figura \ref{fig:ipe-latency} apresenta os resultados dessa avaliação.
 Como pode ser visto, a latência inicial coletada na rede com a solução do 
-controlador com o módulo grafo chegou a 400 milisegundos.
+controlador com o módulo grafo chegou a 400 milissegundos.
 Esse valor ocorre em função do primeiro pacotes que é encaminhado para o 
 controlador.
 No geral, a latência da rede sem controlador sofreu uma variação mais alta.
@@ -887,9 +888,9 @@ constante.
     grafos}
 \end{figure}
 
-Em média, a latência da rede Ipê simulada foi $13$ milisegundos.
+Em média, a latência da rede Ipê simulada foi $13$ milissegundos.
 Na rede global, o experimento sem controlador teve oscilações bem altas que
-chegaram a valores de $100$ milisegundos de latência.
+chegaram a valores de $100$ milissegundos de latência.
 É possível notar novamente a estabilidade da rede com controlador observando
 o desvio padrão mais baixo. 
 A figura \ref{fig:ipe-latency-stats} apresenta os resultados da avaliação dos
@@ -912,7 +913,7 @@ controlador se mostrou mais estável do que sem.
 \subsection{Avaliação de largura de banda}
 
 A avaliação da largura de banda foi feita utilizando 4 pares de computadores
-em subredes e servidores da rede física diferentes.
+em sub-redes e servidores da rede física diferentes.
 Para cada par de computadores, foi utilizada a ferramenta de linha comando
 \emph{iperf}.
 O experimento consistiu em medir, com intervalos de 5 segundos, durante 
@@ -1013,7 +1014,7 @@ experimento.
 A figura \ref{fig:jitter-no-ctrl} apresenta o resultado da coleta de amostras 
 com o valor médio do \emph{jitter} em cada instante de execução.
 É possível notar que a variação média na transmissão de pacotes está entre
-1 e 2 milisegundos.
+1 e 2 milissegundos.
 
 \begin{figure}[!htb]
     \centering
@@ -1031,7 +1032,7 @@ Esse valor representa os primeiros pacotes que necessitam ser avaliados pelo
 controlador. 
 Logo, a variação da latência (\emph{jitter}) é mais alta para esses casos.
 
-É possível notar que, em média, o \emph{jitter} está entre 1 e 2 milisegundos.
+É possível notar que, em média, o \emph{jitter} está entre 1 e 2 milissegundos.
 Observando a sequência das amostras e o valor do coletado em cada período é 
 possível notar que a variação média é baixa, o que demonstra estabilidade na
 rede do experimento.
@@ -1063,7 +1064,7 @@ em função dos primeiros pacotes, que geram \emph{PacketIn}.
 A rede sem controlador teve uma variação maior, observando-se as iterações 
 do experimento.
 Apesar das diferenças, o \emph{jitter} médio, nos dois cenários de teste, 
-foi aproximadamente o mesmo; entre 1 e 2 milisegundos.
+foi aproximadamente o mesmo; entre 1 e 2 milissegundos.
 
 A figura \ref{fig:jitter-stats} apresenta um gráfico comparando a variação da 
 latência \emph{jitter} nos dois cenários de experimento.

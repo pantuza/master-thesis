@@ -12,7 +12,7 @@ de dados e do plano de controle.
 
 \section{A abstração em grafos}
 
-O grafo propost é representado por $G=(V, A)$, em que $V$ e $A$ são conjuntos
+O grafo proposto é representado por $G=(V, A)$, em que $V$ e $A$ são conjuntos
 finitos de vértices e arestas, respectivamente.
 Cada vértice $v \in V$ representa um computador (\emph{host}) ou comutador
 (\emph{switch}) dentro da rede.
@@ -31,7 +31,7 @@ escrito na linguagem de programação \emph{Python}.
 
 Ao ser carregado, o POX, executa o seu núcleo (\emph{core}). 
 Esse módulo principal, é responsável por carregar os demais 
-módulo e garantir a comunição entre eles.
+módulo e garantir a comunicação entre eles.
 Ele exporta uma interface baseada em eventos. 
 Eventos que descrevem ou representam ações ocorridas na rede.
 Um módulo implementado dentro do controlador POX pode ser um 
@@ -56,12 +56,12 @@ Seu objetivo é buscar e rastrear informações sobre os computadores
 
 \item{\emph{openflow.topology}}: 
 
-Um controle de topologia específico para switches OpenFlow.
+Um controle de topologia específico para comutadores OpenFlow.
 Ele é integrado com o módulo \emph{topology} do POX.
 
 \item{\emph{openflow.discovery}}: 
 
-Identifica links entre switches OpenFlow por meio do protocolo LLDP.
+Identifica enlaces entre comutadores OpenFlow por meio do protocolo LLDP.
 
 \item{\emph{misc.dhcpd}}:
 
@@ -84,7 +84,7 @@ A implementação do módulo é composta por cinco classes:
         
         Classe responsável por gerenciar o grafo.
         Todo o tratamento de eventos é feito por essa classe.
-        O controle de criação, remoção e atualização de vertices e arestas 
+        O controle de criação, remoção e atualização de vértices e arestas 
         é feito por essa classe.
     \item{GraphEntity}: 
         
@@ -162,7 +162,7 @@ Protocol}).
 Todos os comutadores (\emph{switches}) OpenFlow são programados para encaminhar
 os pacotes de consulta \emph{ARPQuery} para o controlador.
 Se essa consulta for destinada a um computador conhecido pelo
-\emph{host\_tracker}, um pacote de resposta \emph{ARPReply} é contruído e 
+\emph{host\_tracker}, um pacote de resposta \emph{ARPReply} é construído e 
 encaminhado para a máquina que originou a consulta.
 
 Periodicamente, o \emph{host\_tracker} envia mensagens \emph{ARPQuery} falsas
@@ -179,7 +179,7 @@ Através dessa interface, outros módulos do controlador podem requisitar
 informações da topologia, do tráfego e do estado da rede através do grafo.
 Essas informações podem ser utilizadas para implementar serviços em diversas
 camadas de rede que necessitam dessa informação.
-Os metodos permitidos por esse módulo são:
+Os métodos permitidos por esse módulo são:
 
 \begin{itemize}
     \item \emph{get\_vertex(id)}
@@ -217,7 +217,7 @@ através do módulo \emph{graph}.
 
 As ações referentes a computadores são de responsabilidade dos módulos
 \emph{misc.dhcp} e \emph{host\_tracker}.
-Nesses casos, o \emph{topology} também é comunicado atraveś do \emph{core} e
+Nesses casos, o \emph{topology} também é comunicado através do \emph{core} e
 dispara eventos que atualizam o grafo através do módulo \emph{graph}.
 
 Caso algum módulo queira recuperar informações topológicas ou do estado da

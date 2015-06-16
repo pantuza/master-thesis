@@ -1,4 +1,4 @@
-\section{Openflow}
+\section{OpenFlow}
 
 
 
@@ -11,9 +11,9 @@ O OpenFlow foi criado como um padrão aberto, o que permite que todos os
 fabricantes de equipamentos de redes possam habilitar seus produtos a esse 
 padrão.
 
-O protocolo consiste em uma interface de programação para o switch. 
+O protocolo consiste em uma interface de programação para o comutador. 
 Assim, um programador pode, através de um programa, controlar a forma como 
-um switch executa seu encaminhamento de pacotes. 
+um comutador executa seu encaminhamento de pacotes. 
 De uma maneira bem clara, o protocolo OpenFlow separa o plano de dados
 do plano de controle, fazendo com que soluções SDN possam ser criadas 
 e experimentadas.
@@ -23,9 +23,9 @@ ou que utilizam o protocolo.
 
 \subsection{Componentes}
 
-Na arquitetura estabelicida pelo protocolo OpenFlow existem dois papéis
+Na arquitetura estabelecida pelo protocolo OpenFlow existem dois papéis
 principais.
-O controlador e o switch OpenFlow. 
+O controlador e o comutador OpenFlow. 
 Uma separação baseada no modelo das Redes definidas por software (SDN)
 conforme pode ser visto na figura~\ref{fig:controller-secure-switch}.
 
@@ -36,22 +36,22 @@ conforme pode ser visto na figura~\ref{fig:controller-secure-switch}.
     \caption{Divisão da arquitetura OpenFlow}
 \end{figure}
 
-\subsection{Arquitetura do Switch}
+\subsection{Arquitetura do Comutador}
 
-O switch OpenFlow pode ser dividido em três principais partes. 
+O comutador OpenFlow pode ser dividido em três principais partes. 
 A primeira é o canal de comunicação seguro com o controlador.
 A segunda é a interface do protocolo OpenFlow que permite ao controlador
-controlar o switch.
+controlar o comutador.
 A terceira é sua tabela de fluxos.
 
 O canal de comunicação seguro tem a garantia de confiabilidade na troca 
-de mensagens entre o controlador e o switch através do protocolo SSL 
+de mensagens entre o controlador e o comutador através do protocolo SSL 
 (Secure Socket Layer). 
 Isso adiciona proteção à rede em relação a ataques de elementos mal 
 intencionados \citep{rothenberg2010openflow}.
 
 A interface do protocolo OpenFlow é a padronização das mensagens enviadas 
-pelo controlador ao switch de modo a definir o comportamento do encaminhamento
+pelo controlador ao comutador de modo a definir o comportamento do encaminhamento
 de pacotes. 
 Ou seja, é o conjunto de possíveis instruções para se controlar de maneira
 genérica o plano de dados de qualquer \emph{hardware} de redes habilitado 
@@ -59,14 +59,14 @@ ao padrão OpenFlow.
 
 A tabela de fluxos é composta por regras.
 Cada regra consiste em ações associadas à fluxos. 
-Através dessa tabela o switch executa o encaminhamento de pacotes. 
+Através dessa tabela o comutador executa o encaminhamento de pacotes. 
 As entradas dessa tabela são atualizadas pelo controlador.
 
 \begin{figure}[h!]
     \centering
     \label{fig:switch-arch}
     \includegraphics[width=\linewidth]{img/switch-architecture}
-    \caption{Arquitetura do switch OpenFlow}
+    \caption{Arquitetura do comutador OpenFlow}
 \end{figure}
 
 
@@ -78,18 +78,18 @@ Essas características variam de acordo com o cabeçalho OpenFlow.
 Os fluxos são genéricos. 
 Ao invés de avaliar pacotes e portas para fazer a análise do trafego,
 que representam o passado, os fluxos representam futuro. 
-Um fluxo pode caracterizar pacotes que ainda não passaram pelo switch mas 
+Um fluxo pode caracterizar pacotes que ainda não passaram pelo comutador mas 
 que possuem as mesmas características que compõem aquele fluxo. 
 Sendo assim, a ação associada ao fluxo é aplicada a esses novos pacotes.
 
 \input{tbl/flow-table}
 
 
-A tabela de fluxos dentro do switch OpenFlow identifica os fluxos para que o 
+A tabela de fluxos dentro do comutador OpenFlow identifica os fluxos para que o 
 plano de dados execute ações sobre os pacotes que são pertencentes àquele
 fluxo. 
 A tabela \ref{tbl:flowtable} apresenta de maneira simplificada a tabela 
-de fluxos dentro do switch OpenFlow.
+de fluxos dentro do comutador OpenFlow.
 
 \subsection{Cabeçalho}
 
@@ -103,10 +103,10 @@ A figura \ref{fig:of-header} apresenta os campos e suas respectivas camadas.
     \caption{Cabeçalho OpenFlow}
 \end{figure}
 
-Quando um novo pacote ingressa no switch OpenFlow esse cabeçalho é preenchido
+Quando um novo pacote ingressa no comutador OpenFlow esse cabeçalho é preenchido
 e encaminhado para o controlador. 
 Através da análise dessas informações do fluxo o controlador envia uma 
-mensagem ao switch instalando/atualizando regras na tabela de fluxos. 
+mensagem ao comutador instalando/atualizando regras na tabela de fluxos. 
 
 Esse mecanismo de rotulagem e identificação de tráfego e pacotes (fluxos) é
 inspirado no MPLS (\emph{Multi-protocol Label Switching}) 
@@ -115,7 +115,7 @@ inspirado no MPLS (\emph{Multi-protocol Label Switching})
 \subsection{Ações}
 
 As ações (\emph{actions}) são aplicadas aos fluxos especificados na tabela
-de fluxos do switch.
+de fluxos do comutador.
 Ações como encaminhamento, atualização de cabeçalho e rejeição podem ser 
 aplicadas aos pacotes pertencentes àquele fluxo.
 
@@ -145,14 +145,14 @@ fluxo pertencente à tabela de fluxos.
 O controlador é a entidade na rede que representa o plano de controle dentro
 da arquitetura OpenFlow.
 Apesar de ser um entidade logicamente centralizada, ele pode ser distribuído.
-O controlador é um software que se conecta de maneira segura ao switch 
+O controlador é um software que se conecta de maneira segura ao comutador 
 OpenFlow.
 Através da interface de programação do protocolo o controlador manipula 
-a tabela de fluxos do switch.
+a tabela de fluxos do comutador.
 
 Em função dessa arquitetura, é possível ter visão e controle de estado global
 da rede.
-Como o protocolo OpenFlow especifica que o switch armazena alguns dados 
+Como o protocolo OpenFlow especifica que o comutador armazena alguns dados 
 estatísticos, por exemplo de portas e fluxos, o controlador pode tomar 
 decisões ou executar análises sobre a rede baseando-se nessas estatísticas.
 

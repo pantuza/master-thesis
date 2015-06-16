@@ -33,7 +33,7 @@ A arquitetura RON (\emph{Resilient Overlay Network})
 Internet mais confiável através de detecção e recuperação de interrupções e 
 falhas no roteamento. 
 A Internet foi criada como uma rede \emph{overlay} que funcionava sobre a rede 
-de telefonia. Ou seja, o conceito de Redes \emph{overlay} não é uma idéia nova.
+de telefonia. Ou seja, o conceito de Redes \emph{overlay} não é uma ideia nova.
 No entanto, poucas dessas redes foram estruturadas para se recuperar e tolerar 
 falhas de forma eficiente. Nesse contexto é que as RONs demonstram ser 
 confiáveis.
@@ -41,7 +41,7 @@ confiáveis.
 As RONs possuem três Metas/objetivos. O primeiro objetivo e principal é 
 permitir que um grupo de nós possam se comunicar independente de haver uma 
 falha na rota entre eles. 
-Isso torna o roteamente confiável. O segundo objetivo
+Isso torna o roteamento confiável. O segundo objetivo
 é tornar o roteamento e a seleção de próximo host com aplicações distribuídas 
 mais forte, mais eficiente do que tradicionalmente é feito com outras 
 arquiteturas e protocolos. 
@@ -50,7 +50,7 @@ para implementação de políticas de roteamento que governam a escolha de rotas
 dentro da rede. 
 
 As implicações de desempenho entre a rede \emph{overlay} Gnutella e a 
-infra-estrutura da Internet é descrito em \citep{ripeanu2002mapping}. 
+infraestrutura da Internet é descrito em \citep{ripeanu2002mapping}. 
 Redes P2P agregam vários computadores que entram e saem da rede todo o tempo. 
 Esses Peers (computadores) podem não ter um endereço IP permanente. 
 As redes P2P são entidades independentes e auto organizadas. 
@@ -80,7 +80,7 @@ A segurança acontece no nível do dado ao invés de apenas uma propriedade da
 conexão pela qual o dado trafega. 
 O projeto de CCN's a protege de várias classes de ataques de rede. 
 O artigo apresenta comparações e avaliações de CCN's em relação ao TCP/IP. 
-São relacionados temas como eficiência na tranferência de dados, 
+São relacionados temas como eficiência na transferência de dados, 
 eficiência na distribuição de conteúdo, a estratégia de camadas da rede 
 e voz sobre CCN. 
 A CCN foi projetada para substituir o IP, mas pode ser distribuída 
@@ -95,12 +95,12 @@ Servir conteúdo na \emph{Web} com apenas um servidor são sérios problemas
 para escalabilidade, confiança e performance de um sítio/serviço.
 
 Ao estabelecer servidores de borda que possuem tarefas específicas, 
-é necessário tratar suas falhas individulamente.
+é necessário tratar suas falhas individualmente.
 Em função dessas características, o artigo apresenta soluções com servidores de
 borda através da utilização de aproximação (proxy), provisionamento (caches), 
 replicação, sincronia, balanceamento de carga, tolerância a falhas, 
 autenticação, segurança, recuperação de erros e monitoramento de serviços. 
-O artigo propôe que o grande desafio para lidar com esses circunstâncias é 
+O artigo propõe que o grande desafio para lidar com esses circunstâncias é 
 identificar os design patterns (padrões de desenho/implementação) que são 
 soluções de custo efetivo e úteis ao sistema de maneira global.
 
@@ -109,24 +109,24 @@ Uma experiência relevante foi a utilização do CoralCDN durante seus cinco
 anos de deploy (publicação).
 Com o enorme crescimento em utilizar virtualização e deploy em cloud, 
 os serviços na Internet estão cada vez mais descentralizando
-sua infra-estrutura. 
+sua infraestrutura. 
 O CoralCDN foi desenvolvido de maneira escalável e automática para lidar com 
 picos repentinos no tráfego de conteúdo \citep{freedman2010experiences}. 
 O artigo demonstra a sequência de acontecimentos que ocorrem dentro da rede de 
 aproximadores (proxys), servidores de índice, DNS e origem quando um cliente 
-requisita uma url ao CDN. 
+requisita uma URL ao CDN. 
 
 O CoralCDN, objetiva poupar ao máximo os servidores origem. 
 A utilização de aproximadores (proxys) e provisionamento (cache) 
 garantem que esse objetivo seja cumprido. 
-O funcinamento interno do CDN estabelece políticas de acesso aos conteúdos. 
+O funcionamento interno do CDN estabelece políticas de acesso aos conteúdos. 
 Diferenciando políticas para recuperar conteúdos antigos, conteúdos não 
 populares, excessos para conteúdos populares e de muito acesso. O CDN 
 disponibiliza também, uma API aberta para permitir elasticidade na 
 distribuição de conteúdo. 
 
 O protocolo Chord de pesquisa de itens em nós dentro de uma 
-rede Peer-to-peer é aprensentado em \citep{ion2001chord}. 
+rede Peer-to-peer é apresentado em \citep{ion2001chord}. 
 O Chord executa apenas uma operação em que, dada uma chave, 
 ele mapeia a chave a um nó (host). 
 A tabela de roteamento Chord é distribuída e utiliza hashing para 
@@ -150,19 +150,19 @@ equipamentos (entidades) na rede.
 O artigo, abstrai o funcionamento da busca de dados dentro da rede. 
 Ele parte do pressuposto que a busca funcione como um DNS, dado que a busca é 
 feita por pacotes que carregam os interesses de quem iniciou a requisição. 
-Os switches ao longo da rede fazem cache dos pacotes de dado, podendo 
+Os comutadores ao longo da rede fazem cache dos pacotes de dado, podendo 
 responder a requisição sozinhos. 
 
 \section{O protocolo OpenFlow e as inovações em rede}
 
 A evolução da Internet é uma discussão polêmica. 
 O artigo \citep{jennifer2010future} apresenta dois pontos de vista.
-O primeiro defende que a Internet necessita de um redesign. 
+O primeiro defende que a Internet necessita de um novo projeto. 
 O segundo apresenta um ponto de vista contrário argumentando que a rede 
-deve evoluir e não ser recontruída.
+deve evoluir e não ser reconstruída.
 
 O primeiro ponto de vista levanta questionamentos como se deve-se continuar
-fazendo melhorias na rede ou se contruir uma nova arquitetura seria melhor, 
+fazendo melhorias na rede ou se construir uma nova arquitetura seria melhor, 
 dado que elas seriam irrestritas pelo atual modelo. 
 É argumentado que o sucesso da atual Internet não significa que 
 ela está amadurecida. 
@@ -171,16 +171,16 @@ pequenos sensores, atualmente utilizados dentro da rede, que podem
 revolucionar a sociedade contemporânea.
 
 Um contraponto é apresentado dizendo que a economia industrial moderna não 
-está habilitada a receber essas tecnologias emergentes e que isso involveria 
-custos inconscebíveis em mudar operação e tecnologia envolvida. 
+está habilitada a receber essas tecnologias emergentes e que isso envolveria 
+custos inconcebíveis em mudar operação e tecnologia envolvida. 
 É descrito também que os estudos de novas arquiteturas para a rede, para que 
 seja aceitável, deve substituir por completo o atual modelo. 
-Do contrário, seria apenas mais exercício intelectual para a contrução 
+Do contrário, seria apenas mais exercício intelectual para a construção 
 da nova rede. 
 
 O projeto do protocolo OpenFlow foi apresentado em \citep{nick2008openflow}. 
 Ele é uma forma de pesquisadores experimentarem novos protocolos nas redes 
-utilizadas no dia-a-dia. Ele é baseado nos switches ethernet com uma tabela de 
+utilizadas no dia-a-dia. Ele é baseado nos comutadores ethernet com uma tabela de 
 fluxos e uma interface bem definida de comunicação com computadores externos. 
 
 Os pesquisadores podem controlar seus próprios fluxos, escolhendo uma rota
@@ -189,8 +189,8 @@ Eles podem testar modelos de segurança, schemas de endereçamento e até
 alternativas ao protocolo IP. 
 É possível fazer estudos em redes isoladas, em administração de redes, 
 em controle de acesso, autenticação e processamento de pacotes.
-O OpenFlow possibilita experimentações de maneira uniforme em switches 
-completamente heterogeneos. 
+O OpenFlow possibilita experimentações de maneira uniforme em comutadores 
+completamente heterogêneos. 
 
 Um projeto (\emph{design}) de rede é apresentado através abordagem híbrida 
 entre MPLS e SDN com o objetivo de simplificar o hardware e flexibilizar 
@@ -200,7 +200,7 @@ O artigo apresenta uma divisão lógica entre núcleo (\emph{core}) e
 borda (\emph{edge}) da rede.
 O núcleo simplifica a rede.
 Ele se preocupa apenas com o encaminhamento de pacotes dentro do núcleo 
-atráves dos rotulagens (\emph{labels}) MPLS. 
+através dos rotulagens (\emph{labels}) MPLS. 
 A borda mantém um controlador SDN que permite adicionar os rótulos 
 \emph{labels} MPLS para repassar ao núcleo. 
 O serviços conversam apenas com a borda. 
@@ -210,7 +210,7 @@ Esse pacote chega pelo controlador de entrada (borda) e é repassado ao
 controlador do núcleo com o rótulo colocado pelo controlador da borda.
 O núcleo por sua vez faz o devido encaminhamento à máquina de destino. 
 Essa abordagem simplifica e desacopla as redes. 
-Elas podem ter no núcleo algorítmos e protocolos próprios sem interferir nas 
+Elas podem ter no núcleo algoritmos e protocolos próprios sem interferir nas 
 redes adjacentes pois há um isolamento bem estruturada através do controlador 
 na borda das redes.
 
@@ -222,14 +222,14 @@ que impedem que ela seja substituída, o artigo traz uma abordagem que dissocia
 a infraestrutura da arquitetura da Internet. 
 
 A arquitetura proposta envolve fundamentos trazidos de SDN, MPLS e 
-encamimhamento via programas (\emph{software forwarding}). 
+encaminhamento via programas (\emph{software forwarding}). 
 Nessa arquitetura, as redes seriam domínios. 
 Cada domínio possui um controlador do núcleo (\emph{core}) e um 
 de borda (\emph{edge}). 
 Os controladores de borda controlam o tráfego externo. 
 Os de núcleo controlam o interior dos domínios. 
 Isso cria uma camada de isolamento em que pode-se alterar protocolos e 
-algorítmos em ambos os ambientes, núcleo e borda, sem que um interfira 
+algoritmos em ambos os ambientes, núcleo e borda, sem que um interfira 
 no outro.
 Além disso foram mostrados modelos de serviços que podem ser estruturados 
 sobre essa arquitetura. 
@@ -243,7 +243,7 @@ O artigo \citep{arsalan2009applying} apresenta o NOX
 O NOX traz um controle lógico centralizado de alto nível de abstrações de 
 rede como usuários, topologia, serviços e controle da rede. 
 Através do OpenFlow ele adiciona entradas de fluxo (\emph{flow entries}) na 
-tabela de encaminhamento dos switches. 
+tabela de encaminhamento dos comutadores. 
 
 O projeto permite implementações em C++ e Python. 
 A abordagem do artigo é voltada para datacenters. 
@@ -257,23 +257,23 @@ são demonstradas as necessidades e problemas enfrentados por
 e facilita o design dessas aplicações comerciais.
 
 Visando solucionar o problema de migração de máquinas virtuais, 
-o artigo \citep{erik2012live} apresentao LIME.
+o artigo \citep{erik2012live} apresenta LIME.
 Ele é uma solução baseada em SDN que isola a aplicação da topologia da rede e 
 de como ela é controlada. 
 A proposta visa reduzir o tempo com que a migração e sincronia acontecem.
 
-Ao iniciar uma migração de máquina virtual, os switches que estavam no local 
-de origem e os do local de destino são agrupados em um único switch virtual. 
+Ao iniciar uma migração de máquina virtual, os comutadores que estavam no local 
+de origem e os do local de destino são agrupados em um único comutador virtual. 
 Todo o fluxo de dados é repassado ao controlador SDN que controla todo o 
 tráfego durante o processo de migração. 
-Concluída a migração o LIME reprograma os switches e descarta a necessidade 
+Concluída a migração o LIME reprograma os comutadores e descarta a necessidade 
 do controlador SDN interferir no trafego.
 
 Os dispositivos intermediários (\emph{middleboxes}) são parte crucial das 
-grandes redes comporativas, centros de dados 
+grandes redes corporativas, centros de dados 
 (\emph{datacenters}) e computação na nuvem (\emph{clouds}). 
 Seu gerenciamento é complexo dinâmico.
-O artigo \citep{aaron2012toward} apresenta a idéia de um arcabouço 
+O artigo \citep{aaron2012toward} apresenta a ideia de um arcabouço 
 (\emph{framework}) utilizando SDN para gerenciar os dispositivos 
 \emph{middleboxes}. 
 
@@ -342,7 +342,7 @@ diferentes topologias de rede dentro do contexto de \emph{datacenter}
 em que a abstração em grafos não foi adotada \citep{ripcord}. 
 
 Raghavendra \emph{et al.} apresenta um módulo em grafos com capacidade 
-de atualização dinâmica com uma API para algorítmos em grafos
+de atualização dinâmica com uma API para algoritmos em grafos
 \citep{ramya2012dynamic}.
 Esse trabalho não possui nenhuma integração com algum controlador SDN,
 que é a base da avaliação do presente trabalho.
