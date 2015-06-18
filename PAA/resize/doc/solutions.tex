@@ -1,0 +1,44 @@
+%\chapter{Soluções Propostas}
+\section{Soluções Propostas}
+
+\subsection{Solução adotada}
+\label{sol:intro}
+
+O problema de redimensionamento em função do conteúdo da imagem 
+pode ser solucionado de diversas maneiras. O presente trabalho 
+baseia-se em um algorítmo chamado \emph{Seam Carving}\cite{shai2007seam}. 
+Seu algorítmo modela a imagem como uma matriz de pixels, 
+sendo que cada pixel é uma cor em formato RGB. 
+A matriz representando uma imagem é dada na forma 
+$I(w \times h)$, onde $w$ é a largura e $h$ é a altura da imagem. 
+
+O algorítmo percorre caminhos conectados dessa matriz. 
+Um caminho conectado é uma sequência de pixels na imagem em uma 
+coluna ou uma linha. 
+Para manter a proprção retangular da imagem,
+deve-se remover uma linha ou uma coluna inteira por vez. 
+No contexto, será considerada apenas a remoção de colunas.
+Para a remoção de linhas basta utilizar a imagem transposta,
+fazendo, ao final, uma nova transposição para retornar a orientação
+original da imagem.
+
+A energia representa a ``importância'' dos pixels. 
+Para escolher o conjunto de pixels,
+busca-se uma sequência de pixels conectados, caminho, com menor energia.
+Um pixel é ``importante'' se ele é diferente de seus vizinhos. 
+A energia de um caminho é o somatório das energias
+(importâncias) dos pixels ao longo do caminho. 
+Os caminhos com menor energia são os escolhidos para serem removidos. 
+Esta técnica de redimensionamento busca 
+preservar o conteúdo relevante da imagem.
+
+O presente trabalho apresenta duas formas de soluções para o problema:
+uma solução baseada em \emph{grafos} e uma em \emph{programação dinâmica}. 
+Para a abordagem em \emph{grafos}, foi utilizado o algorítimo de 
+\emph{Dijkstra} para encontrar o caminho de menor energia. 
+A solução em \emph{programação dinâmica} foi baseada no artigo
+que descreve o \emph{Seam Carving}\citep{shai2007seam}.
+
+\input{doc/solutions_energy}
+\input{doc/solutions_graph}
+\input{doc/solutions_dynamic}

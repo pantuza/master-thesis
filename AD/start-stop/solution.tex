@@ -1,0 +1,29 @@
+% Arquivo com a sessão de Solução
+
+\section{Solução}
+
+Para solucionar o problema do presente trabalho, pode-se 
+levar em consideração o período de intervalo de transmissão \emph{rest}.
+Ao finalizar uma recepção $B$ sempre espera por um bit \emph{stop}. 
+Considerando que transmissões seriais possuem \emph{bound-rate} e que 
+tanto transmissor quanto receptor processam a transmissão utilizando
+seu \emph{clock} interno, pode-se ajustar o tempo de espera 
+\emph{rest} para o tempo de duração de uma transmissão que parte de $A$ 
+para $B$. 
+
+Essa abordagem torna a transmissão dos \emph{frames} mais lenta, logo 
+a trasmissão global também é afetada. 
+Contudo, ela garante que $B$ pode falhar em receber algum \emph{frame}, 
+mas em seu próximo recebimento $B$ se recupera de falha na trasmissão 
+não comprometendo as transmissões que virão.
+Conforme o modelo teórico de um sistema auto estabilizante, temos que uma 
+máquina de estados finitos para o modelo de comunicação \emph{Start-Stop}
+transita entre 3 estados ${start, data, stop}$. 
+A solução apresentada adiciona o estado \emph{rest}. 
+Assim teríamos o conjunto de estados definido por ${start, data, stop, rest}$.
+
+Como toda transmissão sempre começa com o bit 0, então $B$ por mais que
+tenha perdido a transmissão corrente, irá aguardar o período \emph{rest}
+e em seu próximo recebimento não terá comprometido as demais transmissões.
+As propriedades de fechamento (closure) e convergência são satisfeitas 
+através da solução proposta. 

@@ -1,0 +1,25 @@
+% Start Stop Transmission file
+
+\section{Transmissão Start-Stop}
+
+Transmissões Start-Stop são tipicamente utilizadas para comunicações seriais
+assíncronas. 
+Existem alguns padrões como o RS-232 
+\footnote{RS-232 foi uma padronização para comunicação de equipamentos da 
+década de 60}
+para esse tipo de comunicação utilizada por protocolos como UART
+\footnote{UART é um protocolo de Recepção/transmissão assíncrona universal
+que traduz dados entre formas paralelas e seriais}.
+
+Basicamente, transmissões assíncronas começam com o envio de um bit de 
+\emph{start}. 
+O bit 0 (o bit lógico \emph{LOW}) representa o início da 
+comunicação. 
+Em seguida são esperados 8 bits (1 byte) de dados. 
+O byte de dados são tipicamente codificados no formato de caracteres ASCII.
+Ao final o transmissor envia um bit de \emph{stop} representado por 
+1 (o bit lógico \emph{HIGH}).
+Cada transmissão concluída consiste no envio de um \emph{frame} quadro. 
+Conforme citado em \citep{asynchronous2009manish}, alguns equipamentos 
+possuem um intervalo para recebimento do próximo \emph{frame} chamado 
+\emph{rest}.

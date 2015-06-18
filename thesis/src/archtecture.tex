@@ -1,0 +1,136 @@
+\break
+\section{Arquiteturas}
+
+Esse capítulo apresenta diversas arquiteturas possíveis através do 
+protocolo OpenFlow. 
+O protocolo foi desenvolvido de uma maneira bem aberta para que pudesse 
+compreender diversas topologias de rede. 
+
+\subsection{Topologia simples}
+
+Uma topologia simples pode ser vista na figura \ref{fig:simple-topology} onde
+um controlador manipula o plano de dados através de um comutador OpenFlow 
+que possui 3 computadores (\emph{hosts}).
+
+Nesse cenário, até mesmo resolução ARP \emph{(Address Resolution Protocol)} 
+ficam a cargo do controlador. 
+A tabela ARP não é resolvida no comutador, mesmo todos as máquinas 
+\emph{(hosts)} estando na mesmo sub-rede. 
+Todo as decisões são feitas no plano de controle, logo o controlador 
+é quem manipula e atualiza a tabela de fluxos com as regras para 
+implementar a resolução de pacotes ARP.
+
+\begin{figure}[!h]
+    \centering
+    \includegraphics{img/simple-topology}
+    \label{fig:simple-topology}
+    \caption{Topologia simples de redes de computadores}
+\end{figure}
+
+
+\subsection{Um controlador para \emph{n} comutadores}
+
+O mesmo controlador pode gerenciar vários comutadores OpenFlow.
+Essa abordagem permite que o controlador tenha uma visão global da topologia
+da rede.
+Ele pode coletar informações estatísticas e ter controle sobre o estado 
+da rede em tempo real.
+A figura \ref{fig:controller-n-switches} apresenta essa topologia.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.85]{img/controller-n-switches}
+    \label{fig:controller-n-switches}
+    \caption{Topologia com um controlador e \emph{n} comutadores}
+\end{figure}
+
+É importante notar que os comutadores podem estar conectados uns aos outros.
+A figura \ref{fig:controller-n-linked-switches} mostra um exemplo em que 
+dois comutadores OpenFlow estão conectados entre si.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.8]{img/controller-n-linked-switches}
+    \label{fig:controller-n-linked-switches}
+    \caption{Topologia em que os comutadores OpenFlow 
+    estão diretamente conectados}
+\end{figure}
+
+
+\subsection{\emph{n} Controladores para \emph{n} comutadores}
+
+Diversas sub-redes podem ter seus próprios controladores.
+Essa topologia configura um cenário em que não há visão global da rede 
+por apenas um controlador. 
+Para que esse controle global existisse seria necessário que esses 
+controladores trocassem mensagens sobre a topologia da rede.
+A figura \ref{fig:n-controllers-n-switches} apresenta um exemplo dessa 
+topologia.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.9]{img/n-controllers-n-switches}
+    \label{fig:n-controllers-n-switches}
+    \caption{Topologia com \emph{n} controladores e \emph{n} comutadores}
+\end{figure}
+
+
+\subsection{Controlador distribuído}
+
+Um dos fatores mais importantes do protocolo OpenFlow foi permitir que 
+uma arquitetura distribuída pudesse ser aplicada ao controlador da rede.
+Sem essa possibilidade, o controlador se torna um gargalo na rede, 
+pois à medida que o número de pacotes aumenta, o volume de trabalho do 
+controlador cresce. 
+Através de uma arquitetura distribuída, o controlador pode dividir a carga 
+de trabalho com outros controladores.
+É importante ressaltar que mesmo distribuído, a entidade controlador
+é tratada como logicamente centralizada.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics{img/distributed-controller}
+    \label{fig:distributed-controller}
+    \caption{Topologia de um controlador distribuído}
+\end{figure}
+
+Conforme apresentado na figura \ref{fig:distributed-controller}, em uma
+arquitetura distribuída, os diversos servidores que compõem o controlador
+devem estabelecer um canal de comunicação para que possam trocar mensagens
+e tomar decisões de controle da rede de maneira global baseando-se nas
+informações contidas em cada um dos servidores.
+
+O protocolo OpenFlow, a partir de sua versão 1.3 permite que o comutador seja 
+configurado para trabalhar com controladores distribuídos.
+Quando operam no modo réplica, os controladores recebem as mesmas mensagens
+encaminhadas pelo comutador.
+Distribuir o controlador torna a rede mais confiável, dado que se um 
+controlador cair os comutadores continuam operando em modo OpenFlow.
+Os controladores podem também operar no modo mestre/escravo 
+(\emph{Master/slave}).
+Nesse cenário, um dos controladores é eleito mestre. 
+Ao configurar o controlador mestre, o comutador OpenFlow altera todos os demais
+controladores para o modo escravo. 
+Em qualquer instante, outro controlador pode solicitar alteração para 
+mestre, recomeçando assim, o processo de eleição.
+
+
+\subsection{Arquitetura para a Internet}
+
+Uma arquitetura foi proposta por \citep{barath2012software} em que SDN, 
+através do OpenFlow, fosse aplicada a arquitetura da Internet. 
+A imagem \ref{fig:edge-core-sdn} apresenta uma arquitetura de domínios 
+ao longo da Internet.
+Nesse cenário, os comutadores internos aos domínios de rede cuidam do 
+encaminhamento de pacotes no núcleo da rede.
+Já os comutadores de borda, são responsáveis pela comunicação entre domínios
+\emph{(Interdomain communication)}.
+Essa comunicação de borda pode ocorrer entre serviços, ou seja,
+na camada de aplicação.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\textwidth]{img/edge-core-sdn}
+    \label{fig:edge-core-sdn}
+    \caption{Arquitetura para Internet através de SDN e OpenFlow}
+\end{figure}

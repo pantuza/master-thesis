@@ -1,0 +1,94 @@
+%
+% Class document definition
+%
+\documentclass[msc]{template/ppgccufmg}  % [phd] | [msc]
+
+
+
+%
+% Document used packages
+%
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{type1ec}
+\usepackage{graphicx}
+\usepackage[a4paper,
+      portuguese,
+      bookmarks=true,
+      bookmarksnumbered=true,
+      linktocpage,
+      colorlinks,
+      citecolor=black,
+      urlcolor=black,
+      linkcolor=black,
+      filecolor=black,
+]{hyperref}
+\usepackage[square]{natbib}
+\usepackage{multirow}
+\usepackage[usenames,dvipsnames,table,xcdraw]{xcolor} 
+\usepackage{pbox}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{listings}
+
+\hyphenation{re-qui-si-to}
+
+\sloppy
+
+
+
+%
+% The document body and structure
+%
+\begin{document}
+
+
+
+% Definitions for ppgccufmg class
+\ppgccufmg{
+    title={Grafos como uma primitiva do plano de controle para análise e 
+        gerenciamento de Redes Definidas por Software},
+    authorrev={Pantuza, Gustavo},
+    cutter={M1234x}, % INFORMAÇÃO QUE VAI NA FICHA CATALOGRÁFICA
+    cdu={100.0*01.10},  % Define o identificador CDU do documento, fornecido pela Secretaria do Curso.
+    university={Universidade Federal de Minas Gerais},
+    course={Ciência da Computação},
+    address={Belo Horizonte},
+    date={2015-03},
+    keywords={Redes definidas por software, OpenFlow, Grafos, 
+        Gerenciamento de redes, Sistemas distribuídos, Redes de computadores},
+    advisor={Luiz Filipe Menezes Vieira},
+    abstract=[brazil]{Resumo}{src/abstract_pt},
+    abstract=[english]{Abstract}{src/abstract_en},
+    %abstract=[brazil]{Resumo Estendido}{resumoest}, %resumoest.tex
+    %dedication={dedicatoria},
+    %ack={agradecimentos},
+    %  ack=[Acknowledgments]{ack},
+    epigraphtext={Live long and prosper!}{Mr. Spock},
+}
+
+
+
+
+% Chapters and files that compose the document content
+\input{src/introduction}
+\input{src/foundation}
+\input{src/related}
+\input{src/balancer}
+\input{src/solution}
+\input{src/experiments}
+%\input{src/applications}
+%\input{src/analysis}
+%\input{src/future}
+\input{src/conclusion}
+
+
+% Bibliograph file
+\ppgccbibliography{src/references}
+
+
+%\input{apendice} % ARQUIVO CONTENDO OS APÊNDICES : OPCIONAL
+%\input{anexo} % ARQUIVO CONTENDO OS ANEXOS: OPCIONAL
+
+\end{document}

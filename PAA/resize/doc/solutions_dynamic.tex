@@ -1,0 +1,152 @@
+
+\subsection{Solução em progração dinâmica}
+\label{sol:dp}
+
+Considere-se o problema original e a função objetiva $f(I)$,
+já apresentada e implementada em ``\nameref{sol:graph}''. 
+A questão atual é: 
+existe forma de expressar matematicamente $f(I)$?
+
+Considere-se $e(x,y)$ a energia e
+$f(x,y)$ a função que retorna a energia acumulada do pixel $I(x,y)$
+ao longo do caminho de menor energia.
+Perceba-se que, se a imagem só possuir uma linha ($h = 1$), 
+a solução $s$ é encontrar o pixel com menor energia na coluna.
+
+\begin{gather}
+f(x,1) = e(x,1) \nonumber\\
+s = min(\{f(i,1)\}_{i=1}^w)
+\label{one}
+\end{gather}
+
+Se a imagem possuir duas linhas, 
+a solução é encontrar, na segunda linha, 
+o pixel com menor energia acumulada,
+ou seja, sua energia mais a menor energia dentre 
+os pixels adjacentes superiores na primeira linha:
+
+\begin{gather}
+f(x,2) = e(x, 2) + min(e(x-1, 1), e(x, 1), e(x+1, 1)) \nonumber\\
+s = min(\{f(i,2)\}_{i=1}^w) 
+\label{specific}
+\end{gather}
+
+Generalizando-se para uma imagem de altura $h$, 
+a solução é encontrar, na última linha, 
+o pixel com menor energia acumulada.
+Partindo da equação \ref{one} como passo base e 
+da equação \ref{specific} como indução:
+
+\begin{gather}
+f(x,y)=\left\{ 
+  \begin{array}{l}
+    e(x,y),\quad \text{se $y = 1$}\\
+    e(x,y)+min(f(x-1,y-1),f(x,y-1),f(x+1,y-1))
+  \end{array} \right. \nonumber\\
+s = min(\{f(i,h)\}_{i=1}^w)
+\label{general-f}
+\end{gather}
+
+Note-se que o caminho completo (solução completa)
+não pode ser obtido partindo-se apenas do pixel $s$.
+Por isso, 
+suponha-se uma matriz $S$ com as mesmas dimensões da imagem.
+Para cada pixel, 
+$S[x,y]$ representa um vetor de deslocamento 
+para um pixel adjacente superior.
+Como o deslocamento sempre ocorre 
+na direção e sentido da solução do problema, 
+os valores de $S$ precisam apenas indicar deslocamentos
+em direção perpendicular, no caso, no eixo $x$.
+Ou seja, $S[x,y] = \Delta{x}$.
+
+\[ S[x,y] = \left\{ 
+  \begin{array}{l}
+    -1, \quad \text{se $f(x-1, y-1)$ é mínimo em relação à I(x,y).}\\
+     0, \quad \text{se $f(x, y-1)$ é mínimo em relação à I(x,y) ou $y = 1$.}\\
+     1, \quad \text{se $f(x+1, y-1)$ é mínimo em relação à I(x,y).}\\
+  \end{array} \right.\]
+\label{general-S}
+
+Note-se que 
+(1) a energia é sempre positiva, 
+(2) o caminho de menor energia ocorre apenas entre pixels visinhos e 
+(3) em uma única direção e sentido.
+Considere-se um pixel $p_n$, 
+pertencente ao conjunto ordenado da solução $S$.
+Independente de qualquer algoritmo,
+o subconjunto $\{p_1,..,p_n\}$ representa 
+o menor caminho do pixel inicial $p_1$ até $p_n$\footnote{
+Em \cite[pg. 383]{clrs} existe uma prova por contradição para 
+a sub-estrutura ótima do problema de menor caminho
+em grafo com caracteristicas compatíveis 
+ao do problema de menor energia tratado no presente trabalho.
+}. 
+Ou seja, a cada passo da execução do algoritmo, 
+o menor caminho até o momento é encontrado.
+Todos estes fatores, aliado à prova por indução apresentada,
+indicam a existência de uma sub-estrutura ótima 
+para o problema do caminho mínimo.
+
+Além da sub-estrutura ótima, 
+a função$f$ possui sobreposição ({\it overlapping} de sub-problemas,
+pois para cada pixel $I(x,y)$, ela supõe a execução recursiva para 
+todos os pixels superiores atingíveis.
+Essa é uma oportunidade para ``memorização'' ({\it memoization})
+dos resultados parciais. 
+Considere-se $M[x,y]$ como uma matriz das dimensões da imagem,
+na qual cada valor representa a energia acumulada em um pixel.
+Nesse caso, a ordem de construção de $M$ 
+se torna fundamental: ela deve ser descentente, ou seja,
+na mesma direção mas de sentido inverso ao problema.
+Nesse caso, para $y$ variando de $1$ até $h$, nessa ordem:
+
+\begin{gather}
+M[x,y]=\left\{ 
+  \begin{array}{l}
+    e(x,y),\quad \text{se $y = 1$}\\
+    e(x,y)+min(M[x-1,y-1],M[x,y-1],M[x+1,y-1])
+  \end{array} \right. \nonumber\\
+s = min(\{M(i,h)\}_{i=1}^w)
+\label{general-M}
+\end{gather}
+
+O algoritmo para essa soluçãoi é composto das seguintes etapas:
+
+\begin{itemize}
+\item Construir as matrizes $M$ e $S$ em $O(wh)$ passos.
+\item Encontrar o pixel $s$ com a menor energia acumulada 
+    na última linha em $O(w)$ verificações.
+\item Definir, baseando-se em $S$, 
+    o caminho mínimo partindo de $s$ e 
+    retirá-lo da imagem com $O(h)$ iterações.
+\end{itemize}
+
+Considerando-se o método de análise de complexidade 
+adotado anteriormente:
+
+\begin{equation}
+\label{O-d}
+\begin{tabular}{r l}
+$T(w,h,\Delta{w})$ & $ = \sum \limits_{i=w}^{w - \Delta{w}}{O(ih) + O(i) + O(h)}$ \\
+$T(w,h)$ & $= O(wh) + O(w) + O(h)$ \\ 
+         & $= O(wh)$ \\
+$T(n)$   & $= O(n^2)$ \\
+\end{tabular}
+\end{equation}
+
+O espaço de memória necessário inclui a imagem, as matrizes $M$ e $S$,
+cada uma na ordem de $O(wh)$,
+o vetor de caminho mínimo, da ordem de $O(h)$ e algumas variáveis de 
+controle, na ordem de $O(1)$.
+Como os dados se somam, a complexidade de espaço é 
+$max(3 \times O(wh), O(h), O(1)) = O(wh) = O(n^2)$.
+
+Comparando-se os dois algoritmos,
+a solução do {\it Seam Carving} baseada em programação dinâmica é
+muito mais ``rápida'' que a solução baseada em grafo. 
+Ambas possuem a mesma complexidade de espaço.
+
+
+
+

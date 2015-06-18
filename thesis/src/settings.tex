@@ -1,0 +1,29 @@
+
+% Red comments on text
+\newcommand{\redtip}[1]{\textcolor{red}{\textbf{\textbf{#1}}}}
+
+% table cells padding
+\def\arraystretch{2}
+
+% Code style
+\lstset{
+    tabsize=4,
+    language=bash,
+    basicstyle=\ttfamily\footnotesize,
+    aboveskip={1.5\baselineskip},
+    columns=fixed,
+    showstringspaces=false,
+    extendedchars=true,
+    breaklines=true,
+    prebreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookleftarrow}},
+    frame=single,
+    numbers=left,
+    showtabs=false,
+    showspaces=false,
+    showstringspaces=false,
+    identifierstyle=\ttfamily,
+    keywordstyle=\color[rgb]{0,0,1},
+    commentstyle=\color[rgb]{0.000,0.392,0.000},
+    stringstyle=\color[rgb]{0.627,0.126,0.941},
+    numberstyle=\color[rgb]{0.545,0.270,0.074}
+}

@@ -1,0 +1,20 @@
+# Tex
+
+*.dvi
+*.aux
+*.pdf
+*.log
+*.ps
+*.eps
+doc/gnuplot/*.tex
+
+# Objects
+*.o
+
+# Binary
+bin/*
+!bin/.gitkeep
+!bin/valgrind.sh
+
+#valgrind outputs
+outputs/*.txt

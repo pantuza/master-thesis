@@ -1,0 +1,358 @@
+\chapter{Trabalhos relacionados}
+
+Essa seção apresenta os trabalhos relacionados ao presente projeto de 
+dissertação e discute suas características.
+A seção segue uma linha cronológica com temas e artigos que levam a 
+formulação que é a base do presente trabalho.
+
+\section{As redes em camadas (\emph{Overlay})}
+
+Um entendimento das implicações de redes \emph{overlays} para a 
+arquitetura da Internet, para o mercado e para a política
+é apresentado em \citep{clark2006overlay}. 
+De modo geral o artigo descreve, principalmente, as redes de 
+CDN (Redes de entrega de conteúdo), segurança e roteamento em camadas. 
+O artigo posiciona as \emph{overlays} como uma uma camada intermediária, 
+acima dos protocolos básicos IP e abaixo da camada de 
+aplicação. 
+Segundo essa visão, \emph{overlays} são para a internet básica (ponto-a-ponto)
+usuários finais em que, por exemplo, um roteador apenas encaminha pacotes sem
+se importar com seu conteúdo ou finalidade. 
+Por outro lado, para a aplicação ela se comporta como sua infraestrutura. 
+Segundo o autor, as \emph{overlays} se tornaram o principal meio de 
+evolução da arquitetura da Internet.
+
+Utilizar \emph{overlay} para tratar as deficiências da rede é custoso, no
+entanto atualizar a infraestrutura da Internet básica seria ainda mais. 
+As redes \emph{overlays} irão, de maneira disruptiva, representar o modo de 
+inovar dentro da Internet criando novos jogadores, 
+um novo cenário econômico e novas regras.
+
+A arquitetura RON (\emph{Resilient Overlay Network}) 
+\citep{anderson2001resilient} é capaz de tornar a entrega de pacotes na 
+Internet mais confiável através de detecção e recuperação de interrupções e 
+falhas no roteamento. 
+A Internet foi criada como uma rede \emph{overlay} que funcionava sobre a rede 
+de telefonia. Ou seja, o conceito de Redes \emph{overlay} não é uma ideia nova.
+No entanto, poucas dessas redes foram estruturadas para se recuperar e tolerar 
+falhas de forma eficiente. Nesse contexto é que as RONs demonstram ser 
+confiáveis.
+
+As RONs possuem três Metas/objetivos. O primeiro objetivo e principal é 
+permitir que um grupo de nós possam se comunicar independente de haver uma 
+falha na rota entre eles. 
+Isso torna o roteamento confiável. O segundo objetivo
+é tornar o roteamento e a seleção de próximo host com aplicações distribuídas 
+mais forte, mais eficiente do que tradicionalmente é feito com outras 
+arquiteturas e protocolos. 
+O terceiro e último objetivo é fornecer um framework 
+para implementação de políticas de roteamento que governam a escolha de rotas 
+dentro da rede. 
+
+As implicações de desempenho entre a rede \emph{overlay} Gnutella e a 
+infraestrutura da Internet é descrito em \citep{ripeanu2002mapping}. 
+Redes P2P agregam vários computadores que entram e saem da rede todo o tempo. 
+Esses Peers (computadores) podem não ter um endereço IP permanente. 
+As redes P2P são entidades independentes e auto organizadas. 
+Esse trabalho descreve um período de avaliação de sete meses do crescimento das 
+redes Gnutella assim como suas implicações de desempenho. 
+A rede é composta por serventes (computadores) que são os nós da rede virtual 
+na camada de aplicação em que seus enlaces são formados por conexões 
+TCPs abertas. 
+Ao analisar a topologia utilizada pelo Gnutella o artigo explicita que apesar 
+de essas redes serem eficientes em lidar com falhas aleatórias em computadores,
+elas estão vulneráveis a ataques bem planejados.
+
+\section{Redes centradas em conteúdo}
+
+\emph{Content-Centric Networking} (CCN, redes centradas no conteúdo) trata o 
+conteúdo como uma primitiva\citep{van2009networking}. 
+Esse conteúdo é requisitado através de um nome. 
+Em analogia ao IP, a CCN substitui o 'onde', utilizado no IP, pelo 'o que'. 
+A comunicação dentro da CCN é definida por 'consumidores de dados'. 
+Existem dois tipos de pacotes: \emph{Interest} (interesse) 
+e \emph{Data} (dado).    
+
+O documento descreve o funcionamento completo do roteamento dos pacotes 
+baseados em conteúdo, assim como seria seu comportamento dentro de 
+intra-domínios e inter-domínios. 
+A segurança acontece no nível do dado ao invés de apenas uma propriedade da 
+conexão pela qual o dado trafega. 
+O projeto de CCN's a protege de várias classes de ataques de rede. 
+O artigo apresenta comparações e avaliações de CCN's em relação ao TCP/IP. 
+São relacionados temas como eficiência na transferência de dados, 
+eficiência na distribuição de conteúdo, a estratégia de camadas da rede 
+e voz sobre CCN. 
+A CCN foi projetada para substituir o IP, mas pode ser distribuída 
+como um overlay. 
+
+O artigo \citep{dilley2002globally} apresenta como o CDN 
+(\emph{Content Delivery Network}) da Akamai's lidou com gargalos e falhas 
+através de servidores de borda. 
+Esses servidores são responsáveis por aliviar o serviço de estressar um único 
+servidor. 
+Servir conteúdo na \emph{Web} com apenas um servidor são sérios problemas 
+para escalabilidade, confiança e performance de um sítio/serviço.
+
+Ao estabelecer servidores de borda que possuem tarefas específicas, 
+é necessário tratar suas falhas individualmente.
+Em função dessas características, o artigo apresenta soluções com servidores de
+borda através da utilização de aproximação (proxy), provisionamento (caches), 
+replicação, sincronia, balanceamento de carga, tolerância a falhas, 
+autenticação, segurança, recuperação de erros e monitoramento de serviços. 
+O artigo propõe que o grande desafio para lidar com esses circunstâncias é 
+identificar os design patterns (padrões de desenho/implementação) que são 
+soluções de custo efetivo e úteis ao sistema de maneira global.
+
+
+Uma experiência relevante foi a utilização do CoralCDN durante seus cinco
+anos de deploy (publicação).
+Com o enorme crescimento em utilizar virtualização e deploy em cloud, 
+os serviços na Internet estão cada vez mais descentralizando
+sua infraestrutura. 
+O CoralCDN foi desenvolvido de maneira escalável e automática para lidar com 
+picos repentinos no tráfego de conteúdo \citep{freedman2010experiences}. 
+O artigo demonstra a sequência de acontecimentos que ocorrem dentro da rede de 
+aproximadores (proxys), servidores de índice, DNS e origem quando um cliente 
+requisita uma URL ao CDN. 
+
+O CoralCDN, objetiva poupar ao máximo os servidores origem. 
+A utilização de aproximadores (proxys) e provisionamento (cache) 
+garantem que esse objetivo seja cumprido. 
+O funcionamento interno do CDN estabelece políticas de acesso aos conteúdos. 
+Diferenciando políticas para recuperar conteúdos antigos, conteúdos não 
+populares, excessos para conteúdos populares e de muito acesso. O CDN 
+disponibiliza também, uma API aberta para permitir elasticidade na 
+distribuição de conteúdo. 
+
+O protocolo Chord de pesquisa de itens em nós dentro de uma 
+rede Peer-to-peer é apresentado em \citep{ion2001chord}. 
+O Chord executa apenas uma operação em que, dada uma chave, 
+ele mapeia a chave a um nó (host). 
+A tabela de roteamento Chord é distribuída e utiliza hashing para 
+atribuir uma chave a um nó. 
+O artigo prova que a complexidade algorítmica dessa busca é O(log N).
+O Chord simplifica o modelo P2P, lidando apenas com balanceamento de carga, 
+descentralização, escalabilidade, disponibilidade e nomeação flexível. 
+É provado que as buscas recursivas são mais eficientes em 
+função do tempo de execução do que as pesquisas iterativas. 
+Diferentemente de P2Ps como Napster e Gnutella, o protocolo Chord melhora a 
+escalabilidade da tarefa de embaralhamento (hashing), pois ele evita que 
+todos os nós tenham que saber sobre todos os demais nós. 
+
+ICN (Information Centric Network) \citep{bong2009information} é uma abordagem 
+parecida com a CCN (Content centric Network). 
+O artigo mostra uma arquitetura bem parecida com SDNs onde o plano de controle 
+está separado do plano de dados. Mostra também que esses planos são unidades 
+lógicas dentro da rede. Ou seja, o controlador pode ser composto por diversos 
+equipamentos (entidades) na rede. 
+
+O artigo, abstrai o funcionamento da busca de dados dentro da rede. 
+Ele parte do pressuposto que a busca funcione como um DNS, dado que a busca é 
+feita por pacotes que carregam os interesses de quem iniciou a requisição. 
+Os comutadores ao longo da rede fazem cache dos pacotes de dado, podendo 
+responder a requisição sozinhos. 
+
+\section{O protocolo OpenFlow e as inovações em rede}
+
+A evolução da Internet é uma discussão polêmica. 
+O artigo \citep{jennifer2010future} apresenta dois pontos de vista.
+O primeiro defende que a Internet necessita de um novo projeto. 
+O segundo apresenta um ponto de vista contrário argumentando que a rede 
+deve evoluir e não ser reconstruída.
+
+O primeiro ponto de vista levanta questionamentos como se deve-se continuar
+fazendo melhorias na rede ou se construir uma nova arquitetura seria melhor, 
+dado que elas seriam irrestritas pelo atual modelo. 
+É argumentado que o sucesso da atual Internet não significa que 
+ela está amadurecida. 
+É descrito que a rede não está preparada para os dispositivos e 
+pequenos sensores, atualmente utilizados dentro da rede, que podem 
+revolucionar a sociedade contemporânea.
+
+Um contraponto é apresentado dizendo que a economia industrial moderna não 
+está habilitada a receber essas tecnologias emergentes e que isso envolveria 
+custos inconcebíveis em mudar operação e tecnologia envolvida. 
+É descrito também que os estudos de novas arquiteturas para a rede, para que 
+seja aceitável, deve substituir por completo o atual modelo. 
+Do contrário, seria apenas mais exercício intelectual para a construção 
+da nova rede. 
+
+O projeto do protocolo OpenFlow foi apresentado em \citep{nick2008openflow}. 
+Ele é uma forma de pesquisadores experimentarem novos protocolos nas redes 
+utilizadas no dia-a-dia. Ele é baseado nos comutadores ethernet com uma tabela de 
+fluxos e uma interface bem definida de comunicação com computadores externos. 
+
+Os pesquisadores podem controlar seus próprios fluxos, escolhendo uma rota
+alternativa para os pacotes ou executando algum processamento no pacote. 
+Eles podem testar modelos de segurança, schemas de endereçamento e até 
+alternativas ao protocolo IP. 
+É possível fazer estudos em redes isoladas, em administração de redes, 
+em controle de acesso, autenticação e processamento de pacotes.
+O OpenFlow possibilita experimentações de maneira uniforme em comutadores 
+completamente heterogêneos. 
+
+Um projeto (\emph{design}) de rede é apresentado através abordagem híbrida 
+entre MPLS e SDN com o objetivo de simplificar o hardware e flexibilizar 
+o controle \citep{fabric2012martin}. 
+
+O artigo apresenta uma divisão lógica entre núcleo (\emph{core}) e 
+borda (\emph{edge}) da rede.
+O núcleo simplifica a rede.
+Ele se preocupa apenas com o encaminhamento de pacotes dentro do núcleo 
+através dos rotulagens (\emph{labels}) MPLS. 
+A borda mantém um controlador SDN que permite adicionar os rótulos 
+\emph{labels} MPLS para repassar ao núcleo. 
+O serviços conversam apenas com a borda. 
+Uma máquina (\emph{host}) ao enviar um pacote a outra máquina em outro domínio, 
+primeiramente passa pelo controlador na borda. 
+Esse pacote chega pelo controlador de entrada (borda) e é repassado ao 
+controlador do núcleo com o rótulo colocado pelo controlador da borda.
+O núcleo por sua vez faz o devido encaminhamento à máquina de destino. 
+Essa abordagem simplifica e desacopla as redes. 
+Elas podem ter no núcleo algoritmos e protocolos próprios sem interferir nas 
+redes adjacentes pois há um isolamento bem estruturada através do controlador 
+na borda das redes.
+
+Baseando-se em SDN, o artigo \citep{barath2012software} propõe uma arquitetura 
+na linha evolucionária para Internet.
+Esse trabalho é uma generalização para a Internet do \citep{fabric2012martin}.
+Como a arquitetura da Internet possui deficiências e possui diversos fatores
+que impedem que ela seja substituída, o artigo traz uma abordagem que dissocia 
+a infraestrutura da arquitetura da Internet. 
+
+A arquitetura proposta envolve fundamentos trazidos de SDN, MPLS e 
+encaminhamento via programas (\emph{software forwarding}). 
+Nessa arquitetura, as redes seriam domínios. 
+Cada domínio possui um controlador do núcleo (\emph{core}) e um 
+de borda (\emph{edge}). 
+Os controladores de borda controlam o tráfego externo. 
+Os de núcleo controlam o interior dos domínios. 
+Isso cria uma camada de isolamento em que pode-se alterar protocolos e 
+algoritmos em ambos os ambientes, núcleo e borda, sem que um interfira 
+no outro.
+Além disso foram mostrados modelos de serviços que podem ser estruturados 
+sobre essa arquitetura. 
+O artigo apresenta três exemplos de sistemas de redes que poderiam funcionar 
+perfeitamente sobre essa arquitetura.
+
+\section{Computação em arquiteturas na nuvem}
+
+O artigo \citep{arsalan2009applying} apresenta o NOX 
+(\emph{Networking Operanting System}). 
+O NOX traz um controle lógico centralizado de alto nível de abstrações de 
+rede como usuários, topologia, serviços e controle da rede. 
+Através do OpenFlow ele adiciona entradas de fluxo (\emph{flow entries}) na 
+tabela de encaminhamento dos comutadores. 
+
+O projeto permite implementações em C++ e Python. 
+A abordagem do artigo é voltada para datacenters. 
+São demonstradas interações com PortLand e LV2. 
+O grande objetivo desse sistema de gerenciamento é prover um controle da rede,
+flexível suficiente, para atender uma ampla gama de necessidades de rede em 
+datacenters. 
+Pelo fato de artigo trazer uma abordagem mais comercial (\emph{datacenters}), 
+são demonstradas as necessidades e problemas enfrentados por 
+\emph{datacenters} e como o NOX demonstra-se uma ferramenta que flexibiliza 
+e facilita o design dessas aplicações comerciais.
+
+Visando solucionar o problema de migração de máquinas virtuais, 
+o artigo \citep{erik2012live} apresenta LIME.
+Ele é uma solução baseada em SDN que isola a aplicação da topologia da rede e 
+de como ela é controlada. 
+A proposta visa reduzir o tempo com que a migração e sincronia acontecem.
+
+Ao iniciar uma migração de máquina virtual, os comutadores que estavam no local 
+de origem e os do local de destino são agrupados em um único comutador virtual. 
+Todo o fluxo de dados é repassado ao controlador SDN que controla todo o 
+tráfego durante o processo de migração. 
+Concluída a migração o LIME reprograma os comutadores e descarta a necessidade 
+do controlador SDN interferir no trafego.
+
+Os dispositivos intermediários (\emph{middleboxes}) são parte crucial das 
+grandes redes corporativas, centros de dados 
+(\emph{datacenters}) e computação na nuvem (\emph{clouds}). 
+Seu gerenciamento é complexo dinâmico.
+O artigo \citep{aaron2012toward} apresenta a ideia de um arcabouço 
+(\emph{framework}) utilizando SDN para gerenciar os dispositivos 
+\emph{middleboxes}. 
+
+O trabalho apresenta um arcabouço (\emph{framework}) que possibilita 
+novas aplicações.
+Com a separação do plano de dados do plano de controle através da SDN, 
+tem-se maior flexibilidade para posicionar os dispositivos (\emph{middleboxes})
+dentro da rede, assim como simplificar seu gerenciamento. 
+São apresentados também abstrações e interfaces para lidar
+com os estados dos dispositivos intermediários (\emph{middleboxes}). 
+Essa tarefa não é nada trivial, pois esses dispositivos (\emph{middleboxes}) 
+podem ser muito diferentes uns dos outros.
+
+A configuração em tempo real (\emph{run-time}) de redes para 
+grandes volumes de dados (\emph{big data}) com o objetivo de otimizar a 
+aplicação juntamente com o desempenho e utilização da rede é apresentado
+em \citep{programming2012guohui}.
+O trabalho se baseia na utilização de \emph{switches} óticos como premissa 
+para aumentar a performance.
+A abordagem dos autores envolve um controlador SDN que é uma 
+interface para as aplicações dentro do datacenter. 
+O artigo foca bastante na topologia física e no roteamento de 
+aplicações em \emph{big data}.
+Ao utilizar um controlador SDN, as aplicações em \emph{big data} tornam-se 
+mais próximas à rede que está abaixo da aplicação. 
+O artigo utiliza o \emph{Hadoop} como exemplo de testes. São discutidos 
+aspectos de integração de rede, agendamento de tarefas, topologia e 
+configuração de rotas para processos \emph{Hadoop}. 
+
+
+\section{Recuperação de informação topológica}
+
+A necessidade de se buscar e monitorar dados 
+específicos, principalmente em redes complexas, atrai o desenvolvimento
+de linguagens DSL (linguagens de domínio especifico) que simplifique, 
+organize, generalize e garanta eficiência na manipulação desses dados.
+Esse é o exemplo do Frenetic \citep{foster2011frenetic} 
+e do Pyretic \citep{monsanto2013composing}.
+
+O Pyretic introduz novas abstrações para criação de aplicações de vários
+módulos independentes, que em juntos administram o tráfego e 
+abstraem a topologia da rede. 
+O sistema utiliza uma linguagem chamada Pyretic \citep{monsanto2013composing}. 
+O sistema funciona em cima do POX. 
+Ele converte regras de plano de controle programadas em Pyretc para o plano 
+de dados dos dispositivos de rede dentro de um SDN. 
+O artigo apresenta o conjunto de regras de composição como regras de ação, 
+regras de predicado, regras de consulta, etc. 
+O Pyretic é uma linguagem que permite programadores a criarem grandes e 
+sofisticadas aplicações SDN com pequenos módulos independentes. 
+
+Enquanto a abordagem da DSL é baseada em atuação, execução,
+conjunta com o controlador,
+o NIB é baseada em um banco de dados distribuído,
+com uma abordagem mais ampla e atacando problemas mais gerais
+como persistência, concorrência, redundância, escalabilidade, etc.
+
+\section{A abordagem em grafos}
+
+A abordagem de representar a rede na forma de um grafo foi mencionada 
+por Casado \emph{et al.} em um dos primeiros artigos sobre SDN
+\citep{martin2010virtualizing}.
+No entanto, nenhum detalhe de implementação é apresentado.
+Em um trabalho futuro, uma solução SDN foi desenvolvida através de 
+diferentes topologias de rede dentro do contexto de \emph{datacenter} 
+em que a abstração em grafos não foi adotada \citep{ripcord}. 
+
+Raghavendra \emph{et al.} apresenta um módulo em grafos com capacidade 
+de atualização dinâmica com uma API para algoritmos em grafos
+\citep{ramya2012dynamic}.
+Esse trabalho não possui nenhuma integração com algum controlador SDN,
+que é a base da avaliação do presente trabalho.
+
+O controlador \emph{Onix} \citep{teemu2010onix} foi projetado em torno do 
+conceito NIB (\emph{Network Information Base}), que é uma base 
+de informações da rede.
+Essa base mantém uma visão global da rede de maneira similar à 
+MIB (\emph{Management Information Base}) implementada sobre o
+protocolo SNMP.
+Essa representação baseada em grafos é alcançada indexando cada
+entrada de elemento em relação a seus vizinhos.
+
