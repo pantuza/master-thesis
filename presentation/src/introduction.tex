@@ -15,3 +15,79 @@
     \end{figure}
 \end{frame}
 
+
+%
+% Motivation
+%
+\begin{frame}\frametitle{Motivação}
+   
+    \begin{itemize}
+        \setlength{\itemsep}{1cm}
+        \item Aplicações em rede executam algoritmos em grafos para tomada de
+            decisões ou para obter algum resultado.
+        \item Em muitos casos, essa computação é feita em diferentes nós da 
+            rede de maneira repetitiva.
+        \item Em função da natureza logicamente centralizada do plano 
+            de controle é possível minimizar a quantidade de aplicações 
+            computando as mesmas informações. 
+    \end{itemize}
+\end{frame}
+
+
+%
+% Problem
+%
+\begin{frame}\frametitle{Problema}
+    \begin{itemize}
+        \setlength{\itemsep}{1cm}
+        \item Uma visão topológica global é um dos principais aspectos do 
+              paradigma das Redes definidas por software.
+        \item Grafos são uma modelagem direta para representar de maneira 
+              natural e precisa a topologia de uma rede.
+        \item Em função disso, grafos deveriam ser um recurso básico, 
+              uma premissa em controladores SDN para representar a rede.
+    \end{itemize} 
+\end{frame}
+
+
+%
+% Scientific contributions
+%
+\begin{frame}\frametitle{Contribuições científicas}
+    \begin{itemize}
+        \setlength{\itemsep}{1cm}
+        \item O presente trabalho apresenta uma abstração da rede na forma 
+              de um grafo para o gerenciamento de redes no plano controle 
+              possibilitando automatizar detecção de falhas e 
+              provisionamento para um grafo dinamicamente atualizado.
+        \item Avaliações do controlador e da rede são apresentadas dos
+              experimentos como prova de conceito.
+
+    \end{itemize}
+\end{frame}
+
+
+%
+% state of art
+%
+\begin{frame}\frametitle{Estado da arte}
+    \begin{itemize}
+        \item A ideia de visão topológica da rede está presente em vários 
+            controladores SDN. O controlador NOX \citep{gude2008nox} 
+            trabalha a topologia da rede baseando-se em eventos.
+        \item Um banco de dados distribuído é proposto no controlador Onix 
+            \citep{teemu2010onix}.
+        \item Em \citep{hinrichs2009pratical} um sistema com regras de predição 
+            estabelecem essa abstração.
+        \item Linguagens de domínio específico (DSL) como o Frenetic 
+            \citep{foster2011frenetic} e o Pyretic 
+            \citep{monsanto2013composing} permitem a recuperação de 
+            informações topológicas da rede.
+        \item Em \citep{ramya2012dynamic} uma API em grafos é apresentado 
+            dentro do context de computação na nuvem.
+        \item Nossa proposta apresenta a avaliação da abordagem em grafos e 
+            sua implementação no controlador POX \citep{pox2015}, de código 
+            aberto e voltado para pesquisa.
+    \end{itemize} 
+ 
+\end{frame}

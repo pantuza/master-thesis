@@ -11,6 +11,7 @@
 \usepackage{calc}
 \usepackage{pbox}
 \usepackage[absolute,overlay]{textpos}
+\usepackage[square]{natbib}
 
 % colors for links
 \definecolor{links}{HTML}{2A1B81}
@@ -42,6 +43,8 @@
 
 \begin{document}
 
+\nocite{*} 
+
 {
 % remove the next line if you don't want a background image
 \usebackgroundtemplate{\includegraphics[width=\paperwidth,height=\paperheight]{images/networking.jpg}}
@@ -66,5 +69,9 @@
 \input{src/conclusion}
 \input{src/questions}
 
+\begin{frame}[allowframebreaks]
+        \frametitle{Referências}
+        \bibliography{src/references}
+\end{frame}
 
 \end{document}
