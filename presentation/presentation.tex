@@ -18,12 +18,23 @@
 
 \mode<presentation>{\usetheme{tud}}
 
-\title[SDN]{SDN e as inovações em rede}
+\title[SDN]{Grafos como uma primitiva do plano de controle para análise e 
+    gerenciamento de Redes Definidas por Software}
 %\subtitle
 \institute{DCC - UFMG}
 \author{Gustavo Pantuza}
 \date{01 de Novembro}
 
+% Insert frame before each subsection (requires 2 latex runs)                                                                                                                                        
+\AtBeginSubsection[] {
+\begin{frame}<beamer>\frametitle{\titleSubsec}
+\tableofcontents[currentsection,currentsubsection]  % Generation of the Table of Contents
+\end{frame}
+}
+% Define the title of each inserted pre-subsection
+\newcommand*\titleSubsec{Próxima seção}
+% Define the title of the "Table of Contents" frame
+\newcommand*\titleTOC{Agenda}
 
 % define a symbol which can be removed if you don't need it
 \newcommand{\field}[1]{\mathbb{#1}}
@@ -38,12 +49,21 @@
 \frame{\titlepage}
 }
 
+{\setbeamertemplate{footline}{\usebeamertemplate*{minimal footline}}
+\begin{frame}\frametitle{\titleTOC}
+        \tableofcontents
+\end{frame}
+}
 
 \input{introduction}
-\input{sdn}
-\input{arch}
+\input{foundation}
 \input{market}
+\input{related}
+\input{balancer}
+\input{solution}
+\input{experiments}
 \input{future}
+\input{conclusion}
 \input{questions}
 
 
