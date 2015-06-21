@@ -1,0 +1,50 @@
+% TU Delft Beamer template
+% Author: Maarten Abbink
+% Delft University of Technology
+% March 2014
+% Version 2.0
+% Based on original version 1.0 of Carl Schneider
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[brazil]{babel}
+\usepackage{calc}
+\usepackage{pbox}
+\usepackage[absolute,overlay]{textpos}
+
+% colors for links
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=blue,urlcolor=links}
+
+\mode<presentation>{\usetheme{tud}}
+
+\title[SDN]{SDN e as inovações em rede}
+%\subtitle
+\institute{DCC - UFMG}
+\author{Gustavo Pantuza}
+\date{01 de Novembro}
+
+
+% define a symbol which can be removed if you don't need it
+\newcommand{\field}[1]{\mathbb{#1}}
+\newcommand{\Zset}{\field{Z}}
+
+\begin{document}
+
+{
+% remove the next line if you don't want a background image
+\usebackgroundtemplate{\includegraphics[width=\paperwidth,height=\paperheight]{images/networking.jpg}}
+\setbeamertemplate{footline}{\usebeamertemplate*{minimal footline}}
+\frame{\titlepage}
+}
+
+
+\input{introduction}
+\input{sdn}
+\input{arch}
+\input{market}
+\input{future}
+\input{questions}
+
+
+\end{document}
