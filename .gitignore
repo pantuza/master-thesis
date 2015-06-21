@@ -10,6 +10,9 @@
 *.bbl
 *.blg
 thesis/bin/thesis.pdf
+presentation/presentation.pdf
+*.nav
+*.snm
 *.out
 *.lof
 *.lot
