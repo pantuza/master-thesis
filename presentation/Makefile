@@ -7,8 +7,8 @@ BIB := bibtex
 
 FLAGS := -halt-on-error -file-line-error
 
-SRC := .
-BIN := .
+SRC := src
+BIN := bin
 
 DOCUMENT := presentation
 
