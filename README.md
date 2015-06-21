@@ -40,7 +40,7 @@ Distributed Systems, Software Defined Networking, Control Plane, Software Design
 This project is written in [LaTex](http://www.latex-project.org/).
 There is two folders in this project as follows. 
 'thesis' has the master's thesis document using the [PPGCC](https://www.dcc.ufmg.br/pos/alunos/modelodisstese.php) template.
-'presentation' has the slides using the [Beamer](http://www.ctan.org/tex-archive/macros/latex/contrib/beamer/) template.
+'presentation' has the slides using the [TUDelft Beamer](http://www.ewi.tudelft.nl/en/the-faculty/departments/applied-mathematics/latex/beamer/) template.
 Inside each directory there is a [Makefile](https://www.gnu.org/prep/standards/html_node/Makefile-Conventions.html) that implement rules 
 to build, run and clean projects.
 The results of projects build are PDF files: thesis.pdf and presentation.pdf.
