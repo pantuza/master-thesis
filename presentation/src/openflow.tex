@@ -26,7 +26,7 @@
     \item Openflow é um protocolo que possibilita experimentos e aplicações
           em SDN
     \end{itemize}
-    	\begin{figure}[h]
+    \begin{figure}[h]
         \centering
         \includegraphics[scale=0.3]{images/openflow.png}
     \end{figure}
@@ -39,9 +39,11 @@
 \begin{frame}\frametitle{Openflow}
 
     \begin{itemize}
-    \item \href{http://archive.openflow.org/documents/openflow-wp-latest.pdf}{Artigo} publicado em 2008 
-    \item Permitiu que pesquisadores pudessem criar experimentos com novos
-          protocolos em redes convencionais 
+        \setlength{\itemsep}{.5cm}
+    \item \href{http://archive.openflow.org/documents/openflow-wp-latest.pdf}
+        {OpenFlow: Enabling Innovation in Campus Networks} publicado em 2008 
+    \item Permitiu que pesquisadores criassem experimentos com novos
+          protocolos em redes convencionais.
     \end{itemize}
 
 \end{frame}
@@ -52,14 +54,178 @@
 %
 % Openflow
 %
-\begin{frame}\frametitle{Porque é tão importante?}
+\begin{frame}\frametitle{Definição}
 
     \begin{itemize}
-    \item A arquitetura da Internet tem deficiências
-    \item Inovações em rede custam caro
-    \item A arquitetura continua acoplada à infraestrutura
-    \item O Openflow define um padrão que qualquer fabricante de     
-          \emph{hardware} de rede pode implementar
+        \setlength{\itemsep}{.5cm}
+        \item Consiste em uma interface de programação para o \emph{switch}
+        \item A interface separa de maneira clara os planos de dados e de 
+            controle
+        \item Um programador pode, através de um programa, controlar a
+            forma como um \emph{switch} executa seu encaminhamento de pacotes
+        \item O OpenFlow foi criado como um padrão aberto
+    \end{itemize}
+\end{frame}
+
+
+%
+% Openflow
+%
+\begin{frame}\frametitle{Componentes}
+    Na arquitetura estabelecida pelo protocolo OpenFlow existem dois papéis
+    principais.
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics{images/controller-secure-switch}
+        \caption{Da esquerda pra direita, plano de controle e plano de dados}
+    \end{figure}
+
+\end{frame}
+
+
+%
+% Openflow
+%
+\begin{frame}\frametitle{Arquitetura OpenFlow}
+
+    \begin{figure}[h!]
+        \centering
+        \label{fig:switch-arch}
+        \includegraphics[width=\linewidth]{images/switch-architecture}
+        \caption{Arquitetura do comutador OpenFlow}
+    \end{figure}
+
+\end{frame}
+
+
+
+%
+% Switch Archtecture
+%
+\begin{frame}\frametitle{Arquitetura Openflow}
+
+    \begin{itemize}
+        \setlength{\itemsep}{.5cm}
+    \item \textbf{Canal seguro OpenFlow}: É a conexão segura entre o
+          controlador e o switch openflow
+    \item \textbf{Tabela de fluxos}: É a tabela onde são identificados os fluxos
+    \item Para cada fluxo tem-se uma ação (action) a ser tomada
+    \end{itemize}
+\end{frame}
+
+
+%
+% Switch Archtecture
+%
+\begin{frame}\frametitle{Tabela de fluxos}
+    \input{tbl/flow-table}
+\end{frame}
+
+%
+% Switch Archtecture
+%
+\begin{frame}\frametitle{Cabeçalho OpenFlow}
+
+    \begin{itemize}
+    \item Um fluxo é identificado pelos seguintes campos do cabeçalho 
+          Openflow:
+    \end{itemize}
+	\begin{figure}[h]\hspace*{-1.2cm}
+        \centering
+        \includegraphics[width=\linewidth]{images/openflow-header}
+    \end{figure}
+\end{frame}
+
+
+
+%
+% Actions
+%
+\begin{frame}\frametitle{Ações}
+
+	\begin{figure}[h]
+        \centering
+        \includegraphics[scale=0.5]{images/action.png}
+    \end{figure}
+    
+\end{frame}
+
+
+%
+% Actions
+%
+\begin{frame}\frametitle{Tipos de ações}
+
+    \begin{itemize}
+    \item Forwarding
+    \item Drop
+    \item Set
+    \item strip
+    \item Copy-in
+    \item Copy-out
+    \item Push
+    \item Pop
+    \item Dec
     \end{itemize}
 
 \end{frame}
+
+
+%
+% Controller
+%
+\begin{frame}\frametitle{Controlador}
+
+    \begin{itemize}
+    \item É um software que se conecta de maneira segura ao switch openflow
+          com o objetivo de manipular sua tabela de fluxos
+    \item Esse software pode ser distribuído
+    \item Ele representa uma entidade lógica e centralizada
+    \item É possível ter visão e controle de estado global da rede
+    \item Permite que outros serviços e programas façam requisições e troca
+          de mensagem com o plano de controle da rede
+    \item Pode calcular estatísticas da rede
+    
+    \end{itemize}
+
+\end{frame}
+
+
+%
+% Controller
+%
+\begin{frame}\frametitle{Controlador}
+
+    \begin{itemize}
+    \item Cabe ao programador lidar com os problemas típicos em 
+          desenvolvimento de software:
+          \begin{itemize}
+          \item Tolerância a falha
+          \item Persistência
+          \item Eficiência
+          \item design de implementação
+          \item debugging
+          \item Testes
+          \end{itemize}
+    \end{itemize}
+\end{frame}
+
+%
+% Controller
+%
+\begin{frame}\frametitle{Controlador}
+
+    \begin{itemize}
+    \item Controladores Openflow:
+          \begin{itemize}
+          \item Biblioteca \href{http://opennetworkingfoundation.github.io/libfluid/index.html}{Libfluid}
+                para criação de aplicações/controladores em SDN
+          \item \href{http://www.noxrepo.org/nox/about-nox/}{Nox Controller}
+          \item \href{https://openflow.stanford.edu/display/Beacon/Home}{Beacon}
+          \item \href{http://www.noxrepo.org/pox/about-pox/}{Pox Controller}
+          \item \href{http://osrg.github.io/ryu/}{Ryu}
+          \end{itemize}
+    \end{itemize}
+\end{frame}
+
