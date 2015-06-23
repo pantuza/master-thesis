@@ -157,17 +157,29 @@
 %
 \begin{frame}\frametitle{Tipos de ações}
 
-    \begin{itemize}
-    \item Forwarding
-    \item Drop
-    \item Set
-    \item strip
-    \item Copy-in
-    \item Copy-out
-    \item Push
-    \item Pop
-    \item Dec
-    \end{itemize}
+    \begin{columns}[T] % align columns
+        \begin{column}{.33\textwidth}
+
+            \begin{itemize}
+                \item Forwarding
+                \item Drop
+                \item Set
+                \item strip
+                \item Copy-in
+                \item Copy-out
+                \item Push
+                \item Pop
+                \item Dec
+            \end{itemize}
+        \end{column}%
+        \hfill%
+        \begin{column}{.67\textwidth}
+            \begin{figure}[!htb]
+                \centering
+                \includegraphics[scale=0.5]{images/action-types}
+            \end{figure}
+        \end{column}%
+    \end{columns}
 
 \end{frame}
 
@@ -178,15 +190,14 @@
 \begin{frame}\frametitle{Controlador}
 
     \begin{itemize}
+        \setlength{\itemsep}{.5cm}
     \item É um software que se conecta de maneira segura ao switch openflow
           com o objetivo de manipular sua tabela de fluxos
     \item Esse software pode ser distribuído
     \item Ele representa uma entidade lógica e centralizada
-    \item É possível ter visão e controle de estado global da rede
-    \item Permite que outros serviços e programas façam requisições e troca
-          de mensagem com o plano de controle da rede
+    \item Permite que outros programas troquem mensagens com o 
+        plano de controle da rede
     \item Pode calcular estatísticas da rede
-    
     \end{itemize}
 
 \end{frame}
@@ -204,12 +215,13 @@
           \item Tolerância a falha
           \item Persistência
           \item Eficiência
-          \item design de implementação
+          \item Projeto/design de implementação
           \item debugging
           \item Testes
           \end{itemize}
     \end{itemize}
 \end{frame}
+
 
 %
 % Controller
@@ -228,4 +240,3 @@
           \end{itemize}
     \end{itemize}
 \end{frame}
-
