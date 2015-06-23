@@ -4,15 +4,11 @@
 %
 % Simple topology
 %
-\begin{frame}\frametitle{Arquitetura Openflow}
+\begin{frame}\frametitle{Topologia simples}
 
-    \begin{itemize}
-    \item Uma topologia simples:
-    \end{itemize}
-    
 	\begin{figure}[h]
         \centering
-        \includegraphics[scale=0.3]{images/simple-topology.png}
+        \includegraphics[scale=.8]{images/simple-topology}
     \end{figure}
 \end{frame}
 
@@ -20,32 +16,23 @@
 %
 % N openflow 
 %
-\begin{frame}\frametitle{Arquitetura Openflow}
+\begin{frame}\frametitle{Um controlador para \emph{n} comutadores}
 
-    \begin{itemize}
-    \item Um controlador para vários \emph{Switches}
-    \end{itemize}
-    
 	\begin{figure}[h]
         \centering
-        \includegraphics[scale=0.4]{images/n-openflow-switches.png}
+        \includegraphics[scale=.8]{images/controller-n-switches}
     \end{figure}
 \end{frame}
 
 
 %
-% SDN inter domain
+% N to N
 %
-\begin{frame}\frametitle{Arquitetura Openflow}
+\begin{frame}\frametitle{\emph{n} controladores para \emph{n} comutadores}
 
-    \begin{itemize}
-    \item Comunicação entre domínios de rede
-    \end{itemize}
-    
-   
 	\begin{figure}[h]\hspace*{-1cm}
         \centering
-        \includegraphics[scale=0.3]{images/edge-core-sdn.png}
+        \includegraphics[scale=.8]{images/n-controllers-n-switches}
     \end{figure}
 \end{frame}
 
@@ -54,14 +41,22 @@
 %
 % Distributed openflow controller
 %
-\begin{frame}\frametitle{Arquitetura Openflow}
+\begin{frame}\frametitle{Controladores distribuídos}
 
-    \begin{itemize}
-    \item Controlador distribuído
-    \end{itemize}
-    
 	\begin{figure}[h]
         \centering
-        \includegraphics[scale=0.4]{images/distributed_sdn_controller.png}
+        \includegraphics[scale=.9]{images/distributed_sdn_controller}
+    \end{figure}
+\end{frame}
+
+
+%
+% SDN for Internet architecture
+%
+\begin{frame}\frametitle{Arquitetura para a Internet}
+
+	\begin{figure}[h]
+        \centering
+        \includegraphics[scale=.6]{images/edge-core-sdn}
     \end{figure}
 \end{frame}
