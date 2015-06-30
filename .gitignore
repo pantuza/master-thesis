@@ -11,6 +11,7 @@
 *.blg
 thesis/bin/thesis.pdf
 presentation/presentation.pdf
+presentation/bin/presentation.pdf
 *.nav
 *.snm
 *.out
