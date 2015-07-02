@@ -41,3 +41,135 @@
     \end{itemize}
 
 \end{frame}
+
+\begin{frame}{Fluxo de execução}
+
+    \begin{figure}[htb!]
+        \centering
+        \includegraphics[scale=.55]{images/balancer-workflow}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Políticas de balanceamento}
+    
+    \begin{enumerate}
+        \setlength{\itemsep}{.5cm}
+        \item Round-robin
+        \item Aleatória
+        \item Carga
+        \item Fila 
+        \item Mistura
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Ambiente dos experimentos}
+
+    \begin{figure}[htb!]
+        \centering
+        \includegraphics[scale=.7]{images/balancer-testbed-img}
+    \end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Distribuição de carga}
+
+    \begin{figure}[htb!]
+        \centering
+        \includegraphics[scale=0.5]{images/balancer-distribution.png}
+    \end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Justiça em relação a carga dos servidores}
+
+    \begin{figure}[htb!]
+        \centering
+        \includegraphics[scale=0.35]{images/balancer-serial-rr}
+        \caption{RoundRobin em serial}
+    \end{figure}
+
+\end{frame}
+
+\begin{frame}{Justiça em relação a carga dos servidores}
+
+    \begin{figure}[htb!]
+        \centering
+        \includegraphics[scale=0.35]{images/balancer-serial-load}
+        \caption{Carga em serial}
+    \end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Justiça em relação a carga dos servidores}
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[scale=0.35]{images/balancer-parallel-rr}
+    \caption{RoundRobin em paralelo}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{Justiça em relação a carga dos servidores}
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[scale=0.35]{images/balancer-parallel-load}
+    \caption{Carga em paralelo}
+\end{figure}
+
+\end{frame}
+
+\begin{frame}{Medição de justiça}
+    \begin{itemize}
+        \item Índice de justiça baseado na larguda de banda
+    \end{itemize}
+{\huge\centering
+\[\jmath \left ( x_1, x_2,..., x_n \right ) = \frac{\left ( \sum_{i=1}^{n} x_i\right )^2}{n \cdot \sum_{i=1}^{n} x_i^2}\]
+}
+\end{frame}
+
+\begin{frame}{Medição de justiça}
+
+    \begin{figure}[htb!]
+        \centering
+        \includegraphics[scale=.35]{images/balancer-fairness}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Largura de banda - TCP}
+
+    \begin{figure}[htb!]
+        \centering
+        \includegraphics[scale=.35]{images/balancer-tcp-bandwidth}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Tempo de resposta (latência) - HTTP}
+
+    \begin{figure}[htb!]
+        \centering
+        \includegraphics[scale=0.35]{images/balancer-http-full}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Tempo de resposta (latência) - HTTP}
+
+\begin{figure}[htb!]
+    \centering
+    \includegraphics[scale=0.35]{images/balancer-http-zoom}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Tempo de resposta por política}
+    \begin{figure}[htb!]
+        \centering
+        \includegraphics[scale=.35]{images/balancer-http-times}
+    \end{figure}
+\end{frame}
+
