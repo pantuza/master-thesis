@@ -1,1 +1,216 @@
 \section{Experimentação e resultados}
+
+\begin{frame}{Experimentação e resultados}
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=6]{images/test-tube}
+    \end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Ambiente de simulação - A rede Ipê}
+
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=.15]{images/ipe-network-2015}
+    \end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Arquitetura da simulação}
+
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=.55]{images/physical-vs-virtual-network-pt}
+    \end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Arquitetura da simulação}
+
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=.55]{images/mininet-vm-architecture}
+    \end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Arquitetura da simulação}
+
+    \input{tbl/testbed-ipe-net}
+\end{frame}
+
+
+\begin{frame}[fragile]{Detecção de entidades}
+
+\begin{lstlisting}[ tabsize=4,  
+                    language=bash,
+                    basicstyle=\ttfamily\footnotesize,
+                    aboveskip={1.5\baselineskip},
+                    columns=fixed,
+                    showstringspaces=false,
+                    extendedchars=true,
+                    breaklines=true,
+                    frame=single,
+                    numbers=left,
+                    showtabs=false,
+                    showspaces=false,
+                    showstringspaces=false,
+                    identifierstyle=\ttfamily,
+                    ]
+INFO:topology.graph:SwitchJoin id: 2
+INFO:topology.graph:SwitchJoin id: 1
+INFO:topology.graph:1, 2
+DEBUG:openflow.discovery:Dropping LLDP packet 275
+INFO:topology.graph:LinkEvent fired
+INFO:host_tracker:Learned 1 1 7e:e6:9b:89:39:2e got IP 10.0.0.1
+INFO:topology.graph:HostJoin id: 7e:e6:9b:89:39:2e
+INFO:host_tracker:Learned 2 1 62:77:44:24:13:49 got IP 10.0.0.2
+INFO:topology.graph:HostJoin id: 62:77:44:24:13:49
+\end{lstlisting}
+
+\end{frame}
+
+
+\begin{frame}{Remoção de computadores}
+
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=.35]{images/hosts-leave-time}
+    \end{figure}
+
+\end{frame}
+
+
+\begin{frame}{Remoção de \emph{switches}}
+
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=.35]{images/switch-leave-time}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Remoção de computadores por \emph{switch}}
+
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=.35]{images/hosts-behind-switch-time}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Visualização em tempo real}
+
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=.6]{images/full-graph}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Visualização em tempo real}
+
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=.25]{images/full-graph-ipe-0}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Visualização em tempo real}
+
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=.25]{images/full-graph-ipe-1}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Identificação de tráfego na rede}
+
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=.6]{images/graph-iperf}
+    \end{figure}
+\end{frame}
+
+
+
+\begin{frame}{Consumo de processador no controlador}
+
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=.35]{images/usr-cpu-growth}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Consumo de processador no controlador}
+
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=.35]{images/scatter-usr-cpu}
+    \end{figure}
+\end{frame}
+
+
+
+\begin{frame}{Consumo de processador em relação ao SO}
+
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=.35]{images/sys-cpu-growth}
+    \end{figure}
+\end{frame}
+
+
+
+\begin{frame}{Consumo de processador em relação ao SO}
+
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=.35]{images/scatter-sys-cpu}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Consumo de memória}
+
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=.35]{images/memory-usage-growth}
+    \end{figure}
+\end{frame}
+
+
+
+\begin{frame}{Consumo de memória}
+
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=.35]{images/scatter-memory-usage}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Taxa de escrita em memória secundária}
+
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=.35]{images/writing-rate-growth}
+    \end{figure}
+\end{frame}
+
+
+
+\begin{frame}{Taxa de escrita em memória secundária}
+
+    \begin{figure}[!htb]
+        \centering
+        \includegraphics[scale=.35]{images/scatter-writing-rate}
+    \end{figure}
+\end{frame}
