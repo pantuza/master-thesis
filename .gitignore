@@ -19,3 +19,4 @@ presentation/bin/presentation.pdf
 *.lot
 *.toc
 *.bcf
+*.vrb
