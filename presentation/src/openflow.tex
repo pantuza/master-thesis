@@ -43,12 +43,11 @@
 
     \begin{itemize}
         \setlength{\itemsep}{.5cm}
-        \item Consiste em uma interface de programação para o \emph{switch}
-        \item A interface separa de maneira clara os planos de dados e de 
-            controle
-        \item Um programador pode, através de um programa, controlar a
-            forma como um \emph{switch} executa seu encaminhamento de pacotes
-        \item O OpenFlow foi criado como um padrão aberto
+        \item Interface de programação para o \emph{switch}
+        \item Separa de maneira clara os planos de dados e de controle
+        \item Permite controlar a forma como um \emph{switch} executa seu 
+            encaminhamento de pacotes
+        \item Padrão aberto
     \end{itemize}
 \end{frame}
 
@@ -83,21 +82,6 @@
 
 \end{frame}
 
-
-
-%
-% Switch Archtecture
-%
-\begin{frame}\frametitle{Arquitetura Openflow}
-
-    \begin{itemize}
-        \setlength{\itemsep}{.5cm}
-    \item \textbf{Canal seguro OpenFlow}: É a conexão segura entre o
-          controlador e o switch openflow
-    \item \textbf{Tabela de fluxos}: É a tabela onde são identificados os fluxos
-    \item Para cada fluxo tem-se uma ação (action) a ser tomada
-    \end{itemize}
-\end{frame}
 
 
 %
@@ -167,46 +151,6 @@
     \end{columns}
 
 \end{frame}
-
-
-%
-% Controller
-%
-\begin{frame}\frametitle{Controlador}
-
-    \begin{itemize}
-        \setlength{\itemsep}{.5cm}
-    \item É um software que se conecta de maneira segura ao switch openflow
-          com o objetivo de manipular sua tabela de fluxos
-    \item Esse software pode ser distribuído
-    \item Ele representa uma entidade lógica e centralizada
-    \item Permite que outros programas troquem mensagens com o 
-        plano de controle da rede
-    \item Pode calcular estatísticas da rede
-    \end{itemize}
-
-\end{frame}
-
-
-%
-% Controller
-%
-\begin{frame}\frametitle{Controlador}
-
-    \begin{itemize}
-    \item Cabe ao programador lidar com os problemas típicos em 
-          desenvolvimento de software:
-          \begin{itemize}
-          \item Tolerância a falha
-          \item Persistência
-          \item Eficiência
-          \item Projeto/design de implementação
-          \item debugging
-          \item Testes
-          \end{itemize}
-    \end{itemize}
-\end{frame}
-
 
 %
 % Controller
