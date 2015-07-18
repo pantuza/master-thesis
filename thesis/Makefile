@@ -31,6 +31,18 @@ deps: DEPENDENCIES colorlatex.sh
 	sudo zypper install $(shell cat $<)
 	bash $(word 2, $^)
 
+push:
+	git checkout thesis
+	git pull origin thesis
+	git push origin thesis
+
+merge: push
+	git checkout master
+	git pull --no-edit origin master
+	git merge thesis
+	git push origin master
+	git checkout thesis
+
 clean:
 	@rm -rvf *.aux *.pdf *.dvi *.log *.bbl *.blg *.lof *.lot *.out \
 		*.toc $(BIN)/*.pdf
