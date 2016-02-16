@@ -7,17 +7,17 @@
 Em 2008 o protocolo OpenFlow foi publicado. Ele permitiu que pesquisadores
 pudessem criar experimentos com novos protocolos em redes convencionais
 \citep{nick2008openflow}.
-O OpenFlow foi criado como um padrão aberto, o que permite que todos os 
-fabricantes de equipamentos de redes possam habilitar seus produtos a esse 
+O OpenFlow foi criado como um padrão aberto, o que permite que todos os
+fabricantes de equipamentos de redes possam habilitar seus produtos a esse
 padrão.
 
-O protocolo consiste em uma interface de programação para o comutador. 
-Assim, um programador pode, através de um programa, controlar a forma como 
-um comutador executa seu encaminhamento de pacotes. 
+O protocolo consiste em uma interface de programação para o comutador.
+Assim, um programador pode, através de um programa, controlar a forma como
+um comutador executa seu encaminhamento de pacotes.
 De uma maneira bem clara, o protocolo OpenFlow separa o plano de dados
-do plano de controle, fazendo com que soluções SDN possam ser criadas 
+do plano de controle, fazendo com que soluções SDN possam ser criadas
 e experimentadas.
-Por ser uma solução de baixo custo, o OpenFlow obteve boa aceitação na 
+Por ser uma solução de baixo custo, o OpenFlow obteve boa aceitação na
 academia e no mercado, dado o volume de empresas e pesquisas relacionadas
 ou que utilizam o protocolo.
 
@@ -25,7 +25,7 @@ ou que utilizam o protocolo.
 
 Na arquitetura estabelecida pelo protocolo OpenFlow existem dois papéis
 principais.
-O controlador e o comutador OpenFlow. 
+O controlador e o comutador OpenFlow.
 Uma separação baseada no modelo das Redes definidas por software (SDN)
 conforme pode ser visto na figura~\ref{fig:controller-secure-switch}.
 
@@ -38,28 +38,28 @@ conforme pode ser visto na figura~\ref{fig:controller-secure-switch}.
 
 \subsection{Arquitetura do Comutador}
 
-O comutador OpenFlow pode ser dividido em três principais partes. 
+O comutador OpenFlow pode ser dividido em três principais partes.
 A primeira é o canal de comunicação seguro com o controlador.
 A segunda é a interface do protocolo OpenFlow que permite ao controlador
 controlar o comutador.
 A terceira é sua tabela de fluxos.
 
-O canal de comunicação seguro tem a garantia de confiabilidade na troca 
-de mensagens entre o controlador e o comutador através do protocolo SSL 
-(Secure Socket Layer). 
-Isso adiciona proteção à rede em relação a ataques de elementos mal 
+O canal de comunicação seguro tem a garantia de confiabilidade na troca
+de mensagens entre o controlador e o comutador através do protocolo SSL
+(Secure Socket Layer).
+Isso adiciona proteção à rede em relação a ataques de elementos mal
 intencionados \citep{rothenberg2010openflow}.
 
-A interface do protocolo OpenFlow é a padronização das mensagens enviadas 
+A interface do protocolo OpenFlow é a padronização das mensagens enviadas
 pelo controlador ao comutador de modo a definir o comportamento do encaminhamento
-de pacotes. 
+de pacotes.
 Ou seja, é o conjunto de possíveis instruções para se controlar de maneira
-genérica o plano de dados de qualquer \emph{hardware} de redes habilitado 
+genérica o plano de dados de qualquer \emph{hardware} de redes habilitado
 ao padrão OpenFlow.
 
 A tabela de fluxos é composta por regras.
-Cada regra consiste em ações associadas à fluxos. 
-Através dessa tabela o comutador executa o encaminhamento de pacotes. 
+Cada regra consiste em ações associadas à fluxos.
+Através dessa tabela o comutador executa o encaminhamento de pacotes.
 As entradas dessa tabela são atualizadas pelo controlador.
 
 \begin{figure}[h!]
@@ -74,52 +74,51 @@ As entradas dessa tabela são atualizadas pelo controlador.
 
 Um fluxo é a representação de um ou mais pacotes em função de suas
 características.
-Essas características variam de acordo com o cabeçalho OpenFlow.
-Os fluxos são genéricos. 
-Ao invés de avaliar pacotes e portas para fazer a análise do trafego,
-que representam o passado, os fluxos representam futuro. 
-Um fluxo pode caracterizar pacotes que ainda não passaram pelo comutador mas 
-que possuem as mesmas características que compõem aquele fluxo. 
+Essas características variam de acordo com os campos que definem um fluxo.
+Os fluxos são genéricos.
+Um fluxo pode caracterizar pacotes que ainda não passaram pelo comutador mas
+que possuem as mesmas características que compõem aquele fluxo.
 Sendo assim, a ação associada ao fluxo é aplicada a esses novos pacotes.
 
 \input{tbl/flow-table}
 
 
-A tabela de fluxos dentro do comutador OpenFlow identifica os fluxos para que o 
+A tabela de fluxos dentro do comutador OpenFlow identifica os fluxos para que o
 plano de dados execute ações sobre os pacotes que são pertencentes àquele
-fluxo. 
-A tabela \ref{tbl:flowtable} apresenta de maneira simplificada a tabela 
+fluxo.
+A tabela \ref{tbl:flowtable} apresenta de maneira simplificada a tabela
 de fluxos dentro do comutador OpenFlow.
 
-\subsection{Cabeçalho}
+\subsection{Campos para definição de fluxos}
 
-O cabeçalho OpenFlow se estende da camada 1 até a camada 4 da pilha TCP/IP.
+Os campos que definem fluxos se estendem da camada 1 até a camada 4 da
+pilha TCP/IP.
 A figura \ref{fig:of-header} apresenta os campos e suas respectivas camadas.
 
 \begin{figure}[h!]
     \centering
     \label{fig:of-header}
     \includegraphics[width=\linewidth]{img/openflow-header}
-    \caption{Cabeçalho OpenFlow}
+    \caption{Campos para definição de fluxos OpenFlow}
 \end{figure}
 
-Quando um novo pacote ingressa no comutador OpenFlow esse cabeçalho é preenchido
-e encaminhado para o controlador. 
-Através da análise dessas informações do fluxo o controlador envia uma 
-mensagem ao comutador instalando/atualizando regras na tabela de fluxos. 
+Quando um novo pacote ingressa no comutador OpenFlow esses campos são
+preenchido e encaminhado para o controlador.
+Através da análise dessas informações do fluxo o controlador envia uma
+mensagem ao comutador instalando/atualizando regras na tabela de fluxos.
 
 Esse mecanismo de rotulagem e identificação de tráfego e pacotes (fluxos) é
-inspirado no MPLS (\emph{Multi-protocol Label Switching}) 
+inspirado no MPLS (\emph{Multi-protocol Label Switching})
 \citep{bruce2008mpls}.
 
 \subsection{Ações}
 
 As ações (\emph{actions}) são aplicadas aos fluxos especificados na tabela
 de fluxos do comutador.
-Ações como encaminhamento, atualização de cabeçalho e rejeição podem ser 
+Ações como encaminhamento, atualização de cabeçalho e rejeição podem ser
 aplicadas aos pacotes pertencentes àquele fluxo.
 
-A especificação do protocolo OpenFlow \citep{ofprotocol2015} descreve todas 
+A especificação do protocolo OpenFlow \citep{ofprotocol2015} descreve todas
 as possíveis ações que podem ser aplicadas.
 A lista abaixo apresenta algumas ações:
 
@@ -145,25 +144,25 @@ fluxo pertencente à tabela de fluxos.
 O controlador é a entidade na rede que representa o plano de controle dentro
 da arquitetura OpenFlow.
 Apesar de ser um entidade logicamente centralizada, ele pode ser distribuído.
-O controlador é um software que se conecta de maneira segura ao comutador 
+O controlador é um software que se conecta de maneira segura ao comutador
 OpenFlow.
-Através da interface de programação do protocolo o controlador manipula 
+Através da interface de programação do protocolo o controlador manipula
 a tabela de fluxos do comutador.
 
 Em função dessa arquitetura, é possível ter visão e controle de estado global
 da rede.
-Como o protocolo OpenFlow especifica que o comutador armazena alguns dados 
-estatísticos, por exemplo de portas e fluxos, o controlador pode tomar 
+Como o protocolo OpenFlow especifica que o comutador armazena alguns dados
+estatísticos, por exemplo de portas e fluxos, o controlador pode tomar
 decisões ou executar análises sobre a rede baseando-se nessas estatísticas.
 
 O controlador exerce um papel importante para os serviços em execução dentro
-da rede. 
-Outros servidores rodando aplicações podem fazer requisições e troca de 
+da rede.
+Outros servidores rodando aplicações podem fazer requisições e troca de
 mensagens com o controlador da rede, de modo a obter informações topológicas
 ou de estado da rede.
 
-Com o plano de controle isolado em uma aplicação logicamente centralizada, 
-um programador tem de lidar com problemas típicos de desenvolvimento de 
+Com o plano de controle isolado em uma aplicação logicamente centralizada,
+um programador tem de lidar com problemas típicos de desenvolvimento de
 software e sistemas distribuídos como:
 
 \begin{itemize}
@@ -175,7 +174,7 @@ software e sistemas distribuídos como:
     \item Testes
 \end{itemize}
 
-Existem vários softwares controladores \emph{open source} no mercado que 
+Existem vários softwares controladores \emph{open source} no mercado que
 podem ser utilizados em produção em para desenvolvimento de pesquisas:
 
 \begin{itemize}
