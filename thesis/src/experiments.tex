@@ -74,13 +74,25 @@ da rede interna àquele POP.
 Como temos 27 unidades federativas (POPs), temos 27 \emph{switches OpenFlow}.
 Todos controlados pelo \emph{controlador 0}.
 
-
 \begin{figure}[!h]
     \centering
     \label{fig:physical-vs-virtual-network}
     \includegraphics[width=\textwidth]{img/physical-vs-virtual-network-pt}
     \caption{Arquitetura do ambiente de simulação}
 \end{figure}
+
+A relação dos \emph{switches} reais da rede Ipê com os \emph{switches OpenFlow}
+do ambiente simulado é baseada no gráfico de conectividade
+\ref{fig:rnp-ipe-connectivity} disponível em \citep{rede2015conectividade}.
+
+\begin{figure}[!h]
+    \centering
+    \label{fig:rnp-ipe-connectivity}
+    \includegraphics[width=\textwidth]{img/rnp-ipe-connectivity}
+    \caption{Conectividade da Rede Ipê}
+\end{figure}
+
+
 
 Para o ambiente virtualizado, o controlador está associado a porta 6653.
 Cada POP é um comutador (\emph{switch}) OpenFlow simulado via OpenVSwitch
