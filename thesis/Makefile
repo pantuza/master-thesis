@@ -39,7 +39,7 @@ push:
 merge: push
 	git checkout master
 	git pull --no-edit origin master
-	git merge thesis
+	git merge thesis --no-edit
 	git push origin master
 	git checkout thesis
 
